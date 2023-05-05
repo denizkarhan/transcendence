@@ -23,7 +23,7 @@ let UsersService = class UsersService {
     }
     findUser() { }
     createUser(userDetail) {
-        const newUser = this.userRepository.create(Object.assign(Object.assign({}, userDetail), { CreatedAt: new Date(), UpdatedAt: new Date() }));
+        const newUser = this.userRepository.create(Object.assign(Object.assign({}, userDetail), { CreatedAt: new Date(), UpdatedAt: new Date(), Status: 0 }));
         return this.userRepository.save(newUser);
     }
 };

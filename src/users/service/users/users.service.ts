@@ -16,6 +16,7 @@ export class UsersService {
 			...userDetail,
 			CreatedAt : new Date(),
 			UpdatedAt : new Date(),
+			Status: 0,
 		});
 		return this.userRepository.save(newUser);
 	}

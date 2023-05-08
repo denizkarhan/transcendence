@@ -1,4 +1,7 @@
-import { Column, Entity, NumericType, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, NumericType, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Friend } from "./friend";
+import { MatchHistories } from "./matchHistories";
+import { UserAchievements } from "./userAchievements";
 
 @Entity({name: 'user'})
 export class User{
@@ -25,4 +28,13 @@ export class User{
 
 	@Column()
 	UpdatedAt: Date;
+
+	@OneToMany(()=> Friend, (friend)=> friend.user)
+	friend : Friend[];
+
+	@OneToMany(()=> MatchHistories, (MachHistory)=> MachHistory.User)
+	MachHistory : MatchHistories[];
+
+	@OneToMany(()=> UserAchievements, (UserAchievement)=> UserAchievement.User)
+	UserAchievement : UserAchievements[];
 }

@@ -3,6 +3,6 @@ import { UsersService } from 'src/users/service/users/users.service';
 export declare class UsersController {
     private userService;
     constructor(userService: UsersService);
-    getUsers(): void;
+    getUserByName(userName: string): void;
     createUser(createUserDto: CreateUserDto): void;
 }

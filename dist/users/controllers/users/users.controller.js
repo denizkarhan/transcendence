@@ -20,17 +20,20 @@ let UsersController = class UsersController {
     constructor(userService) {
         this.userService = userService;
     }
-    getUsers() { }
+    getUserByName(userName) {
+        this.userService.getUserIdByName(userName);
+    }
     createUser(createUserDto) {
         this.userService.createUser(createUserDto);
     }
 };
 __decorate([
-    (0, common_1.Get)(),
+    (0, common_1.Get)(':userName'),
+    __param(0, (0, common_1.Param)('userName')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
-], UsersController.prototype, "getUsers", null);
+], UsersController.prototype, "getUserByName", null);
 __decorate([
     (0, common_1.Post)(),
     (0, common_1.UsePipes)(new common_1.ValidationPipe()),

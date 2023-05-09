@@ -27,9 +27,13 @@ __decorate([
 ], CreateUserDto.prototype, "Login", void 0);
 __decorate([
     (0, class_validator_1.IsEmail)(),
-    (0, class_validator_1.IsIdentityCard)(),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "Email", void 0);
+__decorate([
+    (0, class_validator_1.IsStrongPassword)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], CreateUserDto.prototype, "Password", void 0);
 exports.CreateUserDto = CreateUserDto;
 //# sourceMappingURL=CreateUser.dto.js.map

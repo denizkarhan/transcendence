@@ -1,6 +1,6 @@
 import { Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Achievements } from "./achievements";
-import { User } from "./user";
+import { User } from "./users";
 
 @Entity({name: "userAchievements"})
 export class UserAchievements{

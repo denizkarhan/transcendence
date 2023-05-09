@@ -12,8 +12,19 @@ const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
 require("reflect-metadata");
 const typeorm_1 = require("@nestjs/typeorm");
-const user_1 = require("./typeorm/entities/user");
+const users_1 = require("./typeorm/entities/users");
 const users_module_1 = require("./users/users.module");
+const achievements_module_1 = require("./achievements/achievements.module");
+const stats_module_1 = require("./stats/stats.module");
+const match_histories_module_1 = require("./match-histories/match-histories.module");
+const user_achievements_module_1 = require("./user-achievements/user-achievements.module");
+const friends_1 = require("./typeorm/entities/friends");
+const stats_1 = require("./typeorm/entities/stats");
+const achievements_1 = require("./typeorm/entities/achievements");
+const userAchievements_1 = require("./typeorm/entities/userAchievements");
+const matchHistories_1 = require("./typeorm/entities/matchHistories");
+const friends_module_1 = require("./friends/friends.module");
+const auth_module_1 = require("./auth/auth.module");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -25,9 +36,9 @@ AppModule = __decorate([
                 username: 'postgres',
                 password: '1',
                 database: 'ft_transcendence',
-                entities: [user_1.User],
+                entities: [users_1.User, friends_1.Friend, stats_1.Stats, achievements_1.Achievements, userAchievements_1.UserAchievements, matchHistories_1.MatchHistories],
                 synchronize: true,
-            }), users_module_1.UsersModule],
+            }), users_module_1.UsersModule, achievements_module_1.AchievementsModule, stats_module_1.StatsModule, match_histories_module_1.MatchHistoriesModule, user_achievements_module_1.UserAchievementsModule, friends_module_1.FriendsModule, auth_module_1.AuthModule],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],
     })

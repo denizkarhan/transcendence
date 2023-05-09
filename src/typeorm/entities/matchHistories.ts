@@ -1,7 +1,7 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { User } from "./user";
+import { User } from "./users";
 
-@Entity({name:"mathHistory"})
+@Entity({name:"mathHistories"})
 export class MatchHistories{
 
 	@PrimaryGeneratedColumn()

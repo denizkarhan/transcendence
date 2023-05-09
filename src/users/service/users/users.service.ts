@@ -9,9 +9,13 @@ export class UsersService {
 
 	constructor(@InjectRepository(User) private userRepository: Repository<User>, ){}
 
+	async findOne(username: string): Promise<User | undefined> {
+		return this.userRepository.findOneBy({Login:username});
+	  }
 	async getUserIdByName(name:string){
 		console.log("userName: " + name);
 		const user = await this.userRepository.findOneBy({Login:name});
+		console.log(user);
 		if (user != null)
 			return user.Id;
 		return 0;

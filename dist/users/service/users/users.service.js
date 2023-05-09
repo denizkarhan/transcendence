@@ -21,9 +21,13 @@ let UsersService = class UsersService {
     constructor(userRepository) {
         this.userRepository = userRepository;
     }
+    async findOne(username) {
+        return this.userRepository.findOneBy({ Login: username });
+    }
     async getUserIdByName(name) {
         console.log("userName: " + name);
         const user = await this.userRepository.findOneBy({ Login: name });
+        console.log(user);
         if (user != null)
             return user.Id;
         return 0;

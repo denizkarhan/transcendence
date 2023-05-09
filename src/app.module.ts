@@ -15,6 +15,7 @@ import { Achievements } from './typeorm/entities/achievements';
 import { UserAchievements } from './typeorm/entities/userAchievements';
 import { MatchHistories } from './typeorm/entities/matchHistories';
 import { FriendsModule } from './friends/friends.module';
+import { AuthModule } from './auth/auth.module';
 
 
 @Module({
@@ -27,7 +28,7 @@ import { FriendsModule } from './friends/friends.module';
 	database: 'ft_transcendence',
 	entities: [User, Friend, Stats, Achievements, UserAchievements, MatchHistories],
 	synchronize: true,
-  }), UsersModule, AchievementsModule, StatsModule, MatchHistoriesModule, UserAchievementsModule, FriendsModule],
+  }), UsersModule, AchievementsModule, StatsModule, MatchHistoriesModule, UserAchievementsModule, FriendsModule, AuthModule],
   controllers: [AppController],
   providers: [AppService],
 })

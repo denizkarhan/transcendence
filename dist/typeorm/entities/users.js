@@ -65,7 +65,7 @@ __decorate([
     __metadata("design:type", Array)
 ], User.prototype, "UserAchievement", void 0);
 User = __decorate([
-    (0, typeorm_1.Entity)({ name: 'users' })
+    (0, typeorm_1.Entity)({ name: 'Users' })
 ], User);
 exports.User = User;
 //# sourceMappingURL=users.js.map

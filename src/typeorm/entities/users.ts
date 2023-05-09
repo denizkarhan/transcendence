@@ -4,7 +4,7 @@ import { MatchHistories } from "./matchHistories";
 import { UserAchievements } from "./userAchievements";
 import { IsNotEmpty } from "class-validator";
 
-@Entity({name: 'users'})
+@Entity({name: 'Users'})
 export class User{
 	@PrimaryGeneratedColumn()
 	Id :number;

@@ -12,6 +12,7 @@ services:
     volumes:
       - ./packages/nestjs/:/app
       - /app/node_modules
+    restart: always
 
   react_app:
     build:
@@ -24,6 +25,8 @@ services:
     volumes:
       - ./packages/react-app/:/app
       - /app/node_modules
+    restart: always
+
 
   postgres:
     image: postgres:13.1
@@ -31,11 +34,13 @@ services:
       POSTGRES_PASSWORD: example
     ports:
      - 5432:5432
+    restart: always
 
   redis:
     image: redis:6.2-rc1
     environment:
       REDIS_PASSWORD: password
+    restart: always
 
   redis_commander:
     image: rediscommander/redis-commander:latest
@@ -46,3 +51,4 @@ services:
       - 8081:8081
     depends_on:
       - redis
+    restart: always

@@ -7,7 +7,7 @@ export class MatchHistories{
 	@PrimaryGeneratedColumn()
 	Id: number;
 
-	@ManyToOne(()=>User, (user) => user.Id)
+	@ManyToOne(()=>User, (user) => user.MachHistory)
 	User: User;
 
 	@Column()
@@ -15,5 +15,8 @@ export class MatchHistories{
 
 	@Column()
 	MatchResult:number;
+
+	@Column()
+	MatchDate: Date;
 	
 }

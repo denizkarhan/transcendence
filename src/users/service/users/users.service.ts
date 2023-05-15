@@ -18,7 +18,7 @@ export class UsersService {
 	}
 
 	async getUserByEmail(email:string){
-		return await this.userRepository.findOneBy({Email:email});
+		return await this.userRepository.findOne({where: {Email:email}});
 	}
 	
 	async getUserByName(name:string){
@@ -26,8 +26,7 @@ export class UsersService {
 	}
 
 	async getUserById(id :number){
-		const user = await this.userRepository.findOneBy({Id:id});
-		return user;
+		return await this.userRepository.findOneBy({Id:id});
 	}
 
 	async createUser(userDetail: CreateUserParams){
@@ -38,10 +37,8 @@ export class UsersService {
 			Status: 0,
 		});
 		if (await this.userRepository.exist({where: {Email: newUser.Email, Login: newUser.Login}}))
-			return 0;
+			throw new HttpException('user exist', HttpStatus.FOUND);
 		return this.userRepository.save(newUser);
-		// const user  = this.userRepository.save(newUser);
-		// return user;
 	}
 
 	updateUser(login:string, userDetail: UpdateUserParams)

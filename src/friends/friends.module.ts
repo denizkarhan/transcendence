@@ -8,8 +8,8 @@ import { UsersService } from 'src/users/service/users/users.service';
 import { User } from 'src/typeorm/entities/users';
 
 @Module({
-	imports:[TypeOrmModule.forFeature([User, Friend])],
+	imports:[TypeOrmModule.forFeature([Friend])],
 	controllers: [FriendsController],
-	providers: [FriendsService, UsersService]
+	providers: [FriendsService]
 })
 export class FriendsModule {}

@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "./users";
 
 @Entity({name:"mathHistories"})
@@ -8,6 +8,7 @@ export class MatchHistories{
 	Id: number;
 
 	@ManyToOne(()=>User, (user) => user.MachHistory)
+	@JoinColumn()
 	User: User;
 
 	@Column()

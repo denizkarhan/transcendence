@@ -26,7 +26,7 @@ async function bootstrap() {
 	origin: [
 	  'http://localhost:3000',
 	],
-	methods: ["GET", "POST"],
+	methods: ["GET", "POST", "PUT"],
 	credentials: true,
   });
   app.use(passport.initialize());

@@ -15,7 +15,7 @@ export class UsersController {
 		return await this.userService.getUsers();
 	}
 
-	@Get(':userName')
+	@Get('userName/:userName')
 	@UseFilters(ExceptionHandleFilter)
 	@UseInterceptors(ClassSerializerInterceptor)
 	async getUserByName(@Param('userName') userName: string) {
@@ -24,13 +24,30 @@ export class UsersController {
 		return new SerializedUser(user);
 	}
 
+	@Get('email/:email')
+	@UseFilters(ExceptionHandleFilter)
+	@UseInterceptors(ClassSerializerInterceptor)
+	async getUserByEmail(@Param('email') email: string) {
+		const user = await this.userService.getUserByEmail(email);
+		if (!user) throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
+		return new SerializedUser(user);
+	}
+
+	@Get('id/:id')
+	@UseFilters(ExceptionHandleFilter)
+	@UseInterceptors(ClassSerializerInterceptor)
+	async getUserById(@Param('id') id: number) {
+		const user = await this.userService.getUserById(id);
+		if (!user) throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
+		return new SerializedUser(user);
+	}
+
+
 	@Post()
 	@UsePipes(new ValidationPipe())
 	@UseFilters(ExceptionHandleFilter)
-	createUser(@Body() createUserDto : CreateUserDto) {
-		const user = this.userService.createUser(createUserDto);
-		console.log(user);
-		if (!user) console.log("asdasdas");//throw new HttpException('User Exist', HttpStatus.FOUND);
+	async createUser(@Body() createUserDto : CreateUserDto) {
+		await this.userService.createUser(createUserDto);
 	}
 
 }

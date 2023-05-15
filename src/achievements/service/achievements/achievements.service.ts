@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateAchievementParams } from 'src/utils/type';
+import { CreateAchievementParams } from 'src/achievements/utils/type';
+
 import { Achievements } from 'src/typeorm/entities/achievements';
 import { Repository } from 'typeorm';
 

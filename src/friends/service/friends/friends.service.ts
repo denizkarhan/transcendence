@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Req } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToClass } from 'class-transformer';
 import { CreateFriendsParam } from 'src/friends/utils/type';
@@ -10,16 +10,14 @@ import { DataSource, Repository } from 'typeorm';
 @Injectable()
 export class FriendsService {
 	private userRepository;
-
 	constructor(@InjectRepository(Friend) private friendRepository: Repository<Friend>,
 	private readonly dataSource : DataSource){
 		this.userRepository = dataSource.getRepository(User);
 	}
 
-	async getFriends(id:number){
-		const user = await this.userRepository.findOneBy({Id:id});
-		if (!user) throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
-		const friends = await this.friendRepository.find({where:{user:user}, relations:['friend']});
+	async getFriends(user : any){
+		if (!user) return;
+		const friends = await this.friendRepository.find({where:{user:user.Id}, relations:['friend']});
 		return friends.map((fir)=>plainToClass(SerializedUser, fir.friend));
 	}
 
@@ -40,9 +38,9 @@ export class FriendsService {
 		return friend;
 	}
 
-	async addFriend(friendParam: CreateFriendsParam){
-		const friend = await this.userRepository.findOneBy({Id: friendParam.FriendId});
-		const user = await this.userRepository.findOneBy({Id: friendParam.UserId});
+	async addFriend(user:any, friendLogin:string){
+		const friend = await this.userRepository.findOneBy({Login:friendLogin});
+		if (!friend) return null;
 		await this.friendRepository.save({
 			user: user,
 			friend: friend
@@ -51,6 +49,7 @@ export class FriendsService {
 			user:friend,
 			friend:user
 		});
+		return friend;
 	}
 
 	async deleteFriend(id: number){

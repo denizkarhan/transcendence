@@ -3,6 +3,7 @@ import { PassportStrategy } from "@nestjs/passport";
 import { Profile, Strategy } from "passport-google-oauth20";
 import { AuthService } from "../service/auth.service";
 
+
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy){
 	constructor(@Inject('AUTH_SERVICE') private readonly authService: AuthService){
@@ -24,7 +25,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy){
 			LastName: profile.name.familyName,
 			Email: profile.emails[0].value,
 			Login: profile.emails[0].value.split("@").at(0),
-			Password: generateRandomString(30)
+			Password: "generateRandomString(30)1_A..."
 			});
 		return user;
 	}

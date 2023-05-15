@@ -7,8 +7,8 @@ import { User } from 'src/typeorm/entities/users';
 import { UsersService } from 'src/users/service/users/users.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([MatchHistories, User])],
-  providers: [MatchHistoriesService, UsersService],
+  imports: [TypeOrmModule.forFeature([MatchHistories])],
+  providers: [MatchHistoriesService],
   controllers: [MatchHistoriesController]
 })
 export class MatchHistoriesModule {}

@@ -4,5 +4,7 @@ export type CreateMatchParams={
 
     EnemyId:number;
     
-    MatchResult:number;
+    MyResult:number;
+
+    EnemyResult:number;
 }

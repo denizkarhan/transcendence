@@ -1,15 +1,15 @@
 import { IsNotEmpty } from "class-validator";
 
-export class CreateMatchDto{
+export class CreateStatsDto{
     @IsNotEmpty()
     UserId:number;
 
     @IsNotEmpty()
-    EnemyId:number;
+    WinCount:number;
 
     @IsNotEmpty()
-    MyResult:number;
+    LoseCount:number;
 
     @IsNotEmpty()
-    EnemyResult:number;
+    LadderLevel:number;
 }

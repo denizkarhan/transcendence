@@ -14,12 +14,15 @@ export class MatchHistoriesService {
 
     async addMatch(createMatch: CreateMatchParams){
         const user = await this.userRepository.findOneBy({Id: createMatch.UserId});
+        const enemy = await this.userRepository.findOneBy({Id: createMatch.EnemyId});
         if (!user) return;
         var match = new MatchHistories();
         match.User = user;
-        match.EnemyId = createMatch.EnemyId;
-        match.MatchResult = createMatch.MatchResult;
+        match.Enemy = enemy;
+        match.MyResult = createMatch.MyResult;
+        match.EnemyResult = createMatch.EnemyResult;
         match.MatchDate = new Date();
+        match.MatchResult = match.MyResult > match.EnemyResult ? 1 : match.MyResult == match.EnemyResult ? 0 : 2;
         this.matchRepository.save(match);
     }
 }

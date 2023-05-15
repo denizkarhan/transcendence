@@ -1,18 +1,11 @@
-import { Injectable } from "@nestjs/common";
-import { User } from "src/typeorm/entities/users";
-import { GetterUserParams } from "src/utils/type";
+import { Exclude } from "class-transformer";
 
-@Injectable()
-export class UserMapper{
+export class SerializedUser{
 
-	toDto( user: User) : GetterUserParams {
-		if (!user)
-			throw new Error("User Not Found");
-		  return {
-			FirstName: user.FirstName,
-			LastName: user.LastName,
-			Login: user.Login, 
-			Email: user.Email
-		};
+	@Exclude()
+	Password:string;
+
+	constructor(partial : Partial<SerializedUser>){
+		Object.assign(this, partial);
 	}
 }

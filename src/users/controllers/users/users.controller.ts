@@ -1,43 +1,36 @@
-import { Body, Controller, Get, Param, Post, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, ClassSerializerInterceptor, Controller, Get, HttpException, HttpStatus, NotFoundException, Param, Post, UseFilters, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
+import { ExceptionHandleFilter } from 'src/exception-handle/exception-handle.filter';
 import { CreateUserDto } from 'src/users/dtos/CreateUser.dto';
-import { UserMapper } from 'src/users/dtos/UserMapper';
+import { SerializedUser } from 'src/users/dtos/UserMapper';
 import { UsersService } from 'src/users/service/users/users.service';
-import { DataResult, Result } from 'src/utils/result';
 
-//Global bir try-catch classı yaz
-// class tryCatch {
-// 	execute(func: () => any): Error | any {
-// 	  try {
-// 		return func();
-// 	  } catch (err) {
-// 		return new Error(err);
-// 	  }
-// 	}
-//   }
 @Controller('users')
 export class UsersController {
 
-	constructor(private userService: UsersService, private userMapper: UserMapper){}
+	constructor(private userService: UsersService){}
+
+	@Get('all')
+	@UseInterceptors(ClassSerializerInterceptor)
+	async getUsers(){
+		return await this.userService.getUsers();
+	}
 
 	@Get(':userName')
+	@UseFilters(ExceptionHandleFilter)
+	@UseInterceptors(ClassSerializerInterceptor)
 	async getUserByName(@Param('userName') userName: string) {
-		try {
-			const user = await this.userService.getUserByName(userName);
-			return new DataResult(this.userMapper.toDto(user), 200, 'Successfully');
-		} catch (error) {
-			return new Result(400, error.message);
-		}
+		const user = await this.userService.getUserByName(userName);
+		if (!user) throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
+		return new SerializedUser(user);
 	}
 
 	@Post()
 	@UsePipes(new ValidationPipe())
+	@UseFilters(ExceptionHandleFilter)
 	createUser(@Body() createUserDto : CreateUserDto) {
-		try {
-			this.userService.createUser(createUserDto);
-			return new Result(200, "Successfully");	
-		} catch (error) {
-			return new Result(400,"Something Wrong");
-		}
+		const user = this.userService.createUser(createUserDto);
+		console.log(user);
+		if (!user) console.log("asdasdas");//throw new HttpException('User Exist', HttpStatus.FOUND);
 	}
 
 }

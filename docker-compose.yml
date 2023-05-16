@@ -15,6 +15,7 @@ services:
     restart: always
 
   react_app:
+    restart: always
     build:
       context: ./packages/react-app
       dockerfile: Dockerfile.dev
@@ -25,22 +26,20 @@ services:
     volumes:
       - ./packages/react-app/:/app
       - /app/node_modules
-    restart: always
-
 
   postgres:
+    restart: always
     image: postgres:13.1
     environment:
       POSTGRES_PASSWORD: example
     ports:
      - 5432:5432
-    restart: always
 
   redis:
+    restart: always
     image: redis:6.2-rc1
     environment:
       REDIS_PASSWORD: password
-    restart: always
 
   redis_commander:
     image: rediscommander/redis-commander:latest
@@ -51,4 +50,3 @@ services:
       - 8081:8081
     depends_on:
       - redis
-    restart: always

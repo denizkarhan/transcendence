@@ -23,6 +23,7 @@ export class UsersService {
 	}
 
 	createUser(userDetail: CreateUserParams){
+		console.log(userDetail);
 		const newUser = this.userRepository.create({ 
 			...userDetail,
 			CreatedAt : new Date(),

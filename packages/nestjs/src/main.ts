@@ -5,7 +5,7 @@ import * as session from 'express-session';
 import * as passport from 'passport';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {cors: true});
   app.use(session({
 	secret: 'asdajhfdsdkjfjksghfkjjhjjkjaksdas',
 	saveUninitialized: false,
@@ -25,7 +25,7 @@ async function bootstrap() {
 //   app.setGlobalPrefix('api');
 	app.enableCors({
 	origin: [
-	  'http://localhost:3001',
+	  'http://localhost:3000',
 	],
 	methods: ["GET", "POST"],
 	credentials: true,

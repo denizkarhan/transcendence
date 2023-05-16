@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { UserAchievements } from "./userAchievements";
 
 @Entity({name:"achivements"})
 export class Achievements{
@@ -11,4 +12,7 @@ export class Achievements{
 
 	@Column()
 	CreatedAt: Date;
+
+	@OneToMany(()=>(UserAchievements), (userAchievements) => (userAchievements.Achivement))
+	UserAchievement : UserAchievements[];
 }

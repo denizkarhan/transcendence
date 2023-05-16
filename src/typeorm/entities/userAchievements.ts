@@ -12,7 +12,7 @@ export class UserAchievements{
 	@JoinColumn()
 	User: User;
 
-	@OneToOne(()=>Achievements)
+	@ManyToOne(()=>Achievements)
 	@JoinColumn()
 	Achivement: Achievements;
 }

@@ -18,9 +18,10 @@ interface ChildProps {
 const App: React.FC<ChildProps> = (props) => (
   <Form
     name="basic"
+    className='centered-container'
     labelCol={{ span: 8 }}
     wrapperCol={{ span: 16 }}
-    style={{ maxWidth: 600 }}
+    style={{ maxWidth: 500 }}
     initialValues={{ remember: true }}
     onFinish={onFinish}
     onFinishFailed={onFinishFailed}

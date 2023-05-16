@@ -8,7 +8,8 @@ export class UserAchievements{
 	@PrimaryGeneratedColumn()
 	Id:number;
 
-	@ManyToOne(()=>User, (user) => user.Id)
+	@ManyToOne(()=>User, (user) => user.UserAchievement)
+	@JoinColumn()
 	User: User;
 
 	@OneToOne(()=>Achievements)

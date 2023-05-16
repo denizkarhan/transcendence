@@ -1,46 +1,55 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Req } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateFriendDto } from 'src/friends/dto/CreateFriend.dto';
-import { CreateFriendParams } from 'src/friends/utils/type';
+import { plainToClass } from 'class-transformer';
+import { CreateFriendsParam } from 'src/friends/utils/type';
 import { Friend } from 'src/typeorm/entities/friends';
 import { User } from 'src/typeorm/entities/users';
-import { UsersService } from 'src/users/service/users/users.service';
-import { Repository } from 'typeorm';
+import { SerializedUser } from 'src/users/dtos/UserMapper';
+import { DataSource, Repository } from 'typeorm';
 
 @Injectable()
 export class FriendsService {
+	private userRepository;
 	constructor(@InjectRepository(Friend) private friendRepository: Repository<Friend>,
-	@InjectRepository(User)
-    private readonly userRepository: Repository<User>){}
-
-
-	async getFriends(id:number){
-		const friends = await this.friendRepository.find({
-			where: { userId:id },
-			relations: ['friend'],
-		  });
-	  
-		  return friends;
+	private readonly dataSource : DataSource){
+		this.userRepository = dataSource.getRepository(User);
 	}
 
-	async getFriendById(id:number){
-		const friends = await this.friendRepository.find({
-			where: { userId:id },
-			relations: ['friend'],
-		  });
-	  
-		  return friends;
+	async getFriends(user : any){
+		if (!user) return;
+		const friends = await this.friendRepository.find({where:{user:user.Id}, relations:['friend']});
+		return friends.map((fir)=>plainToClass(SerializedUser, fir.friend));
 	}
 
-	async addFriend(friendParam : CreateFriendParams){
-		const friend = await this.userRepository.findOneBy({Id: friendParam.FriendId});
-		if (!friend) return;
-		var user: Friend = await this.friendRepository.findOneBy({friend: friend});
-		if (user != null) return user;
-		user = new Friend();
-		user.userId = friendParam.UserId;
-		user.friend = friend;
-		await this.friendRepository.save(user);
+	async getFriendById(userId:number, friendId:number){
+		const user = await this.userRepository.findOneBy({Id:userId});
+		const myFriend = await this.userRepository.findOneBy({Id:friendId});
+		const friends = await this.friendRepository.find({
+			where: {user:user, friend:myFriend },
+			relations: ['friend'],
+		  }); 
+		  return friends.map((temp)=>plainToClass(SerializedUser, temp.friend));
+	}
+
+	async getFriendByName(name:string){
+		const user = await this.userRepository.findOneBy({FirstName:name});
+		if (!user) return;
+		const friend = await this.friendRepository.findOne({where:{user:user}, relations:['friend']});
+		return friend;
+	}
+
+	async addFriend(user:any, friendLogin:string){
+		const friend = await this.userRepository.findOneBy({Login:friendLogin});
+		if (!friend) return null;
+		await this.friendRepository.save({
+			user: user,
+			friend: friend
+		});
+		await this.friendRepository.save({
+			user:friend,
+			friend:user
+		});
+		return friend;
 	}
 
 	async deleteFriend(id: number){

@@ -7,21 +7,21 @@ export class AuthController {
 
 	@Get('google/login')
 	@UseGuards(GoogleAuthGuard)
-	handleLogin(){
-		return {msg: 'Google Auth'};
+	handleLogin() {
+		return { msg: 'Google Auth' };
 	}
 
 	@Get('google/redirect')
 	@UseGuards(GoogleAuthGuard)
-	handleRedirect(){
-		return  {msg: 'OK'};
+	handleRedirect() {
+		return { msg: 'Ok' };
 	}
 
 	@Get('status')
-	user(@Req() request: Request){
+	user(@Req() request: Request) {
 		console.log(request.user);
 		if (request.user)
-			return {msg: 'Authanticated'};
-		return {msg: 'Not Authanticated'};
+			return { msg: 'Authanticated' };
+		return { msg: 'Not Authanticated' };
 	}
 }

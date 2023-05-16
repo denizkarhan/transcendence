@@ -24,7 +24,7 @@ export class User{
 	@Column()
 	Status: number;
 
-	@Column({nullable:true})
+	@Column()
 	Password:string;
 
 	@Column()
@@ -36,8 +36,8 @@ export class User{
 	@OneToMany(()=> Friend, (friend)=> friend.friend)
 	friend : Friend[];
 
-	@OneToMany(()=> MatchHistories, (MachHistory)=> MachHistory.User)
-	MachHistory : MatchHistories[];
+	@OneToMany(()=> MatchHistories, (MatchHistory)=> MatchHistory.User)
+	MatchHistory : MatchHistories[];
 
 	@OneToMany(()=> UserAchievements, (UserAchievement)=> UserAchievement.User)
 	UserAchievement : UserAchievements[];

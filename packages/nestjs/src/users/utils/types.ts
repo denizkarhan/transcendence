@@ -8,6 +8,20 @@ export type CreateUserParams = {
 	Login: string;
 
 	Email: string;
+
+	Password:string;
+}
+
+export type GetterUserParams = {
+
+	FirstName: string;
+
+	LastName: string;
+
+	Login: string;
+
+	Email: string;
+
 }
 
 export type UpdateUserParams = {
@@ -19,9 +33,3 @@ export type UpdateUserParams = {
 	
 	Email: string;
 }
-// {
-//     "Login": "acetin",
-//     "FirstName": "Abdullah"
-//     "LastName": "ÇETİN"
-//     "Email": "asd@hotmail.com"
-// }

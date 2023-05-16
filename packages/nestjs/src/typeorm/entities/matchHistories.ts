@@ -1,19 +1,28 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, JoinTable, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "./users";
 
-@Entity({name:"mathHistories"})
+@Entity({name:"matchHistories"})
 export class MatchHistories{
 
 	@PrimaryGeneratedColumn()
 	Id: number;
 
-	@ManyToOne(()=>User, (user) => user.Id)
+	@ManyToOne(()=>User, (user) => user.MatchHistory)
 	User: User;
 
-	@Column()
-	EnemyId:number;
+	@ManyToOne(()=>User, (user) => user.MatchHistory)
+	Enemy:number;
 
 	@Column()
+	MyResult:number;
+
+	@Column()
+	EnemyResult:number;
+
+	@Column()
+	MatchDate: Date;
+
+	@Column({nullable:true})
 	MatchResult:number;
 	
 }

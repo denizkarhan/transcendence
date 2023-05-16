@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import "reflect-metadata";
@@ -18,6 +18,7 @@ import { FriendsModule } from './friends/friends.module';
 import { AuthModule } from './auth/auth.module';
 import { PassportModule } from '@nestjs/passport';
 import { AchievementsModule } from './achievements/achievements.module';
+import { APP_FILTER } from '@nestjs/core';
 
 
 @Module({
@@ -34,4 +35,5 @@ import { AchievementsModule } from './achievements/achievements.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+
+export class AppModule{}

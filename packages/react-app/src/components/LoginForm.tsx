@@ -46,7 +46,7 @@ const App: React.FC<ChildProps> = (props) => (
       <Button type="primary" htmlType="submit">
         Login
       </Button>
-      {props.button}
+        {props.button}
     </Form.Item>
   </Form>
 );

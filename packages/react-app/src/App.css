@@ -28,14 +28,14 @@
   color: #61dafb;
 }
 
-.navbar-content{
+.navbar-content {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100%;
 }
 
-.footer{
+.footer {
   padding: 20px;
   text-align: center;
 }
@@ -45,4 +45,26 @@
   justify-content: center;
   align-items: center;
   height: fit-content;
+}
+
+container4 {
+  height: 10em;
+  position: relative
+}
+
+container4 p {
+  margin: 0;
+  background: yellow;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%)
+}
+
+.context-center {
+  width: 100%;
+  border: 1px solid #2d2d2d;
+  display: flex;
+  justify-content: center;
 }

@@ -3,13 +3,9 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
-import MyFooter from './components/Footer';
 import reportWebVitals from './reportWebVitals';
-import { Layout } from 'antd';
 import MyNavbar from './components/myNavbar'
-import { BrowserRouter } from 'react-router-dom';
-
-const { Footer } = Layout;
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -24,9 +20,7 @@ root.render(
     </head>
     <BrowserRouter>
       <MyNavbar />
-      <div className='asd'>
-        <App />
-      </div>
+      <App />
     </BrowserRouter>
     {/* <MyFooter/> */}
   </React.StrictMode>

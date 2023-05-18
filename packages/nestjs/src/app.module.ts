@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import "reflect-metadata";
@@ -15,10 +15,13 @@ import { Achievements } from './typeorm/entities/achievements';
 import { UserAchievements } from './typeorm/entities/userAchievements';
 import { MatchHistories } from './typeorm/entities/matchHistories';
 import { FriendsModule } from './friends/friends.module';
-import { AuthModule } from './auth/auth.module';
-import { PassportModule } from '@nestjs/passport';
+
 import { AchievementsModule } from './achievements/achievements.module';
-import { APP_FILTER } from '@nestjs/core';
+import { PassportModule } from '@nestjs/passport';
+
+import { APP_GUARD } from '@nestjs/core';
+import { LocalAuthModule } from './auth/local-auth/local-auth.module';
+import { AuthModule } from './auth/Google/auth.module';
 
 
 @Module({
@@ -31,7 +34,9 @@ import { APP_FILTER } from '@nestjs/core';
 	database: 'postgres',
 	entities: [User, Friend, Stats, Achievements, UserAchievements, MatchHistories],
 	synchronize: true,
-  }), UsersModule, StatsModule, MatchHistoriesModule, UserAchievementsModule, FriendsModule, AuthModule, PassportModule.register({session:true}), AchievementsModule],
+  }), 
+  UsersModule, StatsModule, MatchHistoriesModule, UserAchievementsModule, FriendsModule, AuthModule, 
+  PassportModule.register({session:true}), AchievementsModule, LocalAuthModule],
   controllers: [AppController],
   providers: [AppService],
 })

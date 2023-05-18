@@ -5,19 +5,18 @@ import { CreateFriendsParam } from 'src/friends/utils/type';
 import { Friend } from 'src/typeorm/entities/friends';
 import { User } from 'src/typeorm/entities/users';
 import { SerializedUser } from 'src/users/dtos/UserMapper';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, Like, Repository } from 'typeorm';
 
 @Injectable()
 export class FriendsService {
-	private userRepository;
+	private userRepository:any;
 	constructor(@InjectRepository(Friend) private friendRepository: Repository<Friend>,
 	private readonly dataSource : DataSource){
 		this.userRepository = dataSource.getRepository(User);
 	}
 
 	async getFriends(user : any){
-		if (!user) return;
-		const friends = await this.friendRepository.find({where:{user:user.Id}, relations:['friend']});
+		const friends = await this.friendRepository.find({where:{user:user}, relations:['friend']});
 		return friends.map((fir)=>plainToClass(SerializedUser, fir.friend));
 	}
 
@@ -31,11 +30,12 @@ export class FriendsService {
 		  return friends.map((temp)=>plainToClass(SerializedUser, temp.friend));
 	}
 
-	async getFriendByName(name:string){
-		const user = await this.userRepository.findOneBy({FirstName:name});
-		if (!user) return;
-		const friend = await this.friendRepository.findOne({where:{user:user}, relations:['friend']});
-		return friend;
+	async getFriendByName(name:string, user: any){
+		// if (!user) throw new HttpException('Not Authanticated', HttpStatus.UNAUTHORIZED);
+		const friend = await this.userRepository.findOneBy({FirstName:name});
+		if (!friend || friend === undefined)
+			return null;
+		return await this.friendRepository.findOne({where:{user:user}, relations:['friend']});
 	}
 
 	async addFriend(user:any, friendLogin:string){

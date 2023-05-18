@@ -12,23 +12,19 @@ export class GoogleStrategy extends PassportStrategy(Strategy){
 			clientSecret: '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',
 			callbackURL: 'http://localhost:3000/auth/google/redirect',
 			scope: ['profile', 'email'],
-			// accessType: 'offline',
 		});
 	}
 
 	async validate(accessToken: any, refreshToken: string, profile: Profile){
-		console.log("accesstoken " + accessToken);
-		console.log(refreshToken);
-		console.log(profile);
-		const user = await this.authService.validateUser({
+		// console.log("accesstoken " + accessToken);
+		// console.log(refreshToken);
+		// console.log(profile);
+		return await this.authService.validateUser({
 			FirstName: profile.name.givenName,
 			LastName: profile.name.familyName,
 			Email: profile.emails[0].value,
 			Login: profile.emails[0].value.split("@").at(0),
-			Password: "generateRandomString(30)1_A..."
+			Password: "Aasdas123123_123123.!"
 			});
-		return user;
 	}
 }
-//denizkarhann@gmail.com
-//m.haksal@gmail.com cetn.abd@gmail.com

@@ -4,6 +4,8 @@ import { AppModule } from './app.module';
 import * as session from 'express-session';
 import * as passport from 'passport';
 
+
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {cors:true});
   app.use(session({
@@ -26,7 +28,7 @@ async function bootstrap() {
 	origin: [
 	  'http://localhost:3000',
 	],
-	methods: ["GET", "POST", "PUT"],
+	methods: ["GET", "POST"],
 	credentials: true,
   });
   app.use(passport.initialize());

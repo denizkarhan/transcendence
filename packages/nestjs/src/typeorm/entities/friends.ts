@@ -9,7 +9,7 @@ export class Friend{
 
 	@ManyToOne(()=>User, (User) => User.friend)
 	@JoinColumn()
-	user: number;
+	user: User;
 	
 	@ManyToOne(()=>User, (User) => User.friend)
 	@JoinColumn()

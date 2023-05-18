@@ -11,7 +11,7 @@ export class MatchHistories{
 	User: User;
 
 	@ManyToOne(()=>User, (user) => user.MatchHistory)
-	Enemy:number;
+	Enemy:User;
 
 	@Column()
 	MyResult:number;

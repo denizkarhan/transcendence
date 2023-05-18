@@ -25,10 +25,10 @@ export class StatsService {
             const lose = await this.matchRepository.findAndCount({where:{User:user, MatchResult:2}});
             const winC = win[1];
             const loseC = lose[1];
-            console.log('Kazanılan Maçlar:');
-            console.log(winC);
-            console.log('Kaybedilen Maçlar:');
-            console.log(loseC);
+            // console.log('Kazanılan Maçlar:');
+            // console.log(winC);
+            // console.log('Kaybedilen Maçlar:');
+            // console.log(loseC);
             stats.User = user;
             stats.WinCount = winC;
             stats.LoseCount = loseC;

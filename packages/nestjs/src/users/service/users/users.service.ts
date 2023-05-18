@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Request } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToClass } from 'class-transformer';
 import { User } from 'src/typeorm/entities/users';
@@ -18,10 +18,10 @@ export class UsersService {
 	}
 
 	async getUserByEmail(email:string){
-		return await this.userRepository.findOne({where: {Email:email}});
+		return await this.userRepository.findOneBy({Email:email});
 	}
-	
-	async getUserByName(name:string){
+
+	async getUserByLogin(name:string){
 		return await this.userRepository.findOneBy({Login:name});
 	}
 
@@ -41,10 +41,17 @@ export class UsersService {
 		return this.userRepository.save(newUser);
 	}
 
-	updateUser(login:string, userDetail: UpdateUserParams)
+	async updateUser(userDetail: UpdateUserParams, user:any)
 	{
-		return this.userRepository.update({Login:login},{...userDetail});
+		const newUser = await this.userRepository.findOneBy({Login:user.Login});
+		const updatedUser= this.userRepository.update(newUser, {...userDetail});
+		if (updatedUser)
+			return true;
+		return false;
 	}
 
 }
 
+// {"username":"aceitn", "password":"qwer!'^!'^SDFSDFSDF."}
+// {"FirstName":"Alooo", "LastName":"yaram", "Password":"qwer!'^!'^SDFSDFSDF.", "Email":"asd@asd.com" }
+// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFjZWl0biIsInN1YiI6MSwiaWF0IjoxNjg0NDE0MTEzLCJleHAiOjE2ODQ0MTUwMTN9.6DYXSP0CpyQGROVoEXDIdwsCO223aq674gpLPR1ZS4Y

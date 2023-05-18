@@ -68,3 +68,19 @@ container4 p {
   display: flex;
   justify-content: center;
 }
+
+.asd {
+  width: 30%;
+  height: 100px;
+  /* Center vertically and horizontally */
+  position: absolute;
+  top: 20%;
+  left: 35%;
+  margin: -25px 0 0 -25px;
+}
+
+.fot{
+  top: 80%;
+  left: 35%;
+  margin: 45% 0 0 -25px;
+}

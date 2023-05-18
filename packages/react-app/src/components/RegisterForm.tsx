@@ -6,6 +6,7 @@ import {
 } from 'antd';
 import React from 'react';
 import axios from 'axios';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 
 const formItemLayout = {
@@ -32,25 +33,27 @@ const tailFormItemLayout = {
   },
 };
 
-interface ChildProps {
-  button: React.ReactNode;
-}
 
-const App: React.FC<ChildProps> = (props) => {
+const App: React.FC = () => {
   const [form] = Form.useForm();
+  const navigate = useNavigate();
 
   const onFinish = (values: any) => {
     // console.log('Received values of form: ', values);
     axios.post('http://localhost:3001/users', values);
     return (
       <Alert
-      message="Error Text"
-      description="Error Description"
-      type='error'
-      closable
+        message="Error Text"
+        description="Error Description"
+        type='error'
+        closable
       />
     );
   };
+
+  const handleClick = () => {
+    navigate("/signin");
+  }
 
   return (
     <Form
@@ -61,31 +64,31 @@ const App: React.FC<ChildProps> = (props) => {
       style={{ maxWidth: 600 }}
       scrollToFirstError
     >
-			<Form.Item
-				name="Login"
-				label="Nickname"
-				tooltip="What do you want others to call you?"
-				rules={[{ required: true, message: 'Please input your nickname!', whitespace: true }]}
-			>
-				<Input />
-			</Form.Item>
-			<Form.Item
-				name="FirstName"
-				label="FirstName"
-				rules={[{ required: true, message: 'Please input your first name!'}]}
-			>
-				<Input/>
-			</Form.Item>
-      
-			<Form.Item
-				name="LastName"
-				label="LastName"
-				rules={[{ required: true, message: 'Please input your last name!'}]}
-			>
-				<Input/>
-			</Form.Item>
-			
-			<Form.Item
+      <Form.Item
+        name="Login"
+        label="Nickname"
+        tooltip="What do you want others to call you?"
+        rules={[{ required: true, message: 'Please input your nickname!', whitespace: true }]}
+      >
+        <Input />
+      </Form.Item>
+      <Form.Item
+        name="FirstName"
+        label="FirstName"
+        rules={[{ required: true, message: 'Please input your first name!' }]}
+      >
+        <Input />
+      </Form.Item>
+
+      <Form.Item
+        name="LastName"
+        label="LastName"
+        rules={[{ required: true, message: 'Please input your last name!' }]}
+      >
+        <Input />
+      </Form.Item>
+
+      <Form.Item
         name="Email"
         label="E-mail"
         rules={[
@@ -99,7 +102,7 @@ const App: React.FC<ChildProps> = (props) => {
           },
         ]}
       >
-        <Input/>
+        <Input />
       </Form.Item>
 
       <Form.Item
@@ -127,11 +130,11 @@ const App: React.FC<ChildProps> = (props) => {
             message: 'Please confirm your password!',
           },
           ({ getFieldValue }) => ({
-            validator(_, value) {							
-							if (!value || getFieldValue('Password') === value) {
+            validator(_, value) {
+              if (!value || getFieldValue('Password') === value) {
                 return Promise.resolve();
               }
-            	return Promise.reject(new Error('The two passwords that you entered do not match!'));
+              return Promise.reject(new Error('The two passwords that you entered do not match!'));
             },
           }),
         ]}
@@ -142,7 +145,9 @@ const App: React.FC<ChildProps> = (props) => {
         <Button type="primary" htmlType="submit" >
           Register
         </Button>
-        {props.button}
+        <Button type="ghost" onClick={handleClick}>
+          Login
+        </Button>
       </Form.Item>
     </Form>
   );

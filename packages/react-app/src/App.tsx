@@ -1,20 +1,18 @@
 import React from 'react';
 import './App.css';
-import Auth from './components/Auth'
-// import { Button } from 'antd';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-// import Navbar from './components/MyNavbar'
 import Home from './components/Home'
-// import { JsxEmit, JsxFlags } from 'typescript';
+import Profile from './components/Profile'
+import LoginForm from './components/LoginForm'
+import RegisterForm from './components/RegisterForm'
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home/>}>
-          <Route path="auth" element={<Auth/>}></Route>
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <Routes>
+      <Route path="home" element={<Home/>}></Route>
+      <Route path="signin" element={<LoginForm/>}></Route>
+      <Route path="signup" element={<RegisterForm/>}></Route>
+      <Route path="profile" element={<Profile/>}></Route>
+    </Routes>
   );
 }

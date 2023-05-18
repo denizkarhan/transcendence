@@ -1,0 +1,9 @@
+FROM node:alpine
+
+WORKDIR /app
+COPY package.json .
+RUN npm install -g @nestjs/cli && npm i express-session && npm i -D @types/express-session
+RUN npm install
+COPY . .
+
+CMD ["npm", "run", "start:dev"]

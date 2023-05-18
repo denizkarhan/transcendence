@@ -3,6 +3,7 @@ import { Friend } from "./friends";
 import { MatchHistories } from "./matchHistories";
 import { UserAchievements } from "./userAchievements";
 import { IsNotEmpty } from "class-validator";
+import { Blocks } from "./blocks";
 
 @Entity({name: 'users'})
 export class User{
@@ -41,4 +42,7 @@ export class User{
 
 	@OneToMany(()=> UserAchievements, (UserAchievement)=> UserAchievement.User)
 	UserAchievement : UserAchievements[];
+
+	@OneToMany(()=> Blocks, (Blocks)=> Blocks.blockedUser)
+	Blocks: Blocks[];
 }

@@ -1,4 +1,4 @@
-
+import { IsEmail, IsIdentityCard, IsNotEmpty, IsStrongPassword } from "class-validator";
 export type CreateUserParams = {
 
 	FirstName: string;
@@ -25,6 +25,9 @@ export type GetterUserParams = {
 }
 
 export type UpdateUserParams = {
+
+	Login: string;
+
 	FirstName: string;
 	
 	LastName: string;

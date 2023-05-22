@@ -6,7 +6,7 @@ import { GoogleAuthService } from "../service/google-auth.service";
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy){
-	constructor(@Inject('AUTH_SERVICE') private readonly authService: GoogleAuthService){
+	constructor(private readonly authService: GoogleAuthService){
 		super({
 			clientID: '421386662224-rrhk0f2lksmkt753ho7hr6gjlc3geqq7.apps.googleusercontent.com',
 			clientSecret: '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',

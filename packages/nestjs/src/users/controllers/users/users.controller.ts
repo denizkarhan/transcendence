@@ -40,7 +40,7 @@ export class UsersController {
 	@UseFilters(ExceptionHandleFilter)
 	@UseInterceptors(ClassSerializerInterceptor)
 	async getUserById(@Param('id') id: number) {
-		const user = await this.userService.getUserById(id);
+		const user = await this.userService.findById(id);
 		if (!user) throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
 		return new SerializedUser(user);
 	}
@@ -53,15 +53,15 @@ export class UsersController {
 	}
 
 	@Post('update')
-	@UsePipes(new ValidationPipe())
 	@UseFilters(ExceptionHandleFilter)
 	@ApiBody({}) // Body parametresi için Swagger açıklaması
 	async updateUser(@Body() userDetail : UpdateUserParams, @Req() request: Request)
 	{
-		const if_update = await this.userService.updateUser(userDetail, request.user);
-		if (if_update)
-			return {msg:"Successfully", status: 200};
-		throw new HttpException('Eksik Birşeyler var hayatında', HttpStatus.FORBIDDEN);
+		return {msg: "HELLÖÖÖÖÖÖ"};
+		// const if_update = await this.userService.updateUser(userDetail, request.user);
+		// if (if_update)
+		// 	return {msg:"Successfully", status: 200};
+		// throw new HttpException('Eksik Birşeyler var hayatında', HttpStatus.FORBIDDEN);
 	}
 
 

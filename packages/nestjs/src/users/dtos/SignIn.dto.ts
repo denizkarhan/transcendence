@@ -2,7 +2,7 @@ import { IsNotEmpty, IsStrongPassword } from "class-validator";
 
 export class SignInDto{
 	@IsNotEmpty()
-	Email:string;
+	Login:string;
 
 	@IsNotEmpty()
 	@IsStrongPassword()

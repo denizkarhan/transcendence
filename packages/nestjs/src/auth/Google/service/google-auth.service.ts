@@ -1,12 +1,14 @@
 import { Injectable} from '@nestjs/common';
-import { IAuthService } from 'src/auth/IAuthService';
+import { AuthService } from 'src/auth/AuthService';
 import { CreateUserDto } from 'src/users/dtos/CreateUser.dto';
 import { UsersService } from 'src/users/service/users/users.service';
 
 @Injectable()
-export class GoogleAuthService implements IAuthService{
+export class GoogleAuthService extends AuthService{
 
-	constructor(private userService: UsersService){}
+	constructor(protected userService: UsersService){
+		super(userService);
+	}
 
 	async validateUser(details: CreateUserDto){
 		const user = await this.userService.getUserByEmail(details.Email);
@@ -14,7 +16,7 @@ export class GoogleAuthService implements IAuthService{
 		return this.userService.createUser(details);
 	}
 
-	async findUser(id :number){
-		return await this.userService.getUserById(id);
-	}
+	// async findUser(id :number){
+	// 	return await this.userService.getUserById(id);
+	// }
 }

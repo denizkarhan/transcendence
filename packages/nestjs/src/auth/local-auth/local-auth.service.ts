@@ -1,15 +1,12 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users/service/users/users.service';
-import { IAuthService } from '../IAuthService';
+import { AuthService } from '../AuthService';
 
 @Injectable()
-export class LocalAuthService implements IAuthService{
-	constructor(private userService: UsersService, private jwtService: JwtService){
-	}
-
-	async findUser(id :number){
-		return await this.userService.getUserById(id);
+export class LocalAuthService extends AuthService{
+	constructor(protected userService: UsersService, private jwtService: JwtService){
+		super(userService);
 	}
 
 	async validateUser(username: string, pass: string): Promise<any> {

@@ -10,7 +10,7 @@ import { SignInDto } from './users/dtos/SignIn.dto';
 export class AppController {
   constructor(private readonly appService: AppService, private authService: LocalAuthService) {}
 
-  @Get('/hello')
+  @Get('/')
   getHello(): string {
     return this.appService.getHello();
   }

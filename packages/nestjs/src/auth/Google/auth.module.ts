@@ -4,16 +4,13 @@ import { GoogleStrategy } from './utils/GoogleStrategy';
 import { SesssionSerialaize } from '../utils/Serialaizer';
 import { UsersModule } from 'src/users/users.module';
 import { GoogleAuthService } from './service/google-auth.service';
+import { AuthService } from '../AuthService';
 
 @Module({
 	imports:[UsersModule],
 	controllers: [AuthController],
-	providers: [GoogleStrategy,
-		SesssionSerialaize,
-		{
-			provide: 'AUTH_SERVICE',
-			useClass: GoogleAuthService,
-		}]
+	providers: [GoogleAuthService, GoogleStrategy],
+	exports: [GoogleAuthService]
 
 })
 export class AuthModule {}

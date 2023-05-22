@@ -21,6 +21,7 @@ import { PassportModule } from '@nestjs/passport';
 
 import { LocalAuthModule } from './auth/local-auth/local-auth.module';
 import { AuthModule } from './auth/Google/auth.module';
+import { SesssionSerialaize } from './auth/utils/Serialaizer';
 
 
 @Module({
@@ -37,7 +38,7 @@ import { AuthModule } from './auth/Google/auth.module';
   UsersModule, StatsModule, MatchHistoriesModule, UserAchievementsModule, FriendsModule, AuthModule, 
   PassportModule.register({session:true}), AchievementsModule, LocalAuthModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, SesssionSerialaize],
 })
 
 export class AppModule{}

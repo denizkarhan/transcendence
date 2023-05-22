@@ -1,10 +1,12 @@
 import { Body, ClassSerializerInterceptor, Controller, Get, HttpException, HttpStatus, NotFoundException, Param, Post, UseFilters, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { ExceptionHandleFilter } from 'src/exception-handle/exception-handle.filter';
 import { CreateUserDto } from 'src/users/dtos/CreateUser.dto';
 import { SerializedUser } from 'src/users/dtos/UserMapper';
 import { UsersService } from 'src/users/service/users/users.service';
 
 @Controller('users')
+@ApiTags('users')
 export class UsersController {
 
 	constructor(private userService: UsersService){}

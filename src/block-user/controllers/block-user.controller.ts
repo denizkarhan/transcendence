@@ -1,4 +1,5 @@
 import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, UseFilters } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { ExceptionHandleFilter } from 'src/exception-handle/exception-handle.filter';
 import { UsersService } from 'src/users/service/users/users.service';
 import { BlockUserDto } from '../dtos/block-user.dto';
@@ -6,6 +7,7 @@ import { UnBlockUserDto } from '../dtos/unblock-user.dto';
 import { BlockUserService } from '../services/block-user.service';
 
 @Controller('block-user')
+@ApiTags('block-user')
 export class BlockUserController {
 
     constructor(private userService: UsersService, private blockUserService: BlockUserService) {}

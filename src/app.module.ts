@@ -21,6 +21,7 @@ import { AchievementsModule } from './achievements/achievements.module';
 import { APP_FILTER } from '@nestjs/core';
 import { BlockUserModule } from './block-user/block-user.module';
 import { Blocks } from './typeorm/entities/blocks';
+import { UploadsModule } from './uploads/uploads.module';
 
 
 @Module({
@@ -28,12 +29,12 @@ import { Blocks } from './typeorm/entities/blocks';
 	type: 'postgres',
 	host: 'localhost',
 	port: 5432,
-	username: 'furkan',
-	password: 'furkan123',
-	database: 'furkan',
+	username: 'ftuncer',
+	password: '1',
+	database: 'ftuncer',
 	entities: [User, Friend, Stats, Achievements, UserAchievements, MatchHistories, Blocks],
 	synchronize: true,
-  }), UsersModule, StatsModule, MatchHistoriesModule, UserAchievementsModule, FriendsModule, AuthModule, PassportModule.register({session:true}), AchievementsModule, BlockUserModule],
+  }), UsersModule, StatsModule, MatchHistoriesModule, UserAchievementsModule, FriendsModule, AuthModule, PassportModule.register({session:true}), AchievementsModule, BlockUserModule, UploadsModule],
   controllers: [AppController],
   providers: [AppService],
 })

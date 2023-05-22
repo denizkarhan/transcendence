@@ -4,8 +4,10 @@ import { CreateFriendDto } from 'src/friends/dto/CreateFriend.dto';
 import { FriendsService } from 'src/friends/service/friends/friends.service';
 import { SerializedUser } from 'src/users/dtos/UserMapper';
 import { Request } from 'express';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('friends')
+@ApiTags('friends')
 export class FriendsController {
 
 	constructor(private friendService: FriendsService){}

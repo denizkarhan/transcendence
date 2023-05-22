@@ -1,4 +1,5 @@
 import { Body, ClassSerializerInterceptor, Controller, Get, HttpException, HttpStatus, Param, Post, UseFilters, UseInterceptors } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { AchievementsService } from 'src/achievements/service/achievements/achievements.service';
 import { ExceptionHandleFilter } from 'src/exception-handle/exception-handle.filter';
 import { UserAchievementDto } from 'src/user-achievements/dtos/user-achievements.dto';
@@ -6,6 +7,7 @@ import { UserAchievementsService } from 'src/user-achievements/services/user-ach
 import { UsersService } from 'src/users/service/users/users.service';
 
 @Controller('user-achievements')
+@ApiTags('user-achievements')
 export class UserAchievementsController {
 
     constructor(private userService: UsersService, private userAchievementsService: UserAchievementsService, private achievementsService: AchievementsService,) {}

@@ -19,7 +19,6 @@ import { FriendsModule } from './friends/friends.module';
 import { AchievementsModule } from './achievements/achievements.module';
 import { PassportModule } from '@nestjs/passport';
 
-import { APP_GUARD } from '@nestjs/core';
 import { LocalAuthModule } from './auth/local-auth/local-auth.module';
 import { AuthModule } from './auth/Google/auth.module';
 
@@ -27,11 +26,11 @@ import { AuthModule } from './auth/Google/auth.module';
 @Module({
   imports: [TypeOrmModule.forRoot({
 	type: 'postgres',
-	host: 'localhost',
+	host: 'postgres',
 	port: 5432,
 	username: 'postgres',
-	password: '1',
-	database: 'ft_transcendence',
+	password: 'example',
+	database: 'postgres',
 	entities: [User, Friend, Stats, Achievements, UserAchievements, MatchHistories],
 	synchronize: true,
   }), 

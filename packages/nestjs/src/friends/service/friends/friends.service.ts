@@ -31,7 +31,6 @@ export class FriendsService {
 	}
 
 	async getFriendByName(name:string, user: any){
-		// if (!user) throw new HttpException('Not Authanticated', HttpStatus.UNAUTHORIZED);
 		const friend = await this.userRepository.findOneBy({FirstName:name});
 		if (!friend || friend === undefined)
 			return null;

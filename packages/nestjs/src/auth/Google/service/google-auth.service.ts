@@ -1,9 +1,10 @@
 import { Injectable} from '@nestjs/common';
+import { IAuthService } from 'src/auth/IAuthService';
 import { CreateUserDto } from 'src/users/dtos/CreateUser.dto';
 import { UsersService } from 'src/users/service/users/users.service';
 
 @Injectable()
-export class AuthService {
+export class GoogleAuthService implements IAuthService{
 
 	constructor(private userService: UsersService){}
 

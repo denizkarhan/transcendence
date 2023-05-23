@@ -7,7 +7,6 @@ import { UpdateUserParams } from 'src/users/utils/types';
 
 @Controller('auth')
 export class AuthController {
-	constructor(private userService: UsersService){}
 
 	@Get('google/login')
 	@UseGuards(GoogleAuthGuard)
@@ -17,7 +16,7 @@ export class AuthController {
 
 	@UseGuards(GoogleAuthGuard)
 	@Get('google/redirect')
-	async handleRedirect(@Body() signIn: SignInDto, @Req() request: Request) {
+	async handleRedirect() {
 		return {msg: 'OK'};
 	}
 

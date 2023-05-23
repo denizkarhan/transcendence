@@ -1,12 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users/service/users/users.service';
-import { AuthService } from '../AuthService';
 
 @Injectable()
-export class LocalAuthService extends AuthService{
-	constructor(protected userService: UsersService, private jwtService: JwtService){
-		super(userService);
+export class LocalAuthService{
+	constructor(private userService: UsersService, private jwtService: JwtService){
 	}
 
 	async validateUser(username: string, pass: string): Promise<any> {

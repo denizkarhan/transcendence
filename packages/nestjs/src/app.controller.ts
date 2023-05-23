@@ -20,10 +20,4 @@ export class AppController {
   async login(@Body() signDto : SignInDto) {
     return this.authService.login(signDto);
   }
-
-//   @UseGuards(JwtAuthGuard)
-//   @Get('profile')
-//   getProfile(@Request() req) {
-//     return req.user;
-//   }
 }

@@ -6,7 +6,7 @@ import { UsersService } from "src/users/service/users/users.service";
 
 
 export class SesssionSerialaize extends PassportSerializer{
-	constructor( @Inject(UsersService) private readonly userService: UsersService,){
+	constructor(@Inject(UsersService) private readonly userService: UsersService,){
 		super();
 	}
 

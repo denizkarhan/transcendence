@@ -22,6 +22,7 @@ import { LocalAuthModule } from './auth/local-auth/local-auth.module';
 import { AuthModule } from './auth/Google/auth.module';
 import { SesssionSerialaize } from './auth/utils/Serialaizer';
 import { FtAuthModule } from './auth/ft-auth/ft-auth.module';
+import { AuthanticaterModule } from './auth/authanticater/authanticater.module';
 
 
 @Module({
@@ -36,7 +37,7 @@ import { FtAuthModule } from './auth/ft-auth/ft-auth.module';
 	synchronize: true,
   }), 
   UsersModule, StatsModule, MatchHistoriesModule, UserAchievementsModule, FriendsModule, AuthModule, 
-  PassportModule.register({session:true}), AchievementsModule, LocalAuthModule, FtAuthModule],
+  PassportModule.register({session:true}), AchievementsModule, LocalAuthModule, FtAuthModule, AuthanticaterModule],
   controllers: [AppController],
   providers: [AppService, SesssionSerialaize],
 })

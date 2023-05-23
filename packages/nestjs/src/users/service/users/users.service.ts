@@ -6,6 +6,7 @@ import { UpdateUserDto } from 'src/users/dtos/UpdateUserDto';
 import { SerializedUser } from 'src/users/dtos/UserMapper';
 import { CreateUserParams, UpdateUserParams } from 'src/users/utils/types';
 import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -37,6 +38,8 @@ export class UsersService {
 			UpdatedAt : new Date(),
 			Status: 0,
 		});
+		const saltOrRounds = await bcrypt.genSalt();
+		newUser.Password = await bcrypt.hash(newUser.Password, saltOrRounds);
 		if (await this.userRepository.exist({where: {Email: newUser.Email, Login: newUser.Login}}))
 			throw new HttpException('user exist', HttpStatus.FOUND);
 		return this.userRepository.save(newUser);

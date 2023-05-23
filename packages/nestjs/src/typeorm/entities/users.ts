@@ -1,4 +1,4 @@
-import { Column, Entity, NumericType, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, BeforeUpdate, Column, Entity, NumericType, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Friend } from "./friends";
 import { MatchHistories } from "./matchHistories";
 import { UserAchievements } from "./userAchievements";
@@ -33,7 +33,7 @@ export class User{
 	@Column()
 	UpdatedAt: Date;
 
-	@OneToMany(()=> Friend, (friend)=> friend.friend)
+	@OneToMany(()=> Friend, (friend)=> friend.user)
 	friend : Friend[];
 
 	@OneToMany(()=> MatchHistories, (MatchHistory)=> MatchHistory.User)
@@ -41,4 +41,5 @@ export class User{
 
 	@OneToMany(()=> UserAchievements, (UserAchievement)=> UserAchievement.User)
 	UserAchievement : UserAchievements[];
+
 }

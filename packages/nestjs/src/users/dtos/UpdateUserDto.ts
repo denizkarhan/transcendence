@@ -11,6 +11,6 @@ export class UpdateUserDto {
 	@IsEmail()
 	Email: string;
 
-	@IsStrongPassword()
-	Password:string;
+	// @IsStrongPassword()
+	// Password:string;
 }

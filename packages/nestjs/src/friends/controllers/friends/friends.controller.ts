@@ -5,9 +5,11 @@ import { FriendsService } from 'src/friends/service/friends/friends.service';
 import { SerializedUser } from 'src/users/dtos/UserMapper';
 import { AuthenticatedGuard } from 'src/auth/local-auth/authenticated.guard';
 import { LocalAuthGuard } from 'src/auth/local-auth/local-auth.guard';
+import { ApiTags } from '@nestjs/swagger';
 
 @UseGuards(AuthenticatedGuard)
 @Controller('friends')
+@ApiTags('friends')
 export class FriendsController {
 
 	constructor(private friendService: FriendsService){}

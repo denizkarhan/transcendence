@@ -16,7 +16,7 @@ export class FriendsService {
 	}
 
 	async getFriends(user : any){
-		const friends = await this.friendRepository.find({where:{user:user}, relations:['friend']});
+		const friends = await this.friendRepository.find({where:{user:user}, relations:['Friend']});
 		return friends.map((fir)=>plainToClass(SerializedUser, fir.friend));
 	}
 
@@ -25,7 +25,7 @@ export class FriendsService {
 		const myFriend = await this.userRepository.findOneBy({Id:friendId});
 		const friends = await this.friendRepository.find({
 			where: {user:user, friend:myFriend },
-			relations: ['friend'],
+			relations: ['Friend'],
 		  }); 
 		  return friends.map((temp)=>plainToClass(SerializedUser, temp.friend));
 	}
@@ -34,7 +34,7 @@ export class FriendsService {
 		const friend = await this.userRepository.findOneBy({FirstName:name});
 		if (!friend || friend === undefined)
 			return null;
-		return await this.friendRepository.findOne({where:{user:user}, relations:['friend']});
+		return await this.friendRepository.findOne({where:{user:user}, relations:['Friend']});
 	}
 
 	async addFriend(user:any, friendLogin:string){

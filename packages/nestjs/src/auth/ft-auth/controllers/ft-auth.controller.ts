@@ -1,7 +1,9 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { FtAuthGuard } from '../utils/ft-auth.guard';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('ft-auth')
+@ApiTags('ft-auth')
 export class FtAuthController {
 
 	@Get('/login')

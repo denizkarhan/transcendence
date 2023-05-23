@@ -22,21 +22,26 @@ import { LocalAuthModule } from './auth/local-auth/local-auth.module';
 import { AuthModule } from './auth/Google/auth.module';
 import { SesssionSerialaize } from './auth/utils/Serialaizer';
 import { FtAuthModule } from './auth/ft-auth/ft-auth.module';
+import { AuthanticaterModule } from './auth/authanticater/authanticater.module';
+import { Blocks } from './typeorm/entities/blocks';
+import { Avatar } from './typeorm/entities/avatar';
+import { BlockUserModule } from './block-user/block-user.module';
+import { UploadsModule } from './uploads/uploads.module';
 
 
 @Module({
   imports: [TypeOrmModule.forRoot({
 	type: 'postgres',
-	host: 'localhost',
-	port: 5433,
+	host: 'postgres',
+	port: 5432,
 	username: 'postgres',
-	password: '1',
-	database: 'ft_transcendence',
-	entities: [User, Friend, Stats, Achievements, UserAchievements, MatchHistories],
+	password: 'example',
+	database: 'postgres',
+	entities: [User, Friend, Stats, Achievements, UserAchievements, MatchHistories, Blocks, Avatar],
 	synchronize: true,
   }), 
   UsersModule, StatsModule, MatchHistoriesModule, UserAchievementsModule, FriendsModule, AuthModule, 
-  PassportModule.register({session:true}), AchievementsModule, LocalAuthModule, FtAuthModule],
+  PassportModule.register({session:true}), AchievementsModule, LocalAuthModule, FtAuthModule, AuthanticaterModule,  BlockUserModule, UploadsModule],
   controllers: [AppController],
   providers: [AppService, SesssionSerialaize],
 })

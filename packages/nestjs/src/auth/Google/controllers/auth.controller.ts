@@ -4,8 +4,10 @@ import { GoogleAuthGuard } from '../utils/Guards';
 import { SignInDto } from 'src/users/dtos/SignIn.dto';
 import { UsersService } from 'src/users/service/users/users.service';
 import { UpdateUserParams } from 'src/users/utils/types';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('auth')
+@ApiTags('google-auth')
 export class AuthController {
 
 	@Get('google/login')

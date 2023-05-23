@@ -7,11 +7,11 @@ export class Friend{
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@ManyToOne(()=>User, (User) => User.friend)
+	@ManyToOne(()=>User, (User) => User.Friend)
 	@JoinColumn()
 	user: User;
 	
-	@ManyToOne(()=>User, (User) => User.friend)
+	@ManyToOne(()=>User, (User) => User.Friend)
 	@JoinColumn()
 	friend: User;
 

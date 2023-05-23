@@ -1,8 +1,9 @@
-import { Column, Entity, NumericType, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, BeforeUpdate, Column, Entity, NumericType, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Friend } from "./friends";
 import { MatchHistories } from "./matchHistories";
 import { UserAchievements } from "./userAchievements";
 import { IsNotEmpty } from "class-validator";
+import { Blocks } from "./blocks";
 
 @Entity({name: 'users'})
 export class User{
@@ -33,12 +34,16 @@ export class User{
 	@Column()
 	UpdatedAt: Date;
 
-	@OneToMany(()=> Friend, (friend)=> friend.friend)
-	friend : Friend[];
+	@OneToMany(()=> Friend, (friend)=> friend.user)
+	Friend : Friend[];
 
 	@OneToMany(()=> MatchHistories, (MatchHistory)=> MatchHistory.User)
 	MatchHistory : MatchHistories[];
 
 	@OneToMany(()=> UserAchievements, (UserAchievement)=> UserAchievement.User)
 	UserAchievement : UserAchievements[];
+
+	@OneToMany(()=> Blocks, (Blocks)=> Blocks.blockedUser)
+	Blocks: Blocks[];
+
 }

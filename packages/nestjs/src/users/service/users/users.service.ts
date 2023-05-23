@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable, Request } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToClass } from 'class-transformer';
 import { User } from 'src/typeorm/entities/users';
+import { UpdateUserDto } from 'src/users/dtos/UpdateUserDto';
 import { SerializedUser } from 'src/users/dtos/UserMapper';
 import { CreateUserParams, UpdateUserParams } from 'src/users/utils/types';
 import { Repository } from 'typeorm';
@@ -25,7 +26,7 @@ export class UsersService {
 		return await this.userRepository.findOneBy({Login:name});
 	}
 
-	async getUserById(id :number){
+	async findById(id :number){
 		return await this.userRepository.findOneBy({Id:id});
 	}
 
@@ -41,7 +42,7 @@ export class UsersService {
 		return this.userRepository.save(newUser);
 	}
 
-	async updateUser(userDetail: UpdateUserParams, user:any)
+	async updateUser(userDetail: UpdateUserDto, user:any)
 	{
 		const newUser = await this.userRepository.findOneBy({Login:user.Login});
 		const updatedUser= this.userRepository.update(newUser, {...userDetail});

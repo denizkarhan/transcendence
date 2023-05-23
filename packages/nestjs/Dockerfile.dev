@@ -1,9 +1,9 @@
-FROM node:alpine
+FROM node:18-buster
 
 WORKDIR /app
 COPY package.json .
-RUN npm install -g @nestjs/cli && npm i express-session && npm i -D @types/express-session
+RUN npm install -g @nestjs/cli
 RUN npm install
 COPY . .
 
-CMD ["npm", "run", "start:dev"]
+# CMD ["npm", "run", "start:dev"]

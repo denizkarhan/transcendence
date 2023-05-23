@@ -3,7 +3,7 @@ import { CreateUserDto } from 'src/users/dtos/CreateUser.dto';
 import { UsersService } from 'src/users/service/users/users.service';
 
 @Injectable()
-export class AuthService {
+export class GoogleAuthService{
 
 	constructor(private userService: UsersService){}
 
@@ -11,9 +11,5 @@ export class AuthService {
 		const user = await this.userService.getUserByEmail(details.Email);
 		if (user) return user;
 		return this.userService.createUser(details);
-	}
-
-	async findUser(id :number){
-		return await this.userService.getUserById(id);
 	}
 }

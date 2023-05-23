@@ -2,6 +2,7 @@ version: "3.5"
 
 services:
   nestjs:
+    container_name: nestjs
     build:
       context: ./packages/nestjs
       dockerfile: Dockerfile.dev
@@ -15,6 +16,7 @@ services:
     restart: always
 
   react_app:
+    container_name: react
     restart: always
     build:
       context: ./packages/react-app
@@ -28,6 +30,7 @@ services:
       - /app/node_modules
 
   postgres:
+    container_name: postgres
     restart: always
     image: postgres:13.1
     environment:
@@ -35,18 +38,18 @@ services:
     ports:
      - 5432:5432
 
-  redis:
-    restart: always
-    image: redis:6.2-rc1
-    environment:
-      REDIS_PASSWORD: password
+  # redis:
+  #   restart: always
+  #   image: redis:6.2-rc1
+  #   environment:
+  #     REDIS_PASSWORD: password
 
-  redis_commander:
-    image: rediscommander/redis-commander:latest
-    restart: always
-    environment:
-      - REDIS_HOSTS=local:redis:6379
-    ports:
-      - 8081:8081
-    depends_on:
-      - redis
+  # redis_commander:
+  #   image: rediscommander/redis-commander:latest
+  #   restart: always
+  #   environment:
+  #     - REDIS_HOSTS=local:redis:6379
+  #   ports:
+  #     - 8081:8081
+  #   depends_on:
+  #     - redis

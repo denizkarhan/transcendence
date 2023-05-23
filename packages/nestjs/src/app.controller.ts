@@ -10,7 +10,7 @@ import { SignInDto } from './users/dtos/SignIn.dto';
 export class AppController {
   constructor(private readonly appService: AppService, private authService: LocalAuthService) {}
 
-  @Get('/hello')
+  @Get('/')
   getHello(): string {
     return this.appService.getHello();
   }
@@ -20,10 +20,4 @@ export class AppController {
   async login(@Body() signDto : SignInDto) {
     return this.authService.login(signDto);
   }
-
-//   @UseGuards(JwtAuthGuard)
-//   @Get('profile')
-//   getProfile(@Request() req) {
-//     return req.user;
-//   }
 }

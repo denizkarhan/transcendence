@@ -14,14 +14,12 @@ export class FriendsController {
 
 	@Get('all')
 	@UseInterceptors(ClassSerializerInterceptor)
-	// @UseGuards(AuthenticatedGuard)
 	async getFriends(@Request() req){
 		return await this.friendService.getFriends(req.user);
 	}
 
 	@Get('byname/:firstname')
 	@UseInterceptors(ClassSerializerInterceptor)
-	// @UseGuards(AuthenticatedGuard)
 	async getFriendByName(@Param('firstname') firstname: string, @Request() req){
 		const friend = await this.friendService.getFriendByName(firstname, req.user);
 		if (!friend) throw new HttpException('Friend Not Found', HttpStatus.NOT_FOUND);

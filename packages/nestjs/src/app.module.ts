@@ -5,7 +5,6 @@ import "reflect-metadata";
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './typeorm/entities/users';
 import { UsersModule } from './users/users.module';
-// import { AchievementsModule } from './achievements/achievements.module';
 import { StatsModule } from './stats/stats.module';
 import { MatchHistoriesModule } from './match-histories/match-histories.module';
 import { UserAchievementsModule } from './user-achievements/user-achievements.module';
@@ -19,16 +18,17 @@ import { FriendsModule } from './friends/friends.module';
 import { AchievementsModule } from './achievements/achievements.module';
 import { PassportModule } from '@nestjs/passport';
 
-import { APP_GUARD } from '@nestjs/core';
 import { LocalAuthModule } from './auth/local-auth/local-auth.module';
 import { AuthModule } from './auth/Google/auth.module';
+import { SesssionSerialaize } from './auth/utils/Serialaizer';
+import { FtAuthModule } from './auth/ft-auth/ft-auth.module';
 
 
 @Module({
   imports: [TypeOrmModule.forRoot({
 	type: 'postgres',
 	host: 'localhost',
-	port: 5432,
+	port: 5433,
 	username: 'postgres',
 	password: '1',
 	database: 'ft_transcendence',
@@ -36,9 +36,9 @@ import { AuthModule } from './auth/Google/auth.module';
 	synchronize: true,
   }), 
   UsersModule, StatsModule, MatchHistoriesModule, UserAchievementsModule, FriendsModule, AuthModule, 
-  PassportModule.register({session:true}), AchievementsModule, LocalAuthModule],
+  PassportModule.register({session:true}), AchievementsModule, LocalAuthModule, FtAuthModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, SesssionSerialaize],
 })
 
 export class AppModule{}

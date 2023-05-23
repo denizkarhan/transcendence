@@ -1,21 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Image } from 'src/typeorm/entities/image';
 import { Repository } from 'typeorm';
+import { Avatar } from '../typeorm/entities/avatar'
 
 @Injectable()
 export class UploadsService {
-    // constructor(@InjectRepository(Image) private readonly imageRepository: Repository<Image>, ) {}
+    constructor(@InjectRepository(Avatar) private readonly avatarRepository: Repository<Avatar>, ) {}
 
-    // async getImage(id: number) {
-    //     return await this.imageRepository.findOneBy({ id });
-    // }
+    async getImage(id: number) {
+        return await this.avatarRepository.findOneBy({ id });
+    }
 
-    // async createImage(image: Image) {
-    //     return await this.imageRepository.save(image);
-    // }
+    async createImage(image: Avatar) {
+        return await this.avatarRepository.save(image);
+    }
 
-    // async deleteImage(id: number) {
-    //     return await this.imageRepository.delete(id);
-    // }
+    async deleteImage(id: Avatar) {
+        return await this.avatarRepository.delete(id);
+    }
 }

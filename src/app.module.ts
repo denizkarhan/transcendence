@@ -22,6 +22,7 @@ import { APP_FILTER } from '@nestjs/core';
 import { BlockUserModule } from './block-user/block-user.module';
 import { Blocks } from './typeorm/entities/blocks';
 import { UploadsModule } from './uploads/uploads.module';
+import { Avatar } from './typeorm/entities/avatar';
 
 
 @Module({
@@ -32,7 +33,7 @@ import { UploadsModule } from './uploads/uploads.module';
 	username: 'ftuncer',
 	password: '1',
 	database: 'ftuncer',
-	entities: [User, Friend, Stats, Achievements, UserAchievements, MatchHistories, Blocks],
+	entities: [User, Friend, Stats, Achievements, UserAchievements, MatchHistories, Blocks, Avatar],
 	synchronize: true,
   }), UsersModule, StatsModule, MatchHistoriesModule, UserAchievementsModule, FriendsModule, AuthModule, PassportModule.register({session:true}), AchievementsModule, BlockUserModule, UploadsModule],
   controllers: [AppController],

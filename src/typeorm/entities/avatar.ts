@@ -2,7 +2,7 @@ import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "ty
 import { User } from "./users";
 
 @Entity()
-export class Image {
+export class Avatar {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -12,4 +12,7 @@ export class Image {
 
     @Column()
     name: string;
+
+    @Column()
+    path: string;
 }

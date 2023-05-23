@@ -5,11 +5,12 @@ import { SerializedUser } from 'src/users/dtos/UserMapper';
 import { UsersService } from 'src/users/service/users/users.service';
 import { UpdateUserParams } from 'src/users/utils/types';
 import { Request } from 'express';
-import { ApiBody } from '@nestjs/swagger';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { AuthenticatedGuard } from 'src/auth/local-auth/authenticated.guard';
 
 
 @Controller('users')
+@ApiTags('users')
 export class UsersController {
 
 	constructor(private userService: UsersService){}

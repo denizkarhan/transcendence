@@ -5,8 +5,10 @@ import { ExceptionHandleFilter } from './exception-handle/exception-handle.filte
 import { LocalAuthService } from './auth/local-auth/local-auth.service';
 // import { JwtAuthGuard } from './auth/local-auth/jwt-auth.guard';
 import { SignInDto } from './users/dtos/SignIn.dto';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller()
+@ApiTags('app')
 export class AppController {
   constructor(private readonly appService: AppService, private authService: LocalAuthService) {}
 

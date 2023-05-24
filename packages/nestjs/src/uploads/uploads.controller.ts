@@ -1,4 +1,4 @@
-import { Controller, FileTypeValidator, Get, HttpException, HttpStatus, MaxFileSizeValidator, ParseFilePipe, Post, Request, UploadedFile, UseGuards, UseInterceptors, UsePipes } from '@nestjs/common';
+import { Controller, Get, HttpException, HttpStatus, Post, Request, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { diskStorage } from 'multer';
@@ -64,11 +64,11 @@ export class UploadsController {
         ava.path = file.path;
         ava.user = await this.userService.findById(req.user.Id);
         this.avatarService.createImage(ava);
-        // console.log(file);
     }
 
     @Get('get-image')
-    async getUserAvatar(@Request() req) {
-        return await this.avatarService.getImage(req.user.Id);
+    async serveAvatar(@Request() req, @Res() res) {
+        const ava = await this.avatarService.getUserAvatar(req.user);
+        res.sendFile(ava.path, { root: './' });
     }
 }

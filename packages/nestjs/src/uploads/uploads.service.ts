@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { User } from 'src/typeorm/entities/users';
 import { Repository } from 'typeorm';
 import { Avatar } from '../typeorm/entities/avatar'
 
@@ -8,7 +9,7 @@ export class UploadsService {
     constructor(@InjectRepository(Avatar) private readonly avatarRepository: Repository<Avatar>, ) {}
 
     async getImage(id: number) {
-        return await this.avatarRepository.findOneBy({ id });
+        return await (await this.avatarRepository.findOneBy({ id }));
     }
 
     async createImage(image: Avatar) {
@@ -17,5 +18,9 @@ export class UploadsService {
 
     async deleteImage(id: Avatar) {
         return await this.avatarRepository.delete(id);
+    }
+
+    async getUserAvatar(user: User) {
+        return await this.avatarRepository.findOneBy({ user: user });
     }
 }

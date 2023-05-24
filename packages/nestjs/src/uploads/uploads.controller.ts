@@ -1,12 +1,13 @@
 import { Controller, Get, HttpException, HttpStatus, Post, Request, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { Avatar } from '../typeorm/entities/avatar'
 import { UsersService } from 'src/users/service/users/users.service';
 import { UploadsService } from './uploads.service';
 import { AuthenticatedGuard } from 'src/auth/utils/authenticated.guard';
+import { JwtAuthGuard } from 'src/auth/local-auth/jwt-auth.guard';
 
 export const imageFileFilter = (req, file, callback) => {
     if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
@@ -38,7 +39,8 @@ export const storage = {
 
 @Controller('upload-avatar')
 @ApiTags('image')
-@UseGuards(AuthenticatedGuard)
+@UseGuards(JwtAuthGuard)
+@ApiBearerAuth()
 export class UploadsController {
 
     constructor(private readonly avatarService: UploadsService, private readonly userService: UsersService,) { }

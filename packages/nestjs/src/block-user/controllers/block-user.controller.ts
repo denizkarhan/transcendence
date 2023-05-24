@@ -1,15 +1,17 @@
 import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Request, UseFilters, UseGuards } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ExceptionHandleFilter } from 'src/exception-handle/exception-handle.filter';
 import { UsersService } from 'src/users/service/users/users.service';
 import { BlockUserDto } from '../dtos/block-user.dto';
 import { UnBlockUserDto } from '../dtos/unblock-user.dto';
 import { BlockUserService } from '../services/block-user.service';
 import { AuthenticatedGuard } from 'src/auth/utils/authenticated.guard';
+import { JwtAuthGuard } from 'src/auth/local-auth/jwt-auth.guard';
 
 @Controller('block-user')
 @ApiTags('block-user')
-@UseGuards(AuthenticatedGuard)
+@UseGuards(JwtAuthGuard)
+@ApiBearerAuth()
 export class BlockUserController {
 
     constructor(private userService: UsersService, private blockUserService: BlockUserService) {}

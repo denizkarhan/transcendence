@@ -4,7 +4,7 @@ import { CreateUserDto } from 'src/users/dtos/CreateUser.dto';
 import { SerializedUser } from 'src/users/dtos/UserMapper';
 import { UsersService } from 'src/users/service/users/users.service';
 import { UpdateUserParams } from 'src/users/utils/types';
-import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { AuthenticatedGuard } from 'src/auth/utils/authenticated.guard';
 import { LocalAuthGuard } from 'src/auth/local-auth/local-auth.guard';
 import { JwtAuthGuard } from 'src/auth/local-auth/jwt-auth.guard';
@@ -19,6 +19,7 @@ export class UsersController {
 	@Get('profile')
 	@UseInterceptors(ClassSerializerInterceptor)
 	@UseGuards(JwtAuthGuard)
+	@ApiBearerAuth()
 	async getProfile(@Request() req){
 		const user = await this.userService.getUser(req.user);
 		return new SerializedUser(user);
@@ -26,7 +27,8 @@ export class UsersController {
 
 	@Get('all')
 	@UseInterceptors(ClassSerializerInterceptor)
-	@UseGuards(AuthenticatedGuard)
+	@UseGuards(JwtAuthGuard)
+	@ApiBearerAuth()
 	async getUsers(){
 		return await this.userService.getUsers();
 	}
@@ -34,7 +36,8 @@ export class UsersController {
 	@Get('userName/:userName')
 	@UseFilters(ExceptionHandleFilter)
 	@UseInterceptors(ClassSerializerInterceptor)
-	@UseGuards(AuthenticatedGuard)
+	@UseGuards(JwtAuthGuard)
+	@ApiBearerAuth()
 	async getUserByName(@Param('userName') userName: string) {
 		const user = await this.userService.getUserByLogin(userName);
 		if (!user) throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
@@ -42,9 +45,10 @@ export class UsersController {
 	}
 
 	@Get('email/:email')
+	@ApiBearerAuth()
 	@UseFilters(ExceptionHandleFilter)
 	@UseInterceptors(ClassSerializerInterceptor)
-	@UseGuards(AuthenticatedGuard)
+	@UseGuards(JwtAuthGuard)
 	async getUserByEmail(@Param('email') email: string) {
 		const user = await this.userService.getUserByEmail(email);
 		if (!user) throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
@@ -54,7 +58,8 @@ export class UsersController {
 	@Get('id/:id')
 	@UseFilters(ExceptionHandleFilter)
 	@UseInterceptors(ClassSerializerInterceptor)
-	@UseGuards(AuthenticatedGuard)
+	@UseGuards(JwtAuthGuard)
+	@ApiBearerAuth()
 	async getUserById(@Param('id') id: number) {
 		const user = await this.userService.findById(id);
 		if (!user) throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
@@ -71,7 +76,8 @@ export class UsersController {
 	@Post('update')
 	@UseFilters(ExceptionHandleFilter)
 	@ApiBody({}) // Body parametresi için Swagger açıklaması
-	@UseGuards(AuthenticatedGuard)
+	@UseGuards(JwtAuthGuard)
+	@ApiBearerAuth()
 	async updateUser(@Body() userDetail : UpdateUserParams, @Request() request)
 	{
 		const if_update = await this.userService.updateUser(userDetail, request.user);

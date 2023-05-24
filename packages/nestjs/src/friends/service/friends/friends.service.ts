@@ -16,7 +16,9 @@ export class FriendsService {
 	}
 
 	async getFriends(user : any){
-		const friends = await this.friendRepository.find({where:{user:user}, relations:['Friend']});
+		const friends = await this.friendRepository.find({where:{user:user}, relations:['friend']});
+		if (!friends.length)
+			throw new HttpException('you dont have any friends', HttpStatus.OK);
 		return friends.map((fir)=>plainToClass(SerializedUser, fir.friend));
 	}
 

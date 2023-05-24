@@ -1,6 +1,7 @@
 import { Body, ClassSerializerInterceptor, Controller, Get, HttpException, HttpStatus, Param, Post, Request, UseFilters, UseGuards, UseInterceptors } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AchievementsService } from 'src/achievements/service/achievements/achievements.service';
+import { JwtAuthGuard } from 'src/auth/local-auth/jwt-auth.guard';
 import { AuthenticatedGuard } from 'src/auth/utils/authenticated.guard';
 import { ExceptionHandleFilter } from 'src/exception-handle/exception-handle.filter';
 import { UserAchievementDto } from 'src/user-achievements/dtos/user-achievements.dto';
@@ -9,7 +10,8 @@ import { UsersService } from 'src/users/service/users/users.service';
 
 @Controller('user-achievements')
 @ApiTags('user-achievements')
-@UseGuards(AuthenticatedGuard)
+@UseGuards(JwtAuthGuard)
+@ApiBearerAuth()
 export class UserAchievementsController {
 
     constructor(private userService: UsersService, private userAchievementsService: UserAchievementsService, private achievementsService: AchievementsService,) {}

@@ -37,7 +37,7 @@ export class UsersService {
 			Status: 0,
 		});
 		if (await this.userRepository.exist({where: {Email: newUser.Email, Login: newUser.Login}}))
-			throw new HttpException('user exist', HttpStatus.FOUND);
+			throw new HttpException('User exists', HttpStatus.FOUND);
 		return this.userRepository.save(newUser);
 	}
 

@@ -12,11 +12,7 @@ import { APP_GUARD } from '@nestjs/core';
 		secret: jwtConstants.secret,
 		signOptions: { expiresIn: '15m' },
 	}),],
-	providers: [LocalAuthService, LocalStrategy, //JwtStrategy,
-	{
-		provide: APP_GUARD,
-		useClass: JwtService
-	}],
+	providers: [LocalAuthService, LocalStrategy],
 	exports: [LocalAuthService]
 })
 export class LocalAuthModule { }

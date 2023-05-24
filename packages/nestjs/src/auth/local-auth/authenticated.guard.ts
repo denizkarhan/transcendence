@@ -9,6 +9,6 @@ export class AuthenticatedGuard implements CanActivate {
 		const result = request.isAuthenticated();
         if (result)
 			return result;
-		throw new HttpException('Giremen', HttpStatus.FORBIDDEN);
+		throw new HttpException('Giremen', HttpStatus.UNAUTHORIZED);
     }
 }

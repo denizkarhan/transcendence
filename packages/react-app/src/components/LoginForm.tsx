@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Checkbox, Form, Input } from 'antd';
+import { Button, Form, Input } from 'antd';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
@@ -17,7 +17,7 @@ const App: React.FC = () => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate('/signup')
+    navigate('/register')
   }
   return (
     <Container >

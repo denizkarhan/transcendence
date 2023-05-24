@@ -1,14 +1,10 @@
-import {
-  Button,
-  Form,
-  Input,
-  Alert,
-} from 'antd';
-import React from 'react';
-import axios from 'axios';
-import { Navigate, useNavigate } from 'react-router-dom';
-import { Container } from 'react-bootstrap';
-
+import { Button, Form, Input } from "antd";
+import React, {useState} from "react";
+// import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import Alert from 'react-bootstrap/Alert';
+import { Container } from "react-bootstrap";
+import axios from "axios";
 
 const formItemLayout = {
   labelCol: {
@@ -34,27 +30,35 @@ const tailFormItemLayout = {
   },
 };
 
+interface alerts {
+  state : boolean,
+  message: string
+}
 
 const App: React.FC = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
+  const [alert, setAlert] = useState<alerts>({
+    state: false,
+    message: ''
+  });
 
-  const onFinish = (values: any) => {
-    // console.log('Received values of form: ', values);
-    axios.post('http://localhost:3001/users', values);
-    return (
-      <Alert
-        message="Error Text"
-        description="Error Description"
-        type='error'
-        closable
-      />
-    );
+  const onFinish = async (values: any) => {
+    try {
+      const response = await axios.post("http://localhost:3001/users", values);
+      navigate("/login");
+    } catch (error:any) {
+      setAlert({
+        state: true,
+        message: error.response?.data.message
+      });
+      // console.log(error.response?.status);
+    }
   };
 
   const handleClick = () => {
-    navigate("/signin");
-  }
+    navigate("/login");
+  };
 
   return (
     <Container>
@@ -70,14 +74,20 @@ const App: React.FC = () => {
           name="Login"
           label="Nickname"
           tooltip="What do you want others to call you?"
-          rules={[{ required: true, message: 'Please input your nickname!', whitespace: true }]}
+          rules={[
+            {
+              required: true,
+              message: "Please input your nickname!",
+              whitespace: true,
+            },
+          ]}
         >
           <Input />
         </Form.Item>
         <Form.Item
           name="FirstName"
           label="FirstName"
-          rules={[{ required: true, message: 'Please input your first name!' }]}
+          rules={[{ required: true, message: "Please input your first name!" }]}
         >
           <Input />
         </Form.Item>
@@ -85,7 +95,7 @@ const App: React.FC = () => {
         <Form.Item
           name="LastName"
           label="LastName"
-          rules={[{ required: true, message: 'Please input your last name!' }]}
+          rules={[{ required: true, message: "Please input your last name!" }]}
         >
           <Input />
         </Form.Item>
@@ -95,12 +105,12 @@ const App: React.FC = () => {
           label="E-mail"
           rules={[
             {
-              type: 'email',
-              message: 'The input is not valid E-mail!',
+              type: "email",
+              message: "The input is not valid E-mail!",
             },
             {
               required: true,
-              message: 'Please input your E-mail!',
+              message: "Please input your E-mail!",
             },
           ]}
         >
@@ -113,7 +123,7 @@ const App: React.FC = () => {
           rules={[
             {
               required: true,
-              message: 'Please input your password!',
+              message: "Please input your password!",
             },
           ]}
           hasFeedback
@@ -124,27 +134,33 @@ const App: React.FC = () => {
         <Form.Item
           name="confirm"
           label="Confirm Password"
-          dependencies={['password']}
+          dependencies={["password"]}
           hasFeedback
           rules={[
             {
               required: true,
-              message: 'Please confirm your password!',
+              message: "Please confirm your password!",
             },
             ({ getFieldValue }) => ({
               validator(_, value) {
-                if (!value || getFieldValue('Password') === value) {
+                if (!value || getFieldValue("Password") === value) {
                   return Promise.resolve();
                 }
-                return Promise.reject(new Error('The two passwords that you entered do not match!'));
+                return Promise.reject(
+                  new Error("The two passwords that you entered do not match!")
+                );
               },
             }),
           ]}
         >
           <Input.Password />
         </Form.Item>
+        <Alert variant="danger" show={alert.state}>
+          <Alert.Heading>Error!</Alert.Heading>
+          <p>{alert.message}</p>
+        </Alert>
         <Form.Item {...tailFormItemLayout}>
-          <Button type="primary" htmlType="submit" >
+          <Button type="primary" htmlType="submit">
             Register
           </Button>
           <Button type="ghost" onClick={handleClick}>

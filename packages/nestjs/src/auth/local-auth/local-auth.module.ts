@@ -11,7 +11,7 @@ import { SesssionSerialaize } from '../utils/Serialaizer';
 		secret: jwtConstants.secret,
 		signOptions: { expiresIn: '15m' },
 	}),],
-	providers: [LocalAuthService, LocalStrategy ],
+	providers: [LocalAuthService, LocalStrategy],
 	exports: [LocalAuthService]
 })
 export class LocalAuthModule { }

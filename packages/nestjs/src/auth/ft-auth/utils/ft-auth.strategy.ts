@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { ConsoleLogger, Injectable, UnauthorizedException } from "@nestjs/common";
 import { PassportStrategy } from "@nestjs/passport";
 import { Profile } from "passport";
 import { Strategy } from "passport-42";
@@ -16,6 +16,7 @@ export class FtStrategy extends PassportStrategy(Strategy){
 	}
 
 	async validate(accessToken: any, refreshToken: string, profile: Profile) {
+		console.log(accessToken);
 		const user = await this.authService.validateUser({
 			FirstName: profile.name.givenName,
 			LastName: profile.name.familyName,

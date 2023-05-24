@@ -3,7 +3,7 @@ import { ExceptionHandleFilter } from 'src/exception-handle/exception-handle.fil
 import { CreateFriendDto } from 'src/friends/dto/CreateFriend.dto';
 import { FriendsService } from 'src/friends/service/friends/friends.service';
 import { SerializedUser } from 'src/users/dtos/UserMapper';
-import { AuthenticatedGuard } from 'src/auth/local-auth/authenticated.guard';
+import { AuthenticatedGuard } from 'src/auth/utils/authenticated.guard';
 import { LocalAuthGuard } from 'src/auth/local-auth/local-auth.guard';
 import { ApiTags } from '@nestjs/swagger';
 

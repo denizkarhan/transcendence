@@ -5,8 +5,9 @@ import { SerializedUser } from 'src/users/dtos/UserMapper';
 import { UsersService } from 'src/users/service/users/users.service';
 import { UpdateUserParams } from 'src/users/utils/types';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
-import { AuthenticatedGuard } from 'src/auth/local-auth/authenticated.guard';
-import { IsStrongPassword } from 'class-validator';
+import { AuthenticatedGuard } from 'src/auth/utils/authenticated.guard';
+import { LocalAuthGuard } from 'src/auth/local-auth/local-auth.guard';
+import { JwtAuthGuard } from 'src/auth/local-auth/jwt-auth.guard';
 
 
 @Controller('users')
@@ -17,10 +18,10 @@ export class UsersController {
 
 	@Get('profile')
 	@UseInterceptors(ClassSerializerInterceptor)
-	@UseGuards(AuthenticatedGuard)
+	@UseGuards(JwtAuthGuard)
 	async getProfile(@Request() req){
-		const {Password, ...profile} = req.user;
-		return profile;
+		const user = await this.userService.getUser(req.user);
+		return new SerializedUser(user);
 	}
 
 	@Get('all')

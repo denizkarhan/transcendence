@@ -17,6 +17,11 @@ export class UsersService {
 		return (await this.userRepository.find()).map((User)=>plainToClass(SerializedUser, User));
 	}
 
+	async getUser(user:User)
+	{
+		return await this.userRepository.findOneBy({Id:user.Id});
+	}
+
 	async getUserByEmail(email:string){
 		return await this.userRepository.findOneBy({Email:email});
 	}
@@ -39,7 +44,7 @@ export class UsersService {
 		const saltOrRounds = await bcrypt.genSalt();
 		newUser.Password = await bcrypt.hash(newUser.Password, saltOrRounds);
 		if (await this.userRepository.exist({where: {Email: newUser.Email, Login: newUser.Login}}))
-			throw new HttpException('user exist', HttpStatus.FOUND);
+			throw new HttpException('User exists', HttpStatus.FOUND);
 		return this.userRepository.save(newUser);
 	}
 

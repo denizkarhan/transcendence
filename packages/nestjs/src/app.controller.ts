@@ -20,6 +20,7 @@ export class AppController {
   @UseGuards(LocalAuthGuard)
   @Post('auth/login')
   async login(@Body() signDto : SignInDto) {
+	console.log("ALOOOOO");
     return this.authService.login(signDto);
   }
 }

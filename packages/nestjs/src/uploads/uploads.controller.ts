@@ -6,7 +6,7 @@ import { extname } from 'path';
 import { Avatar } from '../typeorm/entities/avatar'
 import { UsersService } from 'src/users/service/users/users.service';
 import { UploadsService } from './uploads.service';
-import { AuthenticatedGuard } from 'src/auth/local-auth/authenticated.guard';
+import { AuthenticatedGuard } from 'src/auth/utils/authenticated.guard';
 
 export const imageFileFilter = (req, file, callback) => {
     if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {

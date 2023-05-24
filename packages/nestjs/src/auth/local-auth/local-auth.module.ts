@@ -5,13 +5,14 @@ import { LocalStrategy } from './local.strategy';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { jwtConstants } from './constants';
 import { SesssionSerialaize } from '../utils/Serialaizer';
+import { JwtStrategy } from './jwt.strategy';
 
 @Module({
 	imports: [UsersModule, JwtModule.register({
 		secret: jwtConstants.secret,
 		signOptions: { expiresIn: '15m' },
 	}),],
-	providers: [LocalAuthService, LocalStrategy ],
+	providers: [LocalAuthService, LocalStrategy, JwtStrategy],
 	exports: [LocalAuthService]
 })
 export class LocalAuthModule { }

@@ -29,6 +29,7 @@ services:
     volumes:
       - ./packages/react-app/:/app
       - /app/node_modules
+    tty: true
 
   postgres:
     container_name: postgres

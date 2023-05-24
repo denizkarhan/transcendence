@@ -1,6 +1,6 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { AuthenticatedGuard } from 'src/auth/local-auth/authenticated.guard';
+import { AuthenticatedGuard } from 'src/auth/utils/authenticated.guard';
 import { CreateStatsDto } from 'src/stats/dto/CreateStats.dto';
 import { StatsService } from 'src/stats/service/stats.service';
 

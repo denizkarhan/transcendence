@@ -1,9 +1,8 @@
-FROM node:alpine
+FROM node:18-buster
 WORKDIR /app
 
 COPY package.json .
-# RUN npm install -g npm@latest
 RUN npm install
 COPY . .
 
-CMD ["npm", "run", "start"]
+# CMD ["npm", "run", "start"]

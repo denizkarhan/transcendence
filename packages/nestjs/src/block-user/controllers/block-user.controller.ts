@@ -5,7 +5,7 @@ import { UsersService } from 'src/users/service/users/users.service';
 import { BlockUserDto } from '../dtos/block-user.dto';
 import { UnBlockUserDto } from '../dtos/unblock-user.dto';
 import { BlockUserService } from '../services/block-user.service';
-import { AuthenticatedGuard } from 'src/auth/local-auth/authenticated.guard';
+import { AuthenticatedGuard } from 'src/auth/utils/authenticated.guard';
 
 @Controller('block-user')
 @ApiTags('block-user')

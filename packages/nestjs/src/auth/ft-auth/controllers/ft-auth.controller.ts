@@ -9,7 +9,7 @@ export class FtAuthController {
 	@Get('/login')
 	@UseGuards(FtAuthGuard)
 	handleLogin() {
-		return { msg: 'Google Auth' };
+		return { msg: 'Auth' };
 	}
 
 	@UseGuards(FtAuthGuard)

@@ -12,7 +12,7 @@ export class LocalAuthService{
 
 		if (user && await bcrypt.compare(pass, user.Password)){
 			const { Password, ...result } = user;
-			return user;
+			return result;
 		  }
 		return null;
 	}

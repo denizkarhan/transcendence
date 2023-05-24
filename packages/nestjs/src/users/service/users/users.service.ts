@@ -11,9 +11,7 @@ import * as bcrypt from 'bcrypt';
 @Injectable()
 export class UsersService {
 
-	constructor(@InjectRepository(User) private userRepository: Repository<User> ){
-
-	}
+	constructor(@InjectRepository(User) private userRepository: Repository<User> ){}
 
 	async getUsers(){
 		return (await this.userRepository.find()).map((User)=>plainToClass(SerializedUser, User));

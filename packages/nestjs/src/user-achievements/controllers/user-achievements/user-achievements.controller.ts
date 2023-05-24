@@ -1,4 +1,4 @@
-import { Body, ClassSerializerInterceptor, Controller, Get, HttpException, HttpStatus, Param, Post, UseFilters, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, ClassSerializerInterceptor, Controller, Get, HttpException, HttpStatus, Param, Post, Request, UseFilters, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AchievementsService } from 'src/achievements/service/achievements/achievements.service';
 import { AuthenticatedGuard } from 'src/auth/local-auth/authenticated.guard';
@@ -14,22 +14,21 @@ export class UserAchievementsController {
 
     constructor(private userService: UsersService, private userAchievementsService: UserAchievementsService, private achievementsService: AchievementsService,) {}
     
-    @Post('addAchievement')
+    @Post('addAchievement/:id')
     @UseFilters(ExceptionHandleFilter)
-    async addUserAchievement(@Body() userAchievementDto: UserAchievementDto) {
-        const user = await this.userService.findById(userAchievementDto.userId);
-        const achievement = await this.achievementsService.getArchievementById(userAchievementDto.achievementId);
-        if (!user || !achievement) throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
-        return await this.userAchievementsService.addAchievement(userAchievementDto);
+    async addUserAchievement(@Param('id') id:number, @Request() req) {
+        const achievement = await this.achievementsService.getArchievementById(id);
+        if (!achievement) throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+        return await this.userAchievementsService.addAchievement(id, req.user);
     }
 
-    @Get('id/:id')
+    @Get('id/')
     @UseFilters(ExceptionHandleFilter)
     @UseInterceptors(ClassSerializerInterceptor)   
-    async getUserAchievementsById(@Param('id') id: number) {
-        const user = await this.userService.findById(id);
+    async getUserAchievements(@Request() req) {
+        const user = await this.userService.findById(req.user.Id);
         if (!user) throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
-        return await this.userAchievementsService.getUserAchievementsById(id);
+        return await this.userAchievementsService.getUserAchievements(user);
     }
 
 }

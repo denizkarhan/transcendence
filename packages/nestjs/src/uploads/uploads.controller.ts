@@ -64,7 +64,7 @@ export class UploadsController {
         ava.path = file.path;
         ava.user = await this.userService.findById(req.user.Id);
         this.avatarService.createImage(ava);
-        console.log(file);
+        // console.log(file);
     }
 
     @Get('get-image')

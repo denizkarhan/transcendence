@@ -1,12 +1,12 @@
-import { Body, ClassSerializerInterceptor, Controller, Get, HttpException, HttpStatus, NotFoundException, Param, Post, Req, UseFilters, UseGuards, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, ClassSerializerInterceptor, Controller, Get, HttpException, HttpStatus, NotFoundException, Param, Post, Req, Request, UseFilters, UseGuards, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ExceptionHandleFilter } from 'src/exception-handle/exception-handle.filter';
 import { CreateUserDto } from 'src/users/dtos/CreateUser.dto';
 import { SerializedUser } from 'src/users/dtos/UserMapper';
 import { UsersService } from 'src/users/service/users/users.service';
 import { UpdateUserParams } from 'src/users/utils/types';
-import { Request } from 'express';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { AuthenticatedGuard } from 'src/auth/local-auth/authenticated.guard';
+import { IsStrongPassword } from 'class-validator';
 
 
 @Controller('users')
@@ -14,6 +14,14 @@ import { AuthenticatedGuard } from 'src/auth/local-auth/authenticated.guard';
 export class UsersController {
 
 	constructor(private userService: UsersService){}
+
+	@Get('profile')
+	@UseInterceptors(ClassSerializerInterceptor)
+	@UseGuards(AuthenticatedGuard)
+	async getProfile(@Request() req){
+		const {Password, ...profile} = req.user;
+		return profile;
+	}
 
 	@Get('all')
 	@UseInterceptors(ClassSerializerInterceptor)
@@ -63,7 +71,7 @@ export class UsersController {
 	@UseFilters(ExceptionHandleFilter)
 	@ApiBody({}) // Body parametresi için Swagger açıklaması
 	@UseGuards(AuthenticatedGuard)
-	async updateUser(@Body() userDetail : UpdateUserParams, @Req() request: Request)
+	async updateUser(@Body() userDetail : UpdateUserParams, @Request() request)
 	{
 		const if_update = await this.userService.updateUser(userDetail, request.user);
 		if (if_update)

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Achievements } from 'src/typeorm/entities/achievements';
 import { UserAchievements } from 'src/typeorm/entities/userAchievements';
@@ -11,25 +11,25 @@ export class UserAchievementsService {
     
     constructor(@InjectRepository(UserAchievements) private userAchievementsRepository: Repository<UserAchievements>, @InjectRepository(User) private userRepository: Repository<User>, @InjectRepository(Achievements) private AchievementsRepository: Repository<Achievements>, ) {}
 
-    async addAchievement(addAchievementDetail: AddAchievementParams) {
-        const user = await this.userRepository.findOneBy({ Id: addAchievementDetail.userId });
-        const achievement = await this.AchievementsRepository.findOneBy({ Id: addAchievementDetail.achievementId });
+    async addAchievement(id:number, user: User) {
+        const achievement = await this.AchievementsRepository.findOneBy({ Id: id });
         const newUserAchievement = this.userAchievementsRepository.create({
             User: user,
             Achivement: achievement,
         });
-        return this.userAchievementsRepository.save(newUserAchievement);
+		console.log(await this.userAchievementsRepository.findOneBy({...newUserAchievement}))
+		// if ()
+		// 	throw new HttpException('Tekrar Eden Kayıt', HttpStatus.FORBIDDEN);
+        return await this.userAchievementsRepository.save(newUserAchievement);
     }
 
-    async getUserAchievementsById(id: number) {
-        return this.userAchievementsRepository.find({
+    async getUserAchievements(user:User) {
+        return await this.userAchievementsRepository.find({
             relations: {
                 Achivement: true,
             },
             where: {
-                User: {
-                    Id: id,
-                },
+                User: user
             },
         })
     }

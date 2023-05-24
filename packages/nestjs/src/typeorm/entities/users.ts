@@ -4,6 +4,7 @@ import { MatchHistories } from "./matchHistories";
 import { UserAchievements } from "./userAchievements";
 import { IsNotEmpty } from "class-validator";
 import { Blocks } from "./blocks";
+import { Exclude } from "class-transformer";
 
 @Entity({name: 'users'})
 export class User{

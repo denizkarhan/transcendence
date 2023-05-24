@@ -2,6 +2,7 @@ import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { PassportStrategy } from "@nestjs/passport";
 import { Profile } from "passport";
 import { Strategy } from "passport-42";
+import { SerializedUser } from "src/users/dtos/UserMapper";
 import { FtAuthService } from "../service/ft-auth.service";
 
 @Injectable()
@@ -15,7 +16,6 @@ export class FtStrategy extends PassportStrategy(Strategy){
 	}
 
 	async validate(accessToken: any, refreshToken: string, profile: Profile) {
-		console.log(profile);
 		const user = await this.authService.validateUser({
 			FirstName: profile.name.givenName,
 			LastName: profile.name.familyName,
@@ -23,6 +23,6 @@ export class FtStrategy extends PassportStrategy(Strategy){
 			Login: profile.emails[0].value.split("@").at(0),
 			Password: "Aasdas123123_123123.!"
 			});
-		return user;
+		return new SerializedUser(user);
 	  }
 }

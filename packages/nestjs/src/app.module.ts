@@ -32,21 +32,12 @@ import { UploadsModule } from './uploads/uploads.module';
 @Module({
   imports: [TypeOrmModule.forRoot({
 	type: 'postgres',
-<<<<<<< HEAD
 	host: 'localhost',
 	port: 5433,
 	username: 'postgres',
-	password: '1',
-	database: 'ft_transcendence',
-	entities: [User, Friend, Stats, Achievements, UserAchievements, MatchHistories, Blocks, Avatar],
-=======
-	host: 'postgres',
-	port: 5432,
-	username: 'postgres',
 	password: 'example',
 	database: 'postgres',
-	entities: [User, Friend, Stats, Achievements, UserAchievements, MatchHistories],
->>>>>>> 50dcf3bb (Forms)
+	entities: [User, Friend, Stats, Achievements, UserAchievements, MatchHistories, Blocks, Avatar],
 	synchronize: true,
   }), 
   UsersModule, StatsModule, MatchHistoriesModule, UserAchievementsModule, FriendsModule, AuthModule, 

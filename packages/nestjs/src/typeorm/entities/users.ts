@@ -4,7 +4,9 @@ import { MatchHistories } from "./matchHistories";
 import { UserAchievements } from "./userAchievements";
 import { IsNotEmpty } from "class-validator";
 import { Blocks } from "./blocks";
+import * as IRC from 'irc';
 import { Exclude } from "class-transformer";
+import { irc } from "irc";
 
 @Entity({name: 'users'})
 export class User{
@@ -34,6 +36,8 @@ export class User{
 
 	@Column()
 	UpdatedAt: Date;
+
+	Client: any;
 
 	@OneToMany(()=> Friend, (friend)=> friend.user)
 	Friend : Friend[];

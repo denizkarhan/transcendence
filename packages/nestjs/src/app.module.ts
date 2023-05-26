@@ -27,7 +27,7 @@ import { Blocks } from './typeorm/entities/blocks';
 import { Avatar } from './typeorm/entities/avatar';
 import { BlockUserModule } from './block-user/block-user.module';
 import { UploadsModule } from './uploads/uploads.module';
-
+import { IrcModule } from './irc/irc.module';
 
 @Module({
   imports: [TypeOrmModule.forRoot({
@@ -41,7 +41,7 @@ import { UploadsModule } from './uploads/uploads.module';
 	synchronize: true,
   }), 
   UsersModule, StatsModule, MatchHistoriesModule, UserAchievementsModule, FriendsModule, AuthModule, 
-  PassportModule.register({session:true}), AchievementsModule, LocalAuthModule, FtAuthModule, AuthanticaterModule,  BlockUserModule, UploadsModule],
+  PassportModule.register({session:true}), AchievementsModule, LocalAuthModule, FtAuthModule, AuthanticaterModule,  BlockUserModule, UploadsModule, IrcModule],
   controllers: [AppController],
   providers: [AppService, SesssionSerialaize],
 })

@@ -39,7 +39,6 @@ export class UsersController {
 	@Get('userName/:userName')
 	@UseFilters(ExceptionHandleFilter)
 	@UseInterceptors(ClassSerializerInterceptor)
-	// @UseGuards(JwtAuthGuard)
 	@ApiBearerAuth()
 	async getUserByName(@Param('userName') userName: string) {
 		const user = await this.userService.getUserByLogin(userName);
@@ -51,7 +50,6 @@ export class UsersController {
 	@ApiBearerAuth()
 	@UseFilters(ExceptionHandleFilter)
 	@UseInterceptors(ClassSerializerInterceptor)
-	// @UseGuards(JwtAuthGuard)
 	async getUserByEmail(@Param('email') email: string) {
 		const user = await this.userService.getUserByEmail(email);
 		if (!user) throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
@@ -61,7 +59,6 @@ export class UsersController {
 	@Get('id/:id')
 	@UseFilters(ExceptionHandleFilter)
 	@UseInterceptors(ClassSerializerInterceptor)
-	// @UseGuards(JwtAuthGuard)
 	@ApiBearerAuth()
 	async getUserById(@Param('id') id: number) {
 		const user = await this.userService.findById(id);
@@ -69,13 +66,19 @@ export class UsersController {
 		return new SerializedUser(user);
 	}
 
-	@Public()
-	@Post()
-	@UsePipes(new ValidationPipe())
-	@UseFilters(ExceptionHandleFilter)
-	async createUser(@Body() createUserDto : CreateUserDto) {
-		await this.userService.createUser(createUserDto);
-	}
+	// @Public()
+	// @Post()
+	// @UsePipes(new ValidationPipe())
+	// async createUser(@Body() createUserDto : CreateUserDto, @Req() req) {
+	// 	const result = await this.userService.createUser(createUserDto);
+	// 	if (result)
+	// 		req.login({username: createUserDto.Login, password: createUserDto.Password}, function (err){
+	// 			if (err) {
+	// 				throw new Error('Oturum açma hatası');
+	// 			  }
+	// 		});
+	// 	return result;
+	// }
 
 	@Post('update')
 	@UseFilters(ExceptionHandleFilter)

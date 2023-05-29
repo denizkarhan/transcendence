@@ -38,11 +38,11 @@ import { AuthanticaterModule } from './auth/twofactorauth/authanticater.module';
 @Module({
   imports: [TypeOrmModule.forRoot({
 	type: 'postgres',
-	host: 'postgres',
-	port: 5432,
+	host: 'localhost',
+	port: 5433,
 	username: 'postgres',
-	password: 'example',
-	database: 'postgres',
+	password: '1',
+	database: 'ft_transcendence',
 	entities: [User, Friend, Stats, Achievements, UserAchievements, MatchHistories, Blocks, Avatar],
 	synchronize: true,
   }), 

@@ -1,12 +1,14 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { Channel } from 'src/typeorm/entities/channels';
+import { Message } from 'src/typeorm/entities/message';
 import { UsersService } from 'src/users/service/users/users.service';
 import { UsersModule } from 'src/users/users.module';
 import { IrcController } from './irc.controller';
 import { IrcService } from './irc.service';
 
 @Module({
-  imports:[UsersModule],
+  imports:[TypeOrmModule.forFeature([Message, Channel]), UsersModule],
   controllers: [IrcController],
   providers: [IrcService]
 })

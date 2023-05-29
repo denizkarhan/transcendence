@@ -1,24 +1,29 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { LocalAuthService } from 'src/auth/local-auth/local-auth.service';
+import { Avatar } from 'src/typeorm/entities/avatar';
+import { UploadsService } from 'src/uploads/uploads.service';
 import { CreateUserDto } from 'src/users/dtos/CreateUser.dto';
 import { SerializedUser } from 'src/users/dtos/UserMapper';
 import { UsersService } from 'src/users/service/users/users.service';
 
 @Injectable()
 export class FtAuthService {
-	constructor(private userService : UsersService, private jwtService: JwtService){}
+	constructor(private userService : UsersService, private localAuth : LocalAuthService, private imageService: UploadsService){}
 
-	async validateUser(details: CreateUserDto){
-		const user = await this.userService.getUserByEmail(details.Email);
+	async validateUser(details: CreateUserDto, imagePath: string){
+		var user = await this.userService.getUserByEmail(details.Email);
 		if (user) return user;
-		return this.userService.createUser(details);
+		user = await this.userService.createUser(details);
+		const ava = new Avatar;
+		ava.name = '42';
+		ava.path = imagePath;
+		ava.user = user;
+		this.imageService.createImage(ava);
+		return user;
 	}
 
 	async login(user: any) {
-		const newUser = await this.userService.getUserByLogin(user.username);
-		const payload = { Login: newUser.Login, Id: newUser.Id };
-		return {
-		  access_token: this.jwtService.sign(payload),
-		};
+		return await this.localAuth.login({username:user.Login});
 	}
 }

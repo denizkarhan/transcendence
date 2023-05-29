@@ -13,6 +13,12 @@ export class SerializedUser{
 
 	@Exclude()
 	Status:number;
+
+	@Exclude()
+	TwoFactorAuth: boolean;
+
+	@Exclude()
+	TwoFactorSecret:string;
 	
 	constructor(partial : Partial<SerializedUser>){
 		Object.assign(this, partial);

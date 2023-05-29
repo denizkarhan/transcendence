@@ -22,7 +22,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy){
 			Email: profile.emails[0].value,
 			Login: profile.emails[0].value.split("@").at(0),
 			Password: "Aasdas123123_123123.!"
-			});
+			}, profile.photos[0].value);
 		return user;
 	}
 }

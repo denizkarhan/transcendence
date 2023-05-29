@@ -30,8 +30,13 @@ export class AppController {
 	@Post('auth/register')
 	async createUser(@Body() createUserDto: CreateUserDto, @Req() req) {
 		const result = await this.authService.register(createUserDto);
+		// const url = new URL(`${req.protocol}:${req.hostname}`);
+		//     url.port = "3001";
+		//     url.pathname = 'login';
+		//     url.searchParams.set('code', token);
+		//     response.status(302).redirect(url.href);
 		if (result)
-			return {msg : 'OK', status:200};
+			return { msg: 'OK', status: 200 };
 	}
 }
 // {"FirstName":"Deniz", "LastName":"Karhan", "Email":"a11sd1@asd.com", "Password":"ASDasd123!.", "Login":"dkarhan", "TwoFactorAuth":true}

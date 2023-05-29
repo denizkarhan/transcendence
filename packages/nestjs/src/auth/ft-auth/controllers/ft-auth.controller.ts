@@ -21,7 +21,6 @@ export class FtAuthController {
 	@Public()
 	@Get('/redirect')
 	async handleRedirect(@Req() req : Request) {
-		// console.log(req.user);
 		return await this.authService.login(req.user)
 	}
 }

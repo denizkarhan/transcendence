@@ -10,7 +10,7 @@ export class GoogleAuthService{
 	constructor(@Inject(UsersService) private userService: UsersService, private jwtService: JwtService,){}
 
 	async validateUser(details: CreateUserDto){
-		const user = await this.userService.getUserByEmail(details.Email);
+		const user = await this.userService.getUserByLogin(details.Login);
 		if (user) return user;
 		return this.userService.createUser(details);
 	}

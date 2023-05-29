@@ -17,4 +17,6 @@ export class CreateUserDto {
 
 	@IsStrongPassword()
 	Password:string;
+
+	TwoFactorAuth?:boolean;
 }

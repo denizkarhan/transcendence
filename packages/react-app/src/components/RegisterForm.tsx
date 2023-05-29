@@ -1,8 +1,8 @@
 import { Button, Form, Input } from "antd";
-import React, {useState} from "react";
+import React, { useState } from "react";
 // import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import Alert from 'react-bootstrap/Alert';
+import Alert from "react-bootstrap/Alert";
 import { Container } from "react-bootstrap";
 import axios from "axios";
 
@@ -31,8 +31,8 @@ const tailFormItemLayout = {
 };
 
 interface alerts {
-  state : boolean,
-  message: string
+  state: boolean;
+  message: string;
 }
 
 const App: React.FC = () => {
@@ -40,20 +40,20 @@ const App: React.FC = () => {
   const navigate = useNavigate();
   const [alert, setAlert] = useState<alerts>({
     state: false,
-    message: ''
+    message: "",
   });
 
-  const onFinish = async (values: any) => {
-    try {
-      const response = await axios.post("http://localhost:3001/users", values);
-      navigate("/login");
-    } catch (error:any) {
-      setAlert({
-        state: true,
-        message: error.response?.data.message
-      });
-      // console.log(error.response?.status);
-    }
+  const onFinish = (values: any) => {
+    axios
+      .post("http://localhost:3001/users", values)
+      .then((data) => navigate("/login"))
+      .catch((error) =>
+        setAlert({
+          state: true,
+          message: error.response?.data.message,
+        })
+      );
+    // navigate("/login");
   };
 
   const handleClick = () => {

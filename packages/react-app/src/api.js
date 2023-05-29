@@ -1,15 +1,27 @@
 import axios from 'axios';
 
+export function getCookie(cookieName){
+    const cookieString = document.cookie;
+    const cookies = cookieString.split(';');
+  
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+  
+      // Check if the cookie starts with the given name
+      if (cookie.startsWith(cookieName + '=')) {
+        // Extract the cookie value
+        return cookie.substring(cookieName.length + 1);
+      }
+    }
+  
+    // Cookie not found
+    return null;
+}
+
 const api = axios.create({
-    baseURL: 'http://localhost:3001'
+    baseURL: 'http://localhost:3001',
+    headers: {
+        "Authorization": getCookie("access_token")
+    }
 });
-api.interceptors.request.use(
-	config => {
-	  config.headers.Authorization = `Bearer ${accessToken}`;
-	  return config;
-	},
-	error => {
-	  return Promise.reject(error);
-	}
-  );
 export default api;

@@ -72,7 +72,6 @@ export class UsersController {
 	@Public()
 	@Post()
 	@UsePipes(new ValidationPipe())
-	@UseFilters(ExceptionHandleFilter)
 	async createUser(@Body() createUserDto : CreateUserDto) {
 		await this.userService.createUser(createUserDto);
 	}

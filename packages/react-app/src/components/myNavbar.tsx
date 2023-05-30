@@ -1,21 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import Dropdown from "react-bootstrap/Dropdown";
 import { Link } from "react-router-dom";
+import { UserTemplate } from "./Main";
 import "./Nav.css";
 
-export default function MyNavbar() {
+interface Props {
+  logState: boolean;
+  user: UserTemplate | null;
+}
+
+export default function MyNavbar(props: Props) {
   const linkStyle = {
     margin: "1rem",
     textDecoration: "none",
     color: "blue",
   };
-
-//   const user = axios.get("/user");
-
   return (
     <Navbar bg="light" expand="lg">
       <Container>
@@ -59,6 +62,7 @@ export default function MyNavbar() {
               </Dropdown.Menu>
             </Dropdown>
           </Nav>
+          <Nav className=""></Nav>
         </Navbar.Collapse>
       </Container>
     </Navbar>

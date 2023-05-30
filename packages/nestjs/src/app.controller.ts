@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req, Request, UseFilters, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Request, Res, Response, UseFilters, UseGuards } from '@nestjs/common';
 import { AppService } from './app.service';
 import { LocalAuthGuard } from './auth/local-auth/local-auth.guard';
 import { ExceptionHandleFilter } from './exception-handle/exception-handle.filter';
@@ -8,13 +8,15 @@ import { SignInDto } from './users/dtos/SignIn.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { Public } from './users/utils/metadata';
 import { CreateUserDto } from './users/dtos/CreateUser.dto';
+import { JwtService } from '@nestjs/jwt';
 
 @Controller()
 @ApiTags('app')
 export class AppController {
-	constructor(private readonly appService: AppService, private authService: LocalAuthService) { }
+	constructor(private readonly appService: AppService, private authService: LocalAuthService, private jwtService: JwtService) { }
 
 	@Get('/')
+	@Public()
 	getHello(): string {
 		return this.appService.getHello();
 	}
@@ -28,7 +30,7 @@ export class AppController {
 
 	@Public()
 	@Post('auth/register')
-	async createUser(@Body() createUserDto: CreateUserDto, @Req() req) {
+	async createUser(@Body() createUserDto: CreateUserDto, @Request() req) {
 		const result = await this.authService.register(createUserDto);
 		// const url = new URL(`${req.protocol}:${req.hostname}`);
 		//     url.port = "3001";
@@ -37,6 +39,12 @@ export class AppController {
 		//     response.status(302).redirect(url.href);
 		if (result)
 			return { msg: 'OK', status: 200 };
+	}
+
+	@Get('auth/logout')
+	@Public()
+	async logout(@Request() req) {
+		await this.authService.logout(req.user);
 	}
 }
 // {"FirstName":"Deniz", "LastName":"Karhan", "Email":"a11sd1@asd.com", "Password":"ASDasd123!.", "Login":"dkarhan", "TwoFactorAuth":true}

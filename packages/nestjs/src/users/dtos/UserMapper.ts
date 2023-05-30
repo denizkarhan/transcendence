@@ -12,9 +12,6 @@ export class SerializedUser{
 	UpdatedAt: Date;
 
 	@Exclude()
-	Status:number;
-
-	@Exclude()
 	TwoFactorAuth: boolean;
 
 	@Exclude()

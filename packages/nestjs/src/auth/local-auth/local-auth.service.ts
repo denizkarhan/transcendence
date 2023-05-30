@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users/service/users/users.service';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from 'src/users/dtos/CreateUser.dto';
+import { AuthanticaterService } from '../twofactorauth/service/authanticater/authanticater.service';
 @Injectable()
 export class LocalAuthService{
 	constructor(private userService: UsersService, private jwtService: JwtService){
@@ -18,10 +19,11 @@ export class LocalAuthService{
 	}
 
 	async login(user: any) {
-		const newUser = await this.userService.getUserByLogin(user.username);
+		var newUser = await this.userService.getUserByLogin(user.username);
 		if (newUser.TwoFactorAuth)
 			return {Status:307, Url:'http://localhost:3001/authanticater/verify'};
-		const payload = { Login: newUser.Login, Id: newUser.Id };
+		newUser = await this.userService.updateUser({Status:'online'}, newUser);
+		const payload = { Login: newUser.Login, Id: newUser.Id, Status:newUser.Status };
 		return {
 		  access_token: this.jwtService.sign(payload),
 		};
@@ -29,5 +31,15 @@ export class LocalAuthService{
 
 	async register(createUserDto: CreateUserDto){
 		return await this.userService.createUser(createUserDto);
+	}
+
+	async logout(user:any)
+	{
+		 await this.userService.updateUser({Status:'offline'}, user);
+	}
+
+	async findUser(userName:string)
+	{
+		return await this.userService.getUserByLogin(userName);
 	}
 }

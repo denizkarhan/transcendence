@@ -19,7 +19,7 @@ export class UsersService {
 	}
 
 	async getUser(user: any) {
-		return await this.userRepository.findOneBy({ Id: user.userId });
+		return await this.userRepository.findOneBy({ Id: user.Id });
 	}
 
 	async getUserByEmail(email: string) {
@@ -40,7 +40,7 @@ export class UsersService {
 			...userDetail,
 			CreatedAt: new Date(),
 			UpdatedAt: new Date(),
-			Status: 0,
+			Status: 'offline',
 		});
 		const saltOrRounds = await bcrypt.genSalt();
 		newUser.Password = await bcrypt.hash(newUser.Password, saltOrRounds);

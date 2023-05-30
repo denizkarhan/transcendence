@@ -11,6 +11,8 @@ export class UpdateUserDto {
 	@IsEmail()
 	Email?: string;
 
+	Status?:string;
+
 	TwoFactorSecret?:string;
 
 	TwoFactorAuth?:boolean;

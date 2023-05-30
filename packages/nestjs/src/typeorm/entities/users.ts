@@ -23,8 +23,8 @@ export class User{
 	@Column({unique: true})
 	Email: string;
 
-	@Column()
-	Status: number;
+	@Column({default:'offline'})
+	Status: string;
 
 	@Column()
 	Password:string;

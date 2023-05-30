@@ -3,10 +3,11 @@ import axios, { AxiosResponse }  from 'axios';
 import React from 'react';
 import { Button, Form, Input } from 'antd';
 import { useNavigate } from 'react-router-dom';
+import api from "../api";
 
 const onFinish = async (values: any) => {
 	// console.log('Success:', values);
-	const response: AxiosResponse = await axios.get('http://localhost:3001/users/profile');
+	const response: AxiosResponse = await api.get('/users/profile');
 	console.log(response.data);
 };
 

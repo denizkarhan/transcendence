@@ -15,7 +15,7 @@ export class FriendsService {
 		this.userRepository = dataSource.getRepository(User);
 	}
 
-	async getFriends(userName : any){
+	async getFriends(userName : string){
 		const user = await this.userRepository.findOneBy({Login:userName});
 		const friends = await this.friendRepository.find({where:{user:user}, relations:['friend']});
 		if (!friends.length)

@@ -35,7 +35,7 @@ export class LocalAuthService{
 
 	async logout(user:any)
 	{
-		 await this.userService.updateUser({Status:'offline'}, user);
+		await this.userService.updateUser({Status:'offline'}, user);
 	}
 
 	async findUser(userName:string)

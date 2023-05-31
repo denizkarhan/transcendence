@@ -12,6 +12,8 @@
     "@types/react-dom": "^18.2.4",
     "antd": "^5.5.0",
     "axios": "^1.4.0",
+    "bootstrap": "^4.6.0",
+    "bootswatch": "^5.2.3",
     "mdb-react-ui-kit": "^6.0.0",
     "primereact": "^9.4.0",
     "react": "^18.2.0",

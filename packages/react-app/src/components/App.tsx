@@ -9,6 +9,8 @@ import NotFoundPage from "../404/404";
 import Profile from "./Profile";
 import Logout from "./Logout";
 import { UserTemplate } from "./Main";
+import "bootswatch/dist/morph/bootstrap.min.css";
+// import 'bootstrap/dist/css/bootstrap.min.css';
 // import GameComponent from './game/GameComponent'
 
 interface Props {

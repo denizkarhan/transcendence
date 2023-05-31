@@ -5,7 +5,9 @@ import { useNavigate } from "react-router-dom";
 import { Container } from "react-bootstrap";
 import Alert from "react-bootstrap/Alert";
 import api from "../api";
-import { UserTemplate } from "./Main";
+import { useSignIn } from "react-auth-kit";
+import jwtDecode from "jwt-decode";
+// import { UserTemplate } from "./Main";
 
 const onFinishFailed = (errorInfo: any) => {
   console.log("Failed:", errorInfo);
@@ -16,13 +18,22 @@ interface alerts {
   message: string;
 }
 
-interface Props {
-  setLogState: React.Dispatch<React.SetStateAction<boolean>>;
-  setUser: React.Dispatch<React.SetStateAction<UserTemplate | null>>;
-  user: UserTemplate | null;
-}
+// interface Props {
+//   setLogState: React.Dispatch<React.SetStateAction<boolean>>;
+//   setUser: React.Dispatch<React.SetStateAction<UserTemplate | null>>;
+//   user: UserTemplate | null;
+// }
 
-const App: React.FC<Props> = (props: Props) => {
+interface decodedToken{
+  id:number,
+  Login:string,
+  exp:number,
+  iat:number
+};
+
+const App: React.FC = () => {
+  const signin = useSignIn();
+
   const onFinish = async (values: any) => {
     // console.log('Success:', values);
     await api
@@ -31,15 +42,20 @@ const App: React.FC<Props> = (props: Props) => {
         api.defaults.headers.common[
           "Authorization"
         ] = `Bearer ${response.data.access_token}`;
-        document.cookie= `access_token=${response.data.access_token}`;
-        // navigate("/home");
+        const user = jwtDecode<decodedToken>(response.data.access_token);
+        signin({
+          token: response.data.access_token,
+          tokenType: "Bearer",
+          expiresIn: user.exp,
+          authState: {username: user.Login}
+        });
+        navigate("/home");
       })
       .catch((error) => {
         setAlert({
           state: true,
           message: error.response?.data.message,
         });
-        console.log(error);
       });
     // await api
     //   .get("/users/profile")
@@ -54,7 +70,6 @@ const App: React.FC<Props> = (props: Props) => {
     //     });
     //   })
     //   .catch();
-    console.log(props.user);
     // api.defaults.headers.common[
     //   "Authorization"
     // ] = `Bearer ${response.data.access_token}`;
@@ -70,9 +85,6 @@ const App: React.FC<Props> = (props: Props) => {
     navigate("/register");
   };
 
-  const testClick = () => {
-    props.setLogState(true);
-  };
   return (
     <Container>
       <Form
@@ -110,9 +122,6 @@ const App: React.FC<Props> = (props: Props) => {
           </Button>
           <Button type="text" onClick={handleClick}>
             Register
-          </Button>
-          <Button type="text" onClick={testClick}>
-            test
           </Button>
         </Form.Item>
       </Form>

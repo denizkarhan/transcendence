@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import * as speakeasy from 'speakeasy';
 import { User } from 'src/typeorm/entities/users';
 import { UsersService } from 'src/users/service/users/users.service';
-import * as base32 from 'thirty-two';
+// import * as base32 from 'thirty-two';
 
 @Injectable()
 export class AuthanticaterService {

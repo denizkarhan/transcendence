@@ -5,15 +5,15 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import Dropdown from "react-bootstrap/Dropdown";
 import { Link } from "react-router-dom";
-import { UserTemplate } from "./Main";
+// import { UserTemplate } from "./Main";
 import "./Nav.css";
 
-interface Props {
-  logState: boolean;
-  user: UserTemplate | null;
-}
+// interface Props {
+//   logState: boolean;
+//   user: UserTemplate | null;
+// }
 
-export default function MyNavbar(props: Props) {
+export default function MyNavbar() {
   const linkStyle = {
     margin: "1rem",
     textDecoration: "none",

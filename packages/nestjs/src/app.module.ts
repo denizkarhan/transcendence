@@ -30,6 +30,7 @@ import { UploadsModule } from './uploads/uploads.module';
 import { IrcModule } from './irc/irc.module';
 import { Message } from './typeorm/entities/message';
 import { Channel } from './typeorm/entities/channels';
+import { ChannelUserList } from './typeorm/entities/channelUserList';
 
 @Module({
   imports: [TypeOrmModule.forRoot({
@@ -39,7 +40,7 @@ import { Channel } from './typeorm/entities/channels';
 	username: 'ftuncer',
 	password: '123',
 	database: 'ftuncer',
-	entities: [User, Friend, Stats, Achievements, UserAchievements, MatchHistories, Blocks, Avatar, Message, Channel],
+	entities: [User, Friend, Stats, Achievements, UserAchievements, MatchHistories, Blocks, Avatar, Message, Channel, ChannelUserList],
 	synchronize: true,
   }), 
   UsersModule, StatsModule, MatchHistoriesModule, UserAchievementsModule, FriendsModule, AuthModule, 

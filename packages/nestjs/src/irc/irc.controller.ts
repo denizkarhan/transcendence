@@ -1,8 +1,11 @@
-import { Controller, Get, Param, Post, Req } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
+import { CreateUserDto } from 'src/users/dtos/CreateUser.dto';
 import { UsersService } from 'src/users/service/users/users.service';
+import { CreateChannelDto } from './CreateChannel.dto';
+import { JoinChannelDto } from './JoinChannel.dto';
 import { IrcService } from './irc.service';
 
 @Controller('chat')
@@ -25,16 +28,14 @@ export class IrcController {
         return await this.ircService.sendMessage(req.user.Login ,receiver, message);
     }
 
-    @Get('join-channel/:channelName')
-    async joinChannel(@Param('channelName') channelName: string) {
-        return await this.ircService.joinChannel(channelName);
+    @Post('join-channel/')
+    async joinChannel(@Body() joinChannelDto: JoinChannelDto) {
+        return await this.ircService.joinChannel(joinChannelDto);
     }
 
-    @Get('create-channel/:channelName/:isPublic')
-    async createChannel(
-        @Param('channelName') channelName: string,
-        @Param('isPublic') isPublic: boolean ) {
-        return await this.ircService.createChannel(channelName, isPublic);
+    @Post('create-channel')
+    async createChannel(@Body() createChannelDto : CreateChannelDto) {
+        return await this.ircService.createChannel(createChannelDto);
     }
 
     @Get('leave-channel/:channelName')

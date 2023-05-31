@@ -1,17 +1,26 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { throws } from 'assert';
+import { channel } from 'diagnostics_channel';
 import * as IRC from 'irc';
 import { mergeScan } from 'rxjs';
 import { Channel } from 'src/typeorm/entities/channels';
+import { ChannelUserList } from 'src/typeorm/entities/channelUserList';
 import { Message } from 'src/typeorm/entities/message';
 import { UsersService } from 'src/users/service/users/users.service';
 import { Repository } from 'typeorm';
+import { CreateChannelDto } from './CreateChannel.dto';
+import { JoinChannelDto } from './JoinChannel.dto';
 
 @Injectable()
 export class IrcService {
     private client: IRC.Client;
 
-    constructor(@InjectRepository(Message) private messageRepository: Repository<Message>, @InjectRepository(Channel) private channelRepository: Repository<Channel>, private userService: UsersService, ) {}
+    constructor(
+    @InjectRepository(Message) private messageRepository: Repository<Message>,
+    @InjectRepository(Channel) private channelRepository: Repository<Channel>,
+    @InjectRepository(ChannelUserList) private channelUserRepository: Repository<ChannelUserList>,
+    private userService: UsersService) {}
 
     async establishConnection(name: string) {
         
@@ -38,29 +47,42 @@ export class IrcService {
         await this.client.say(receiver, message);
     }
 
-    async joinChannel(channelName: string) {
-        if (!(await this.channelRepository.findOneBy({ Name: channelName }))) {
+    async joinChannel(joinDetails: JoinChannelDto) {
+        if (!(await this.channelRepository.findOneBy({ Name: joinDetails.Name }))) {
             return HttpStatus.BAD_REQUEST;
         }
-        else
-            await this.client.join(channelName);
+        else {
+            if (await (await this.channelRepository.findOneBy({ Name: joinDetails.Name})).password == joinDetails.password)
+                await this.client.join(joinDetails.Name);
+            else
+                return HttpStatus.BAD_REQUEST;
+        }
     }
 
-    async createChannel(channelName: string, isPublic: boolean) {
-        if (!(await this.channelRepository.findOneBy({ Name: channelName }))) {
-            console.log(isPublic);
+    async createChannel(channelDetail: CreateChannelDto) {
+        if (!(await this.channelRepository.findOneBy({ Name: channelDetail.Name }))) {
             const cha = this.channelRepository.create({
-                Name: channelName,
-                Public: true,
+                ...channelDetail,
             });
             this.channelRepository.save(cha);
-            await this.client.join(channelName);
+
+            const newEntry = this.channelUserRepository.create({
+                user: this.client.nick,
+                channel: cha.Name,
+                isMuted: false
+            });
+            this.channelUserRepository.save(newEntry);
+
+            await this.client.join(channelDetail.Name);
+            if (channelDetail.password)
+                await this.client.say(channelDetail.Name, "/MODE +k " + channelDetail.password);
         }
         else
             return HttpStatus.BAD_REQUEST;
     }
 
     async leaveChannel(channelName: string) {
-        await this.client.leave(channelName);
+        this.channelUserRepository.delete({ user: this.client.nick, channel: channelName });
+        await this.client.part(channelName);
     }
 }

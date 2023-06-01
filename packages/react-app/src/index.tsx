@@ -5,15 +5,23 @@ import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 import Main from "./components/Main";
 import { BrowserRouter } from "react-router-dom";
+import { AuthProvider } from "react-auth-kit";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <Main />
-    </BrowserRouter>
+    <AuthProvider
+     authType={"cookie"}
+     authName={"42_auth"}
+     cookieDomain={window.location.hostname}
+     cookieSecure={false}
+    >
+      <BrowserRouter>
+        <Main />
+      </BrowserRouter>
+    </AuthProvider>
   </React.StrictMode>
 );
 

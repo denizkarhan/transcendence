@@ -1,11 +1,14 @@
 import React, { useState } from "react";
-import { Button, Form, Input } from "antd";
+import { Input, Form, Button } from "antd";
 import axios, { AxiosResponse } from "axios";
 import { useNavigate } from "react-router-dom";
-import { Container } from "react-bootstrap";
+import { Col, Container, Row, Stack } from "react-bootstrap";
 import Alert from "react-bootstrap/Alert";
 import api from "../api";
-import { UserTemplate } from "./Main";
+import { useSignIn } from "react-auth-kit";
+import jwtDecode from "jwt-decode";
+// import Form from 'react-bootstrap/Form';
+// import { UserTemplate } from "./Main";
 
 const onFinishFailed = (errorInfo: any) => {
   console.log("Failed:", errorInfo);
@@ -16,30 +19,41 @@ interface alerts {
   message: string;
 }
 
-interface Props {
-  setLogState: React.Dispatch<React.SetStateAction<boolean>>;
-  setUser: React.Dispatch<React.SetStateAction<UserTemplate | null>>;
-  user: UserTemplate | null;
-}
+// interface Props {
+//   setLogState: React.Dispatch<React.SetStateAction<boolean>>;
+//   setUser: React.Dispatch<React.SetStateAction<UserTemplate | null>>;
+//   user: UserTemplate | null;
+// }
 
-const App: React.FC<Props> = (props: Props) => {
+interface decodedToken {
+  id: number,
+  Login: string,
+  exp: number,
+  iat: number
+};
+
+const App: React.FC = () => {
+  const signin = useSignIn();
+
   const onFinish = async (values: any) => {
     // console.log('Success:', values);
     await api
       .post("/auth/login", values)
-      .then((response) => {
-        api.defaults.headers.common[
-          "Authorization"
-        ] = `Bearer ${response.data.access_token}`;
-        // document.cookie = `access_token=${response.data.access_token}`;
-        // navigate("/home");
+      .then((response: any) => {
+        const user = jwtDecode<decodedToken>(response.data.access_token);
+        signin({
+          token: response.data.access_token,
+          tokenType: "Bearer",
+          expiresIn: user.exp,
+          authState: { username: user.Login }
+        });
+        navigate("/home");
       })
-      .catch((error) => {
+      .catch((error: any) => {
         setAlert({
           state: true,
           message: error.response?.data.message,
         });
-        console.log(error);
       });
     // await api
     //   .get("/users/profile")
@@ -54,7 +68,6 @@ const App: React.FC<Props> = (props: Props) => {
     //     });
     //   })
     //   .catch();
-    console.log(props.user);
     // api.defaults.headers.common[
     //   "Authorization"
     // ] = `Bearer ${response.data.access_token}`;
@@ -70,52 +83,48 @@ const App: React.FC<Props> = (props: Props) => {
     navigate("/register");
   };
 
-  const testClick = () => {
-    props.setLogState(true);
-  };
   return (
-    <Container>
-      <Form
-        name="basic"
-        className="centered-container login-box"
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 16 }}
-        style={{ maxWidth: 500 }}
-        initialValues={{ remember: true }}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-        autoComplete="off"
-      >
-        <Form.Item
-          label="Username"
-          name="username"
-          rules={[{ required: true, message: "Please input your username!" }]}
+    <Container className="d-flex flex-column justify-content-center" style={{ height: '100vh' }}>
+      <Stack direction="vertical" gap={3}>
+        <Form
+          name="basic"
+          className="centered-container login-box"
+          labelCol={{ span: 8 }}
+          wrapperCol={{ span: 16 }}
+          style={{ maxWidth: 5000 }}
+          initialValues={{ remember: true }}
+          onFinish={onFinish}
+          onFinishFailed={onFinishFailed}
+          autoComplete="off"
         >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          label="Password"
-          name="password"
-          rules={[{ required: true, message: "Please input your password!" }]}
-        >
-          <Input.Password />
-        </Form.Item>
-        <Alert variant="danger" show={alert.state}>
-          <Alert.Heading>Error!</Alert.Heading>
-          <p>{alert.message}</p>
-        </Alert>
-        <Form.Item wrapperCol={{ offset: 8, span: 16 }} labelCol={{ span: 8 }}>
-          <Button type="primary" htmlType="submit">
-            Login
-          </Button>
-          <Button type="text" onClick={handleClick}>
-            Register
-          </Button>
-          <Button type="text" onClick={testClick}>
-            test
-          </Button>
-        </Form.Item>
-      </Form>
+          <Form.Item
+            label="Username"
+            name="username"
+            rules={[{ required: true, message: "Please input your username!" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="Password"
+            name="password"
+            rules={[{ required: true, message: "Please input your password!" }]}
+          >
+            <Input.Password />
+          </Form.Item>
+          <Alert variant="danger" show={alert.state}>
+            <Alert.Heading>Error!</Alert.Heading>
+            <p>{alert.message}</p>
+          </Alert>
+          <Form.Item wrapperCol={{ offset: 8, span: 16 }} labelCol={{ span: 8 }}>
+            <Button type="primary" htmlType="submit">
+              Login
+            </Button>
+            <Button type="text" onClick={handleClick}>
+              Register
+            </Button>
+          </Form.Item>
+        </Form>
+      </Stack>
     </Container>
   );
 };

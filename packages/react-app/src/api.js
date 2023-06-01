@@ -21,7 +21,7 @@ export function getCookie(cookieName){
 const api = axios.create({
     baseURL: 'http://localhost:3001',
     headers: {
-        "Authorization": getCookie("access_token")
+        'Authorization': 'Bearer ' + getCookie('42_auth')
     }
 });
 export default api;

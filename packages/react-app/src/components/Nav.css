@@ -2,3 +2,23 @@ navbar-link-right {
     float: right;
     margin-right: 0;
 }
+
+.centered-container {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-content: space-between;
+    justify-content: center;
+    align-items: revert;
+    height: 100vh;
+  }
+
+  .vstack {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: row;
+    align-self: stretch;
+    align-content: stretch;
+    align-items: center;
+    flex-wrap: wrap;
+  }

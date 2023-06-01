@@ -46,8 +46,8 @@ const App: React.FC = () => {
   const onFinish = (values: any) => {
     axios
       .post("http://localhost:3001/auth/register", values)
-      .then((data) => navigate("/login"))
-      .catch((error) =>
+      .then((data:any) => navigate("/login"))
+      .catch((error:any) =>
         setAlert({
           state: true,
           message: error.response?.data.message,

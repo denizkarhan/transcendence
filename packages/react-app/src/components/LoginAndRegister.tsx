@@ -1,21 +1,32 @@
-import { Button, Container, Stack } from "react-bootstrap";
-
+import { Container, Stack } from "react-bootstrap";
+import { Button } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+// import { useHistory } from "react-router-dom";
+import "./Nav.css";
 
 const App: React.FC = () => {
-    return (
-        <div className="App">
-            <Container className="d-flex flex-column justify-content-center align-items-center" style={{ height: '100vh' }}>
-                <Stack gap={2} className="col-md-5 mx-auto">
-                    <Button variant="outline-info" size="lg" className="mb-2" style={{ width: '400px' }} href="/login">
-                        Sign In
-                    </Button>
-                    <Button variant="outline-info" size="lg" className="mt-2" style={{ width: '400px' }} href="/register">
-                        Sign Up
-                    </Button>
-                </Stack>
-            </Container>
-        </div>
-    );
+	// // const history = useHistory();
+	// const handleButtonClick = () => {
+	// 	history.push("/login")
+	//   };
+	return (
+		<div className="App">
+			<Container className="d-flex flex-column justify-content-center align-items-center" style={{ height: '100vh' }}>
+				<Stack gap={2} className="scol mx-auto" >
+					<Link to="/login">
+						<Button variant="outline-info" size="lg" className="mb-1" style={{ width: '400px' }}>
+							Sign In
+						</Button>
+					</Link>
+					<Link to="/register">
+						<Button variant="outline-info" size="lg" className="mb-1" style={{ width: '400px' }}>
+							Sign Up
+						</Button>
+					</Link>
+				</Stack>
+			</Container>
+		</div>
+	);
 }
 
 export default App;

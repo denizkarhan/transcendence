@@ -1,9 +1,7 @@
 import React, { useState } from "react";
-import { Input, Form, Button } from "antd";
-import axios, { AxiosResponse } from "axios";
+import { Input, Form, Button, Checkbox } from "antd";
 import { useNavigate } from "react-router-dom";
-import { Col, Container, Row, Stack } from "react-bootstrap";
-import Alert from "react-bootstrap/Alert";
+import { Alert, Col, Container, Row, Stack, TabContent } from "react-bootstrap";
 import api from "../api";
 import { useSignIn } from "react-auth-kit";
 import jwtDecode from "jwt-decode";
@@ -41,6 +39,9 @@ const App: React.FC = () => {
       .post("/auth/login", values)
       .then((response: any) => {
         const user = jwtDecode<decodedToken>(response.data.access_token);
+		// api.defaults.headers.common[
+		// 	"Authorization"
+		//   ] = 'Bearer ' + getCookie('42_auth');
         signin({
           token: response.data.access_token,
           tokenType: "Bearer",
@@ -55,6 +56,7 @@ const App: React.FC = () => {
           message: error.response?.data.message,
         });
       });
+	  
     // await api
     //   .get("/users/profile")
     //   .then((response) => {
@@ -82,10 +84,9 @@ const App: React.FC = () => {
   const handleClick = () => {
     navigate("/register");
   };
-
   return (
-    <Container className="d-flex flex-column justify-content-center" style={{ height: '100vh' }}>
-      <Stack direction="vertical" gap={3}>
+    <div className="login template d-flex flex-column justify-content-center align-items-center 100-w vh-100">
+      <Container className="p-5 rounded bg-white">
         <Form
           name="basic"
           className="centered-container login-box"
@@ -98,24 +99,24 @@ const App: React.FC = () => {
           autoComplete="off"
         >
           <Form.Item
-            label="Username"
+            // label="Username"
             name="username"
             rules={[{ required: true, message: "Please input your username!" }]}
           >
-            <Input />
+            <Input placeholder="Username" />
           </Form.Item>
           <Form.Item
-            label="Password"
+            // label="Password"
             name="password"
             rules={[{ required: true, message: "Please input your password!" }]}
           >
-            <Input.Password />
+            <Input.Password  placeholder="Password" />
           </Form.Item>
           <Alert variant="danger" show={alert.state}>
             <Alert.Heading>Error!</Alert.Heading>
             <p>{alert.message}</p>
           </Alert>
-          <Form.Item wrapperCol={{ offset: 8, span: 16 }} labelCol={{ span: 8 }}>
+          <Form.Item className="justify-content-center align-items-center" wrapperCol={{ offset: 8, span: 16 }} labelCol={{ span: 8 }}>
             <Button type="primary" htmlType="submit">
               Login
             </Button>
@@ -124,8 +125,8 @@ const App: React.FC = () => {
             </Button>
           </Form.Item>
         </Form>
-      </Stack>
-    </Container>
+      </Container>
+    </div>
   );
 };
 

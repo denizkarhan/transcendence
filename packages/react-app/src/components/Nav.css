@@ -21,4 +21,12 @@ navbar-link-right {
     align-content: stretch;
     align-items: center;
     flex-wrap: wrap;
+	justify-content: center;
+  }
+
+  .scol{
+	flex-grow: 0;
+    flex-shrink: 0;
+    flex-basis: 10%;
+	max-width: 41.666667%;
   }

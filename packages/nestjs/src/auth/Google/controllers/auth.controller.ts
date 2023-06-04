@@ -1,4 +1,4 @@
-import {  Controller, Get, Req, Res, UseGuards, Body, Request } from '@nestjs/common';
+import {  Controller, Get, Req, Res, UseGuards, Body, Request, Redirect  } from '@nestjs/common';
 import { GoogleAuthGuard } from '../utils/Guards';
 import { ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/users/utils/metadata';

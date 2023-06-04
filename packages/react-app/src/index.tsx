@@ -6,6 +6,8 @@ import reportWebVitals from "./reportWebVitals";
 import Main from "./components/Main";
 import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "react-auth-kit";
+import ReactErrorBoundary from "./components/ErrorHandle";
+// import ErrorBoundary from "./components/ErrorHandle";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -13,13 +15,13 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <AuthProvider
-     authType={"cookie"}
-     authName={"42_auth"}
-     cookieDomain={window.location.hostname}
-     cookieSecure={false}
+      authType={"cookie"}
+      authName={"42_auth"}
+      cookieDomain={window.location.hostname}
+      cookieSecure={false}
     >
       <BrowserRouter>
-        <Main />
+          <Main />
       </BrowserRouter>
     </AuthProvider>
   </React.StrictMode>

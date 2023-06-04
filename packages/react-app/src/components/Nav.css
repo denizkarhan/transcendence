@@ -1,9 +1,9 @@
-navbar-link-right {
+/* navbar-link-right {
     float: right;
     margin-right: 0;
-}
+} */
 
-.centered-container {
+/* .centered-container {
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
@@ -11,7 +11,7 @@ navbar-link-right {
     justify-content: center;
     align-items: revert;
     height: 100vh;
-  }
+  } */
 
   .vstack {
     display: flex;
@@ -30,3 +30,5 @@ navbar-link-right {
     flex-basis: 10%;
 	max-width: 41.666667%;
   }
+
+  

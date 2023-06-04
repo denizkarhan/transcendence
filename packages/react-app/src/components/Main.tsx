@@ -1,8 +1,8 @@
-import MyNavbar from "./myNavbar";
 import App from "./App";
+import "../App.css";
+import MyNavbar from "./myNavbar";
 import { useIsAuthenticated } from 'react-auth-kit'
-import { Button, Container } from "react-bootstrap";
-import LoginAndRegister from "./LoginAndRegister";
+// import ErrorBoundary from "./ErrorHandle";
 
 // export interface UserTemplate {
 //   email: string;
@@ -41,8 +41,8 @@ export default function Main() {
   return (
 
     <div>
-      {isAuthenticated() ? <MyNavbar /> : null}
-      <App />
+        {isAuthenticated() ? <MyNavbar /> : null}
+        <App />
     </div>
   );
 }

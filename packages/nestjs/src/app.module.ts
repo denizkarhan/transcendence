@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import "reflect-metadata";
@@ -60,4 +60,5 @@ import { AuthanticaterModule } from './auth/twofactorauth/authanticater.module';
 	}],
 })
 
-export class AppModule{}
+export class AppModule {}
+  

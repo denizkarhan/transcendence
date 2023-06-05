@@ -40,9 +40,9 @@ export default function Main() {
   const isAuthenticated = useIsAuthenticated();
   return (
 
-    <div>
+    <>
         {isAuthenticated() ? <MyNavbar /> : null}
         <App />
-    </div>
+    </>
   );
 }

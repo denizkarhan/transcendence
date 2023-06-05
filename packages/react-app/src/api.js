@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export function getCookie(cookieName) {
 	const cookieString = document.cookie;
@@ -20,10 +21,10 @@ export function getCookie(cookieName) {
 const api = axios.create({
 	baseURL: 'http://localhost:3001',
 	headers: {
-		'Authorization': 'Bearer ' + getCookie('42_auth')
+		'Authorization': 'Bearer ' + getCookie('42_auth'),
 	}
 });
-
+// api.options("*", cors({ origin: 'Access-Control-Allow-Origin', optionsSuccessStatus: 200 }));
 api.interceptors.request.use(req => {
 	const auth = getCookie("42_auth");
 	if (auth) {

@@ -17,6 +17,10 @@ export class UploadsService {
         return await this.avatarRepository.save(image);
     }
 
+	async updateImage(image: Avatar) {
+        return await this.avatarRepository.save(image);
+    }
+
     async deleteImage(id: Avatar) {
         return await this.avatarRepository.delete(id);
     }

@@ -36,24 +36,13 @@ async function bootstrap() {
 		.build();
 	const document = SwaggerModule.createDocument(app, config);
 	SwaggerModule.setup('api', app, document);
-	// app.enableCors({
-	// 	origin: [
-	// 		'http://localhost:3000',
-	// 	],
-	// 	methods: ["GET", "POST"],
-	// 	credentials: true,
-	// });
-	app.use((req, res, next) => {
-        res.header('Access-Control-Allow-Origin', '*');
-        res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-        res.header('Access-Control-Allow-Headers', 'Content-Type, Accept');
-        next();
-    });
-
-    app.enableCors({
-        allowedHeaders:"*",
-        origin: "*"
-    });
+	app.enableCors({
+		origin: [
+			'http://localhost:3000',
+		],
+		methods: ["GET", "POST"],
+		credentials: true,
+	});
 	app.use(passport.initialize());
 	app.use(passport.session());
 	await app.listen(3001);

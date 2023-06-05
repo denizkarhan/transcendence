@@ -62,18 +62,21 @@ export class UploadsController {
 	})
 	async uploadFile(@UploadedFile() file: Express.Multer.File, @Request() req) {
 		const ava = new Avatar;
-
 		ava.name = file.originalname;
 		ava.path = file.path;
 		ava.user = await this.userService.findById(req.user.Id);
-		this.avatarService.createImage(ava);
+		const user = await this.avatarService.getUserAvatar(ava.user);
+		if (user)
+			return await this.avatarService.updateImage(ava);
+		await this.avatarService.createImage(ava);
 	}
 
 	@Get('get-image')
 	async serveAvatar(@Request() req, @Res() res) {
 		const user = await this.userService.getUserByLogin(req.user.username);
 		const ava = await this.avatarService.getUserAvatar(user);
-
+		if (!ava)
+			return {msg: "Avatar Not Found", Status:204};
 		const isUrl = ava.path.startsWith('https' || 'http');
 		if (!isUrl) {
 			res.set('Content-type', 'image/png');

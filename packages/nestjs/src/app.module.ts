@@ -31,6 +31,7 @@ import { IrcModule } from './irc/irc.module';
 import { Message } from './typeorm/entities/message';
 import { Channel } from './typeorm/entities/channels';
 import { ChannelUserList } from './typeorm/entities/channelUserList';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [TypeOrmModule.forRoot({
@@ -44,7 +45,7 @@ import { ChannelUserList } from './typeorm/entities/channelUserList';
 	synchronize: true,
   }), 
   UsersModule, StatsModule, MatchHistoriesModule, UserAchievementsModule, FriendsModule, AuthModule, 
-  PassportModule.register({session:true}), AchievementsModule, LocalAuthModule, FtAuthModule, AuthanticaterModule,  BlockUserModule, UploadsModule, IrcModule],
+  PassportModule.register({session:true}), AchievementsModule, LocalAuthModule, FtAuthModule, AuthanticaterModule,  BlockUserModule, UploadsModule, IrcModule, ChatModule],
   controllers: [AppController],
   providers: [AppService, SesssionSerialaize],
 })

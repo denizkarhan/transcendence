@@ -27,21 +27,23 @@ const App: React.FC = () => {
 	const signin = useSignIn();
 	const navigate = useNavigate();
 	const location = useLocation();
-	const searchParams = new URLSearchParams(location.search);
-	const auth = searchParams.get('code');
-	if (auth) {
-		const user = jwtDecode<decodedToken>(auth);
-		signin({
-			token: auth,
-			tokenType: "Bearer",
-			expiresIn: user.exp,
-			authState: { username: user.Login }
-		});
-		searchParams.delete('code');
-		const newUrl = "http://localhost:3000/";
-		window.history.replaceState({}, '', newUrl);
-	}
-
+	useEffect(() => {
+		const searchParams = new URLSearchParams(location.search);
+		const auth = searchParams.get('code');
+		if (auth) {
+			const user = jwtDecode<decodedToken>(auth);
+			signin({
+				token: auth,
+				tokenType: "Bearer",
+				expiresIn: user.exp,
+				authState: { username: user.Login }
+			});
+			searchParams.delete('code');
+			const newUrl = "http://localhost:3000/";
+			window.history.replaceState({}, '', newUrl);
+			window.location.reload();
+		}
+	})
 	const onFinish = async (values: any) => {
 		await api
 			.post("/auth/login", values)

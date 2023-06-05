@@ -30,20 +30,16 @@ export class AppController {
 
 	@Public()
 	@Post('auth/register')
-	async createUser(@Body() createUserDto: CreateUserDto, @Request() req) {
+	async createUser(@Body() createUserDto: CreateUserDto) {
 		const result = await this.authService.register(createUserDto);
-		// const url = new URL(`${req.protocol}:${req.hostname}`);
-		//     url.port = "3001";
-		//     url.pathname = 'login';
-		//     url.searchParams.set('code', token);
-		//     response.status(302).redirect(url.href);
 		if (result)
 			return { msg: 'OK', status: 200 };
 	}
 
 	@Get('auth/logout')
-	@Public()
+	// @Public()
 	async logout(@Request() req) {
+		console.log(req.user);
 		await this.authService.logout(req.user);
 	}
 }

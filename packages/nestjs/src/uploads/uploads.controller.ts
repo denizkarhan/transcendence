@@ -1,4 +1,4 @@
-import { Controller, Get, HttpException, HttpStatus, Post, Request, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, HttpException, HttpStatus, Post, Request, Res, UploadedFile, UseGuards, UseInterceptors, StreamableFile  } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { diskStorage } from 'multer';
@@ -9,9 +9,11 @@ import { UploadsService } from './uploads.service';
 import { JwtAuthGuard } from 'src/auth/utils/jwt-auth.guard';
 import * as http from 'http';
 import * as https from 'https';
+import { createReadStream } from 'fs';
+import { join } from 'path';
 
 export const imageFileFilter = (req, file, callback) => {
-	if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+	if (!file.originalname.match(/\.(jpeg|jpg)$/)) {
 		return callback(new HttpException('Only image files are allowed!', HttpStatus.BAD_REQUEST), false);
 	}
 	callback(null, true);
@@ -40,7 +42,6 @@ export const storage = {
 
 @Controller('upload-avatar')
 @ApiTags('image')
-@UseGuards(JwtAuthGuard)
 @ApiBearerAuth()
 export class UploadsController {
 
@@ -64,28 +65,30 @@ export class UploadsController {
 		const ava = new Avatar;
 		ava.name = file.originalname;
 		ava.path = file.path;
-		ava.user = await this.userService.findById(req.user.Id);
+		ava.user = await this.userService.getUserByLogin(req.user.Login);
 		const user = await this.avatarService.getUserAvatar(ava.user);
-		if (user)
+		console.log(user);
+		if (user !== null)
 			return await this.avatarService.updateImage(ava);
 		await this.avatarService.createImage(ava);
 	}
 
 	@Get('get-image')
 	async serveAvatar(@Request() req, @Res() res) {
-		const user = await this.userService.getUserByLogin(req.user.username);
+		const user = await this.userService.getUserByLogin(req.user.Login);
 		const ava = await this.avatarService.getUserAvatar(user);
+
 		if (!ava)
-			return {msg: "Avatar Not Found", Status:204};
+			res.send(null);
 		const isUrl = ava.path.startsWith('https' || 'http');
 		if (!isUrl) {
-			res.set('Content-type', 'image/png');
-			res.sendFile(ava.path, {root : './'});
-			return ;
+			res.set('Content-type', 'image/jpeg');
+			res.sendFile(ava.path, { root: './' });
+			return;
 		}
 		const protocol = ava.path.startsWith('https') ? https : http;
 		protocol.get(ava.path, (response) => {
-			res.set('Content-Type', 'image/png');
+			res.set('Content-Type', 'image/jpeg');
 			response.pipe(res);
 		});
 	}

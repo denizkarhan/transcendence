@@ -7,14 +7,10 @@ export function getCookie(cookieName) {
 
 	for (let i = 0; i < cookies.length; i++) {
 		const cookie = cookies[i].trim();
-		// Check if the cookie starts with the given name
 		if (cookie.startsWith(cookieName + '=')) {
-			// Extract the cookie value
 			return cookie.substring(cookieName.length + 1);
 		}
 	}
-
-	// Cookie not found
 	return null;
 }
 
@@ -24,7 +20,7 @@ const api = axios.create({
 		'Authorization': 'Bearer ' + getCookie('42_auth'),
 	}
 });
-// api.options("*", cors({ origin: 'Access-Control-Allow-Origin', optionsSuccessStatus: 200 }));
+
 api.interceptors.request.use(req => {
 	const auth = getCookie("42_auth");
 	if (auth) {

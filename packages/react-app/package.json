@@ -37,7 +37,7 @@
     "webpack": "^5.82.1"
   },
   "scripts": {
-    "start": "nodemon react-scripts start api.js",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

@@ -28,15 +28,18 @@ const App: React.FC = () => {
 	const navigate = useNavigate();
 	const location = useLocation();
 	const searchParams = new URLSearchParams(location.search);
-	const googleAuth = searchParams.get('code');
-	if (googleAuth){
-		const user = jwtDecode<decodedToken>(googleAuth);
+	const auth = searchParams.get('code');
+	if (auth) {
+		const user = jwtDecode<decodedToken>(auth);
 		signin({
-			token: googleAuth,
+			token: auth,
 			tokenType: "Bearer",
 			expiresIn: user.exp,
 			authState: { username: user.Login }
 		});
+		searchParams.delete('code');
+		const newUrl = "http://localhost:3000/";
+		window.history.replaceState({}, '', newUrl);
 	}
 
 	const onFinish = async (values: any) => {

@@ -62,7 +62,7 @@ export class UploadsController {
 	})
 	async uploadFile(@UploadedFile() file: Express.Multer.File, @Request() req) {
 		const ava = new Avatar;
-
+		console.log(file);
 		ava.name = file.originalname;
 		ava.path = file.path;
 		ava.user = await this.userService.findById(req.user.Id);
@@ -71,14 +71,18 @@ export class UploadsController {
 
 	@Get('get-image')
 	async serveAvatar(@Request() req, @Res() res) {
-		const user = await this.userService.getUserByLogin(req.user.username);
+		console.log(req.user);
+		const user = await this.userService.getUserByLogin(req.user.Login);
 		const ava = await this.avatarService.getUserAvatar(user);
 
+		if (!ava)
+			res.send(null);
 		const isUrl = ava.path.startsWith('https' || 'http');
+
 		if (!isUrl) {
 			res.set('Content-type', 'image/png');
-			res.sendFile(ava.path, {root : './'});
-			return ;
+			res.sendFile(ava.path, { root: './' });
+			return;
 		}
 		const protocol = ava.path.startsWith('https') ? https : http;
 		protocol.get(ava.path, (response) => {

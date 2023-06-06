@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { AuthController } from './controllers/auth.controller';
+import { AuthController } from './controllers/google-auth.controller';
 import { GoogleStrategy } from './utils/GoogleStrategy';
 import { UsersModule } from 'src/users/users.module';
 import { GoogleAuthService } from './service/google-auth.service';

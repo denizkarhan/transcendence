@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, Res } from '@nestjs/common';
+import { Injectable, Res } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users/service/users/users.service';
 import * as bcrypt from 'bcrypt';
@@ -21,11 +21,11 @@ export class LocalAuthService{
 	async login(user: any) {
 		var newUser = await this.userService.getUserByLogin(user.username);
 		if (newUser.TwoFactorAuth)
-			return {Status:307, Url:'http://localhost:3001/authanticater/verify'};
+			return {Status:307, Login:newUser.Login};
 		newUser = await this.userService.updateUser({Status:'online'}, newUser);
 		const payload = { Login: newUser.Login, Id: newUser.Id, Status:newUser.Status};
 		return {
-		  access_token: this.jwtService.sign(payload),
+		  access_token: await this.jwtService.sign(payload),
 		};
 	}
 

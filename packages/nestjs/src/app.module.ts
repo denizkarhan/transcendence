@@ -33,7 +33,7 @@ import { JwtAuthGuard } from './auth/utils/jwt-auth.guard';
 import { JwtStrategy } from './auth/utils/jwt.strategy';
 import { GoogleStrategy } from './auth/Google/utils/GoogleStrategy';
 import { AuthanticatorModule } from './auth/twofactorauth/authanticator.module';
-
+import * as cookieParser from 'cookie-parser';
 
 @Module({
   imports: [TypeOrmModule.forRoot({
@@ -47,11 +47,7 @@ import { AuthanticatorModule } from './auth/twofactorauth/authanticator.module';
 	synchronize: true,
   }), 
   UsersModule, StatsModule, MatchHistoriesModule, UserAchievementsModule, FriendsModule, AuthModule, 
-  PassportModule.register({session:true}), AchievementsModule, LocalAuthModule, FtAuthModule, AuthanticatorModule,  BlockUserModule, UploadsModule,
-  JwtModule.register({
-	secret: jwtConstants.secret,
-	signOptions: { expiresIn: '15m' },
-}),],
+  PassportModule.register({session:true}), AchievementsModule, LocalAuthModule, FtAuthModule, AuthanticatorModule,  BlockUserModule, UploadsModule,],
   controllers: [AppController],
   providers: [AppService, SesssionSerialaize, JwtStrategy,
 	{
@@ -60,5 +56,11 @@ import { AuthanticatorModule } from './auth/twofactorauth/authanticator.module';
 	}],
 })
 
-export class AppModule {}
+export class AppModule implements NestModule {
+	configure(consumer: MiddlewareConsumer) {
+	  consumer
+		.apply(cookieParser())
+		.forRoutes('*');
+	}
+  }
   

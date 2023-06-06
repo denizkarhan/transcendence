@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Request, Res, Response, UseFilters, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, Request, Res, UseFilters, UseGuards } from '@nestjs/common';
 import { AppService } from './app.service';
 import { LocalAuthGuard } from './auth/local-auth/local-auth.guard';
 import { ExceptionHandleFilter } from './exception-handle/exception-handle.filter';
@@ -8,6 +8,7 @@ import { SignInDto } from './users/dtos/SignIn.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { Public } from './users/utils/metadata';
 import { CreateUserDto } from './users/dtos/CreateUser.dto';
+import { Response } from 'express';
 
 @Controller()
 @ApiTags('app')
@@ -24,7 +25,12 @@ export class AppController {
 	@UseGuards(LocalAuthGuard)
 	@Post('auth/login')
 	async login(@Body() signDto: SignInDto) {
-		return await this.authService.login(signDto);
+		const token = (await this.authService.login(signDto));
+		if (token?.access_token)
+			return token;
+		else {
+			return {username:token.Login};
+		}
 	}
 
 	@Public()

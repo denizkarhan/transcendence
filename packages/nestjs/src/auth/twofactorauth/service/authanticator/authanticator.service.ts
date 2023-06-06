@@ -29,9 +29,10 @@ export class AuthanticatorService {
 		return verified;
 	}
 
-	async Login(user:any)
+	async Login(user:User)
 	{
-		await this.userService.updateUser({Status:'online'}, user);
+		user = await this.userService.updateUser({Status:'online'}, user);
+		console.log(user);
 		return { access_token: await this.jwtService.sign({ Login: user.Login, Id: user.Id , Status: user.Status}) };
 	}
 }

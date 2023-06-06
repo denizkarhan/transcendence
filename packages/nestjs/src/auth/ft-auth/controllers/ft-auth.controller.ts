@@ -21,11 +21,14 @@ export class FtAuthController {
 	@Public()
 	@Get('/redirect')
 	async handleRedirect(@Req() request : Request, @Res() response: Response) {
-		const token = (await this.authService.login(request.user)).access_token;
+		const token = (await this.authService.login(request.user));
 		const url = new URL("http://localhost:3000/login");
 		url.port = "3000";
 		url.pathname = 'login';
-		url.searchParams.set('code', token);
+		if (token?.access_token)
+			response.cookie('token', token.access_token);
+		else
+			response.cookie('user', token.Login);
 		response.status(302).redirect(url.href);
 	}
 }

@@ -10,7 +10,7 @@ import { SesssionSerialaize } from '../utils/Serialaizer';
 @Module({
 	imports: [UsersModule, JwtModule.register({
 		secret: jwtConstants.secret,
-		signOptions: { expiresIn: '15m' },
+		// signOptions: { expiresIn: '15m' },
 	}),],
 	providers: [LocalAuthService, LocalStrategy],
 	exports: [LocalAuthService]

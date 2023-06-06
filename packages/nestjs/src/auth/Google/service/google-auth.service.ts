@@ -1,8 +1,6 @@
 import { Inject, Injectable} from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { LocalAuthService } from 'src/auth/local-auth/local-auth.service';
 import { Avatar } from 'src/typeorm/entities/avatar';
-import { User } from 'src/typeorm/entities/users';
 import { UploadsService } from 'src/uploads/uploads.service';
 import { CreateUserDto } from 'src/users/dtos/CreateUser.dto';
 import { UsersService } from 'src/users/service/users/users.service';

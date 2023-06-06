@@ -9,7 +9,7 @@ import { jwtConstants } from '../local-auth/constants';
 @Module({
 	imports:[UsersModule, JwtModule.register({
 		secret: jwtConstants.secret,
-		signOptions: { expiresIn: '15m' },
+		// signOptions: { expiresIn: '15m' },
 	}),],
   controllers: [AuthanticatorController],
   providers: [AuthanticatorService],

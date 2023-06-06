@@ -21,9 +21,15 @@ export default function MyNavbar() {
 
 	useEffect(() => {
 		const fetchData = async () => {
-			api.get("upload-avatar/get-image")
-				.then((data) => { setPP(data.data); console.log(data); })
-				.catch();
+			try{const response = await api.get('upload-image/get-image', {responseType: 'arraybuffer'});
+
+			if (response.status === 200){
+				const imgBlob = new Blob([response.data], {type: 'image/jpeg'});
+				const imageURL = URL.createObjectURL(imgBlob);
+				setPP(imageURL);
+			}} catch(error) {
+				console.error('Error fetching image:', error);
+			}
 		};
 
 		fetchData();

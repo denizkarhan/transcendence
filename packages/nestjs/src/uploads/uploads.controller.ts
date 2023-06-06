@@ -1,14 +1,16 @@
-import { Controller, Get, HttpException, HttpStatus, Post, Request, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, HttpException, HttpStatus, Post, Request, Res, StreamableFile, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { diskStorage } from 'multer';
-import { extname } from 'path';
+import { extname, join } from 'path';
 import { Avatar } from '../typeorm/entities/avatar'
 import { UsersService } from 'src/users/service/users/users.service';
 import { UploadsService } from './uploads.service';
 import { JwtAuthGuard } from 'src/auth/utils/jwt-auth.guard';
 import * as http from 'http';
 import * as https from 'https';
+import { createReadStream } from 'fs';
+import { Response } from 'express';
 
 export const imageFileFilter = (req, file, callback) => {
 	if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
@@ -62,13 +64,11 @@ export class UploadsController {
 	})
 	async uploadFile(@UploadedFile() file: Express.Multer.File, @Request() req) {
 		const ava = new Avatar;
+		console.log(file);
 		ava.name = file.originalname;
 		ava.path = file.path;
 		ava.user = await this.userService.findById(req.user.Id);
-		const user = await this.avatarService.getUserAvatar(ava.user);
-		if (user)
-			return await this.avatarService.updateImage(ava);
-		await this.avatarService.createImage(ava);
+		this.avatarService.createImage(ava);
 	}
 
 	@Get('get-image')
@@ -76,18 +76,19 @@ export class UploadsController {
 		console.log(req.user);
 		const user = await this.userService.getUserByLogin(req.user.Login);
 		const ava = await this.avatarService.getUserAvatar(user);
+
 		if (!ava)
-			return {msg: "Avatar Not Found", Status:204};
+			res.send(null);
 		const isUrl = ava.path.startsWith('https' || 'http');
 
 		if (!isUrl) {
-			res.set('Content-type', 'image/png');
+			res.set('Content-type', 'image/jpeg');
 			res.sendFile(ava.path, { root: './' });
 			return;
 		}
 		const protocol = ava.path.startsWith('https') ? https : http;
 		protocol.get(ava.path, (response) => {
-			res.set('Content-Type', 'image/png');
+			res.set('Content-Type', 'image/jpeg');
 			response.pipe(res);
 		});
 	}

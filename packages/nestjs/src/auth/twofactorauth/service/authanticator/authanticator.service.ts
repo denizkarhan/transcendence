@@ -5,7 +5,7 @@ import { User } from 'src/typeorm/entities/users';
 import { UsersService } from 'src/users/service/users/users.service';
 
 @Injectable()
-export class AuthanticaterService {
+export class AuthanticatorService {
 	constructor(private userService: UsersService, private jwtService: JwtService) { }
 
 	async generateTwoFactorAuthenticationSecret(user: User) {

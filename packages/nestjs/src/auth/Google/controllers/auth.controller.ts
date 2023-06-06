@@ -23,13 +23,16 @@ export class AuthController {
 	@Public()
 	@Get('google/redirect')
 	async handleRedirect(@Request() request, @Res() response: Response) {
-		const token = (await this.authService.login(request.user)).access_token;
+		const token = (await this.authService.login(request.user));
+		// console.log(token);
+		if (token.Url !== undefined)
+			return {msg: "Need TFA", status:200};
 		const url = new URL("http://localhost:3000/login");
 		url.port = "3000";
 		url.pathname = 'login';
-		url.searchParams.set('code', token);
+		url.searchParams.set('code', token.access_token);
 		response.status(302).redirect(url.href);
-		return token;
+		// return token;
 	}
 
 	@Get('status')

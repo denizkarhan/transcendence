@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { AuthanticaterController } from './controllers/authanticater/authanticater.controller';
-import { AuthanticaterService } from './service/authanticater/authanticater.service';
+import { AuthanticatorController } from './controllers/authanticater/authanticator.controller';
+import { AuthanticatorService } from './service/authanticator/authanticator.service';
 import { UsersModule } from 'src/users/users.module';
 import { LocalAuthModule } from '../local-auth/local-auth.module';
 import { JwtModule, JwtService } from '@nestjs/jwt';
@@ -11,8 +11,8 @@ import { jwtConstants } from '../local-auth/constants';
 		secret: jwtConstants.secret,
 		signOptions: { expiresIn: '15m' },
 	}),],
-  controllers: [AuthanticaterController],
-  providers: [AuthanticaterService],
-  exports:[AuthanticaterService]
+  controllers: [AuthanticatorController],
+  providers: [AuthanticatorService],
+  exports:[AuthanticatorService]
 })
-export class AuthanticaterModule {}
+export class AuthanticatorModule {}

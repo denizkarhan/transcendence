@@ -32,7 +32,7 @@ import { jwtConstants } from './auth/local-auth/constants';
 import { JwtAuthGuard } from './auth/utils/jwt-auth.guard';
 import { JwtStrategy } from './auth/utils/jwt.strategy';
 import { GoogleStrategy } from './auth/Google/utils/GoogleStrategy';
-import { AuthanticaterModule } from './auth/twofactorauth/authanticater.module';
+import { AuthanticatorModule } from './auth/twofactorauth/authanticator.module';
 
 
 @Module({
@@ -47,7 +47,7 @@ import { AuthanticaterModule } from './auth/twofactorauth/authanticater.module';
 	synchronize: true,
   }), 
   UsersModule, StatsModule, MatchHistoriesModule, UserAchievementsModule, FriendsModule, AuthModule, 
-  PassportModule.register({session:true}), AchievementsModule, LocalAuthModule, FtAuthModule, AuthanticaterModule,  BlockUserModule, UploadsModule,
+  PassportModule.register({session:true}), AchievementsModule, LocalAuthModule, FtAuthModule, AuthanticatorModule,  BlockUserModule, UploadsModule,
   JwtModule.register({
 	secret: jwtConstants.secret,
 	signOptions: { expiresIn: '15m' },

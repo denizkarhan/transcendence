@@ -8,12 +8,11 @@ import { SignInDto } from './users/dtos/SignIn.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { Public } from './users/utils/metadata';
 import { CreateUserDto } from './users/dtos/CreateUser.dto';
-import { JwtService } from '@nestjs/jwt';
 
 @Controller()
 @ApiTags('app')
 export class AppController {
-	constructor(private readonly appService: AppService, private authService: LocalAuthService, private jwtService: JwtService) { }
+	constructor(private readonly appService: AppService, private authService: LocalAuthService) { }
 
 	@Get('/')
 	@Public()

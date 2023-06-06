@@ -84,7 +84,6 @@ const App: React.FC = () => {
 				<Stack gap={3} direction="vertical" style={{ flexDirection: "column", alignSelf: "stretch", alignItems: "stretch" }}>
 					<Card>
 						<Card.Body>
-
 							<Form
 								name="basic"
 								className="login-box"

@@ -7,7 +7,8 @@ import Profile from '../components/Profile'
 import Settings from '../components/Settings'
 import { RequireAuth, useIsAuthenticated } from "react-auth-kit";
 import NotFoundPage from "../404/404";
-import LoginAndRegister from '../components/LoginAndRegister'
+import LoginAndRegister from '../components/LoginAndRegister';
+import Tfa from '../components/Tfa';
 
 
 const RootNavigation = () => {
@@ -21,6 +22,7 @@ const RootNavigation = () => {
 			<Route path="loginorregister" element={isAuthenticated() ? <Home/> : <LoginAndRegister />} />
 			<Route path="profile" element={isAuthenticated() ? <Profile /> : <LoginAndRegister />} />
 			<Route path="settings" element={isAuthenticated() ? <Settings /> : <LoginAndRegister />} />
+			<Route path="tfa" element={<Tfa/>}/>
 			{/* <Route path="settings" element= /> */}
 			{/* <Route path="logout" element={<RequireAuth loginPath={'/loginorregister'}><Logout /></RequireAuth>} /> */}
 			{/* <Route path="game" element={<GameComponent/>}/> */}

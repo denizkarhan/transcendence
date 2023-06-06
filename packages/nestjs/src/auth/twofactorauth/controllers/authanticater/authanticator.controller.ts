@@ -1,5 +1,5 @@
 import { Controller, Get, Param, Post, Request, Res, UnauthorizedException } from '@nestjs/common';
-import { AuthanticaterService } from '../../service/authanticater/authanticater.service';
+import { AuthanticatorService } from '../../service/authanticator/authanticator.service';
 import { UsersService } from 'src/users/service/users/users.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/users/utils/metadata';
@@ -8,8 +8,8 @@ import * as qrcode from 'qrcode';
 @ApiTags('2FA')
 @Controller('authanticater')
 @ApiBearerAuth()
-export class AuthanticaterController {
-	constructor(private authanticaterService: AuthanticaterService, private userService: UsersService) { }
+export class AuthanticatorController {
+	constructor(private authanticaterService: AuthanticatorService, private userService: UsersService) { }
 
 	@Get('enable2fa')
 	async enableTwoFactor(@Request() req, @Res() res) {
@@ -20,9 +20,10 @@ export class AuthanticaterController {
 		res.send(qrCodeBuffer);
 	}
 
-	@Post('verify/:token')
+	@Get('verify/:token')
 	@Public()
 	async verifyToken(@Param('token') token: string, @Request() req) {
+		console.log(req.user);
 		if (req.user) {
 			const user = await this.userService.getUserByLogin(req.user.Login);
 			if (!user.TwoFactorAuth)
@@ -34,3 +35,4 @@ export class AuthanticaterController {
 		throw new UnauthorizedException();
 	}
 }
+

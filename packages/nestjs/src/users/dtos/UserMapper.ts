@@ -12,9 +12,6 @@ export class SerializedUser{
 	UpdatedAt: Date;
 
 	@Exclude()
-	TwoFactorAuth: boolean;
-
-	@Exclude()
 	TwoFactorSecret:string;
 	
 	constructor(partial : Partial<SerializedUser>){

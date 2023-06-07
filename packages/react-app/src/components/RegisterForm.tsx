@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Alert from "react-bootstrap/Alert";
 import { Container } from "react-bootstrap";
-import axios from "axios";
+import api from "../api";
 
 const formItemLayout = {
   labelCol: {
@@ -44,8 +44,8 @@ const App: React.FC = () => {
   });
 
   const onFinish = (values: any) => {
-    axios
-      .post("http://localhost:3001/auth/register", values)
+    api
+      .post("auth/register", values)
       .then((data:any) => navigate("/login"))
       .catch((error:any) =>
         setAlert({

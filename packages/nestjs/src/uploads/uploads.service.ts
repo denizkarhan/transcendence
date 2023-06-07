@@ -18,7 +18,14 @@ export class UploadsService {
     }
 
     async updateImage(image: Avatar) {
-        return await this.avatarRepository.update(image.user.Id, { name: image.name, path: image.path });
+        const oldAvatar = await this.getUserAvatar(image.user);
+        const newAvatar = await this.avatarRepository.create({
+            id: oldAvatar.id,
+            user: oldAvatar.user,
+            path: image.path,
+            name: image.name
+        });
+        return await this.avatarRepository.save(newAvatar);
     }
 
     async deleteImage(id: Avatar) {

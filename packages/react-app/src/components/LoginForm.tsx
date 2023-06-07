@@ -34,7 +34,7 @@ const App: React.FC = () => {
 		signin({
 			token: googleAuth,
 			tokenType: "Bearer",
-			expiresIn: user.exp,
+			expiresIn: 9999999,
 			authState: { username: user.Login }
 		});
 	}
@@ -47,7 +47,7 @@ const App: React.FC = () => {
 				signin({
 					token: response.data.access_token,
 					tokenType: "Bearer",
-					expiresIn: user.exp,
+					expiresIn: 9999999,
 					authState: { username: user.Login }
 				});
 				navigate("/home");

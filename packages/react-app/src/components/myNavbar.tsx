@@ -4,9 +4,15 @@ import { Link } from "react-router-dom";
 import "./Nav.css";
 import { useSignOut, useAuthUser } from "react-auth-kit";
 import api from '../api';
+import { getPP } from './Main';
 
 
-export default function MyNavbar() {
+interface Props {
+	pp: string,
+	setPP: React.Dispatch<React.SetStateAction<string>>,
+}
+
+export default function MyNavbar(prop: Props) {
 	const signOut = useSignOut();
 
 	const handleSignOut = () => {
@@ -16,20 +22,9 @@ export default function MyNavbar() {
 	const auth = useAuthUser();
 	const user = auth()?.username ?? "User";
 
-	const [pp, setPP] = useState<any>("pps/default.png");
-
-
 	useEffect(() => {
 		const fetchData = async () => {
-			try{const response = await api.get('upload-image/get-image', {responseType: 'arraybuffer'});
-
-			if (response.status === 200){
-				const imgBlob = new Blob([response.data], {type: 'image/jpeg'});
-				const imageURL = URL.createObjectURL(imgBlob);
-				setPP(imageURL);
-			}} catch(error) {
-				console.error('Error fetching image:', error);
-			}
+			prop.setPP(await getPP());
 		};
 
 		fetchData();
@@ -43,7 +38,7 @@ export default function MyNavbar() {
 				<Navbar.Toggle aria-controls="basic-navbar-nav" />
 				<Navbar.Collapse id="responsive-navbar-nav" className="justify-content-end">
 					<Nav>
-						<img src={pp} className="img-style" />
+						<img src={prop.pp} className="img-style" />
 						<NavDropdown title={user} id="collasible-nav-dropdown" align={"end"}>
 							<NavDropdown.Item as={Link} to="/profile"> Profile</NavDropdown.Item>
 							<NavDropdown.Item as={Link} to="/settings"> Settings</NavDropdown.Item>

@@ -1,8 +1,8 @@
-import { Controller, Get, HttpException, HttpStatus, Post, Request, Res, StreamableFile, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, HttpException, HttpStatus, Post, Request, Res, UploadedFile, UseGuards, UseInterceptors, StreamableFile  } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { diskStorage } from 'multer';
-import { extname, join } from 'path';
+import { extname } from 'path';
 import { Avatar } from '../typeorm/entities/avatar'
 import { UsersService } from 'src/users/service/users/users.service';
 import { UploadsService } from './uploads.service';
@@ -10,10 +10,10 @@ import { JwtAuthGuard } from 'src/auth/utils/jwt-auth.guard';
 import * as http from 'http';
 import * as https from 'https';
 import { createReadStream } from 'fs';
-import { Response } from 'express';
+import { join } from 'path';
 
 export const imageFileFilter = (req, file, callback) => {
-	if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+	if (!file.originalname.match(/\.(jpeg|jpg)$/)) {
 		return callback(new HttpException('Only image files are allowed!', HttpStatus.BAD_REQUEST), false);
 	}
 	callback(null, true);
@@ -42,7 +42,6 @@ export const storage = {
 
 @Controller('upload-avatar')
 @ApiTags('image')
-@UseGuards(JwtAuthGuard)
 @ApiBearerAuth()
 export class UploadsController {
 
@@ -64,23 +63,26 @@ export class UploadsController {
 	})
 	async uploadFile(@UploadedFile() file: Express.Multer.File, @Request() req) {
 		const ava = new Avatar;
-		console.log(file);
 		ava.name = file.originalname;
 		ava.path = file.path;
-		ava.user = await this.userService.findById(req.user.Id);
-		this.avatarService.createImage(ava);
+		ava.user = await this.userService.getUserByLogin(req.user.Login);
+		const user = await this.avatarService.getUserAvatar(ava.user);
+		console.log(user);
+		if (user !== null)
+			return await this.avatarService.updateImage(ava);
+		await this.avatarService.createImage(ava);
 	}
 
 	@Get('get-image')
 	async serveAvatar(@Request() req, @Res() res) {
-		console.log(req.user);
 		const user = await this.userService.getUserByLogin(req.user.Login);
 		const ava = await this.avatarService.getUserAvatar(user);
-
-		if (!ava)
-			res.send(null);
+		if (ava===null)
+		{
+			res.status(204).send(null);
+			return;
+		}
 		const isUrl = ava.path.startsWith('https' || 'http');
-
 		if (!isUrl) {
 			res.set('Content-type', 'image/jpeg');
 			res.sendFile(ava.path, { root: './' });

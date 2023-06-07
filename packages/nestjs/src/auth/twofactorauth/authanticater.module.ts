@@ -7,12 +7,12 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
 import { jwtConstants } from '../local-auth/constants';
 
 @Module({
-	imports:[UsersModule, JwtModule.register({
+	imports: [UsersModule, JwtModule.register({
 		secret: jwtConstants.secret,
-		signOptions: { expiresIn: '15m' },
+		// signOptions: { expiresIn: '15m' },
 	}),],
-  controllers: [AuthanticaterController],
-  providers: [AuthanticaterService],
-  exports:[AuthanticaterService]
+	controllers: [AuthanticaterController],
+	providers: [AuthanticaterService],
+	exports: [AuthanticaterService]
 })
-export class AuthanticaterModule {}
+export class AuthanticaterModule { }

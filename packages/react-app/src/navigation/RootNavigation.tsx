@@ -10,7 +10,12 @@ import NotFoundPage from "../404/404";
 import LoginAndRegister from '../components/LoginAndRegister'
 
 
-const RootNavigation = () => {
+interface Props {
+	pp : string,
+	setPP: React.Dispatch<React.SetStateAction<string>>,
+}
+
+const RootNavigation = (prop : Props) => {
 	const isAuthenticated = useIsAuthenticated();
 	return (
 		<Routes>
@@ -20,7 +25,7 @@ const RootNavigation = () => {
 			<Route path="register" element={isAuthenticated() ? <Home/> : <RegisterForm />} />
 			<Route path="loginorregister" element={isAuthenticated() ? <Home/> : <LoginAndRegister />} />
 			<Route path="profile" element={isAuthenticated() ? <Profile /> : <LoginAndRegister />} />
-			<Route path="settings" element={isAuthenticated() ? <Settings /> : <LoginAndRegister />} />
+			<Route path="settings" element={isAuthenticated() ? <Settings pp={prop.pp} setPP={prop.setPP}/> : <LoginAndRegister />} />
 			{/* <Route path="settings" element= /> */}
 			{/* <Route path="logout" element={<RequireAuth loginPath={'/loginorregister'}><Logout /></RequireAuth>} /> */}
 			{/* <Route path="game" element={<GameComponent/>}/> */}

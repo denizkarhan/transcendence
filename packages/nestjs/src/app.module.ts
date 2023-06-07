@@ -50,7 +50,7 @@ import { AuthanticaterModule } from './auth/twofactorauth/authanticater.module';
   PassportModule.register({session:true}), AchievementsModule, LocalAuthModule, FtAuthModule, AuthanticaterModule,  BlockUserModule, UploadsModule,
   JwtModule.register({
 	secret: jwtConstants.secret,
-	signOptions: { expiresIn: '15m' },
+	// signOptions: { expiresIn: '15m' },
 }),],
   controllers: [AppController],
   providers: [AppService, SesssionSerialaize, JwtStrategy,

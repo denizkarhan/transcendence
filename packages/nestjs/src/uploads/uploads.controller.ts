@@ -77,9 +77,11 @@ export class UploadsController {
 	async serveAvatar(@Request() req, @Res() res) {
 		const user = await this.userService.getUserByLogin(req.user.Login);
 		const ava = await this.avatarService.getUserAvatar(user);
-
-		if (!ava)
+		if (ava===null)
+		{
 			res.status(204).send(null);
+			return;
+		}
 		const isUrl = ava.path.startsWith('https' || 'http');
 		if (!isUrl) {
 			res.set('Content-type', 'image/jpeg');

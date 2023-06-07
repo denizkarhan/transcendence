@@ -1,9 +1,7 @@
 import { Body, ClassSerializerInterceptor, Controller, Get, HttpException, HttpStatus, Param, Post, Request, UseFilters, UseGuards, UseInterceptors } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
 import { AchievementsService } from 'src/achievements/service/achievements/achievements.service';
 import { AuthenticatedGuard } from 'src/auth/local-auth/authenticated.guard';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { AchievementsService } from 'src/achievements/service/achievements/achievements.service';
 import { JwtAuthGuard } from 'src/auth/utils/jwt-auth.guard';
 import { ExceptionHandleFilter } from 'src/exception-handle/exception-handle.filter';
 import { UserAchievementDto } from 'src/user-achievements/dtos/user-achievements.dto';

@@ -12,12 +12,8 @@ import { UploadsService } from './uploads.service';
     dest: './avatars',
   }),TypeOrmModule.forFeature([Avatar]), UsersModule],
   controllers: [UploadsController],
-<<<<<<< HEAD
-  providers: [UploadsService]
-=======
   providers: [UploadsService],
   exports: [UploadsService]
 
->>>>>>> main
 })
 export class UploadsModule {}

@@ -12,11 +12,7 @@ export class SerializedUser{
 	UpdatedAt: Date;
 
 	@Exclude()
-<<<<<<< HEAD
-	Status:number;
-=======
 	TwoFactorSecret:string;
->>>>>>> main
 	
 	constructor(partial : Partial<SerializedUser>){
 		Object.assign(this, partial);

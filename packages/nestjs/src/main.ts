@@ -40,6 +40,7 @@ async function bootstrap() {
 		origin: [
 			'http://localhost:3000',
 		],
+		methods: '*',
 		credentials: true,
 	});
 	app.use(passport.initialize());

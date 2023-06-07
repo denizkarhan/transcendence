@@ -1,14 +1,17 @@
-import { Controller, Get, OnModuleInit, Req } from '@nestjs/common';
+import { Controller, Get, OnModuleInit, Req, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { MessageBody, OnGatewayConnection, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
+import cookieParser from 'cookie-parser';
 import { Request } from 'express';
+import { authenticate } from 'passport';
 import { Server, Socket } from 'socket.io';
 import { AuthanticaterService } from 'src/auth/authanticater/service/authanticater/authanticater.service';
 import { LocalAuthService } from 'src/auth/local-auth/local-auth.service';
+import { JwtAuthGuard } from 'src/auth/utils/jwt-auth.guard';
 import { UsersService } from 'src/users/service/users/users.service';
 import { ChatService } from './chat.service';
 
-@WebSocketGateway()
+@WebSocketGateway( {cors: true} )
 export class ChatGateway implements OnGatewayConnection {
   
   constructor(private chatService: ChatService, private userService: UsersService, private authService: LocalAuthService, ) {}
@@ -16,13 +19,13 @@ export class ChatGateway implements OnGatewayConnection {
   @WebSocketServer()
   server: Server;
 
+  @UseGuards(JwtAuthGuard)
   async handleConnection(client: Socket) {
-    const sessionCookie = client.handshake.headers.cookie
-    .split('; ')
-    .find((cookie: string) => cookie
-    .startsWith('session')).split('=')[1];
+    
+    console.log('NICK ', client.handshake.headers.authorization.split('%22')[3]);
+    console.log('CLIENTID ', client.id);
+    console.log('SESSIONID', client.handshake.headers.sessionID);
 
-    console.log(sessionCookie);
   }
 
   // async handleConnection(client: Socket) {

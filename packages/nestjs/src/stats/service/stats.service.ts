@@ -16,8 +16,8 @@ export class StatsService {
         this.userRepository = dataSource.getRepository(User);
     }
 
-    async winCount(createMatch: CreateStatsParams){
-        const user = await this.userRepository.findOneBy({Id: createMatch.UserId});
+    async winCount(createMatch: CreateStatsParams, user:any){
+        const newUser = await this.userRepository.findOneBy({Id: user.Id});
         if (!user) return;
         var stats = new Stats();
         try {
@@ -29,7 +29,7 @@ export class StatsService {
             // console.log(winC);
             // console.log('Kaybedilen Maçlar:');
             // console.log(loseC);
-            stats.User = user;
+            stats.User = newUser;
             stats.WinCount = winC;
             stats.LoseCount = loseC;
             stats.LadderLevel = 1;

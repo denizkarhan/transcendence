@@ -2,6 +2,9 @@ import { Body, ClassSerializerInterceptor, Controller, Get, HttpException, HttpS
 import { ApiTags } from '@nestjs/swagger';
 import { AchievementsService } from 'src/achievements/service/achievements/achievements.service';
 import { AuthenticatedGuard } from 'src/auth/local-auth/authenticated.guard';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { AchievementsService } from 'src/achievements/service/achievements/achievements.service';
+import { JwtAuthGuard } from 'src/auth/utils/jwt-auth.guard';
 import { ExceptionHandleFilter } from 'src/exception-handle/exception-handle.filter';
 import { UserAchievementDto } from 'src/user-achievements/dtos/user-achievements.dto';
 import { UserAchievementsService } from 'src/user-achievements/services/user-achievements/user-achievements.service';
@@ -9,7 +12,8 @@ import { UsersService } from 'src/users/service/users/users.service';
 
 @Controller('user-achievements')
 @ApiTags('user-achievements')
-@UseGuards(AuthenticatedGuard)
+@UseGuards(JwtAuthGuard)
+@ApiBearerAuth()
 export class UserAchievementsController {
 
     constructor(private userService: UsersService, private userAchievementsService: UserAchievementsService, private achievementsService: AchievementsService,) {}
@@ -22,7 +26,7 @@ export class UserAchievementsController {
         return await this.userAchievementsService.addAchievement(id, req.user);
     }
 
-    @Get('id/')
+    @Get()
     @UseFilters(ExceptionHandleFilter)
     @UseInterceptors(ClassSerializerInterceptor)   
     async getUserAchievements(@Request() req) {

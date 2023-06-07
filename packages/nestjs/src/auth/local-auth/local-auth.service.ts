@@ -1,8 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable, Res } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users/service/users/users.service';
 import * as bcrypt from 'bcrypt';
-import { Socket } from 'socket.io';
+import { CreateUserDto } from 'src/users/dtos/CreateUser.dto';
+
 @Injectable()
 export class LocalAuthService{
 	constructor(private userService: UsersService, private jwtService: JwtService){
@@ -10,7 +11,6 @@ export class LocalAuthService{
 
 	async validateUser(username: string, pass: string): Promise<any> {
 		const user = await this.userService.getUserByLogin(username);
-
 		if (user && await bcrypt.compare(pass, user.Password)){
 			const { Password, ...result } = user;
 			return result;
@@ -19,24 +19,27 @@ export class LocalAuthService{
 	}
 
 	async login(user: any) {
-		const newUser = await this.userService.getUserByLogin(user.username);
-		const payload = { username: newUser.Login, sub: newUser.Id };
+		var newUser = await this.userService.getUserByLogin(user.username);
+		if (newUser.TwoFactorAuth)
+			return {Status:307, Login:newUser.Login};
+		newUser = await this.userService.updateUser({Status:'online'}, newUser);
+		const payload = { Login: newUser.Login, Id: newUser.Id, Status:newUser.Status};
 		return {
-		  access_token: this.jwtService.sign(payload),
+		  access_token: await this.jwtService.sign(payload),
 		};
 	}
 
-	async getUserFromSocket(client: Socket) {
-		const authorization = client.handshake.headers.authorization;
-		const token = authorization && authorization.split(' ')[1];
-		if (!token) return null;
+	async register(createUserDto: CreateUserDto){
+		return await this.userService.createUser(createUserDto);
+	}
 
-		const payload = this.jwtService.verify(token);
-		if (!payload) return null;
+	async logout(user:any)
+	{
+		await this.userService.updateUser({Status:'offline'}, user);
+	}
 
-		const user = await this.userService.findById(payload.Id);
-		if (!user) return null;
-
-		return user;
+	async findUser(userName:string)
+	{
+		return await this.userService.getUserByLogin(userName);
 	}
 }

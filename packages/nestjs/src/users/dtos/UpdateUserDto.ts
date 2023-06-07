@@ -2,6 +2,7 @@ import { IsEmail, IsIdentityCard, IsNotEmpty, IsStrongPassword } from "class-val
 
 export class UpdateUserDto {
 
+<<<<<<< HEAD
 	FirstName: string;
 
 	LastName: string;
@@ -13,4 +14,20 @@ export class UpdateUserDto {
 
 	// @IsStrongPassword()
 	// Password:string;
+=======
+	FirstName?: string;
+
+	LastName?: string;
+
+	Login?: string;
+
+	@IsEmail()
+	Email?: string;
+
+	Status?:string;
+
+	TwoFactorSecret?:string;
+
+	TwoFactorAuth?:boolean;
+>>>>>>> main
 }

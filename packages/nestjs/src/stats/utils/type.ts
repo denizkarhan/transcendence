@@ -1,6 +1,5 @@
 export type CreateStatsParams={
     
-    UserId:number;
 
     WinCount:number;
     

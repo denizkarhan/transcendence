@@ -1,12 +1,13 @@
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CreateAchievementDto } from 'src/achievements/dto/create-achievement.dto';
 import { AchievementsService } from 'src/achievements/service/achievements/achievements.service';
-import { AuthenticatedGuard } from 'src/auth/local-auth/authenticated.guard';
+import { JwtAuthGuard } from 'src/auth/utils/jwt-auth.guard';
 
 @Controller('achievements')
 @ApiTags('achievements')
-@UseGuards(AuthenticatedGuard)
+@UseGuards(JwtAuthGuard)
+@ApiBearerAuth()
 export class AchievementsController {
 
 	constructor(private achievementService: AchievementsService){}

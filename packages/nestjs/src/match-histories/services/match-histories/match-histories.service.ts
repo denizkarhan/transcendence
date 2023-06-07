@@ -12,8 +12,8 @@ export class MatchHistoriesService {
         this.userRepository = dataSource.getRepository(User);
     }
 
-    async addMatch(createMatch: CreateMatchParams){
-        const user = await this.userRepository.findOneBy({Id: createMatch.UserId});
+    async addMatch(createMatch: CreateMatchParams, userName:string){
+		const user = await this.userRepository.findOneBy({Login:userName});
         const enemy = await this.userRepository.findOneBy({Id: createMatch.EnemyId});
         if (!user) return;
         var match = new MatchHistories();

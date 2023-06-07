@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import "reflect-metadata";
@@ -22,16 +22,23 @@ import { LocalAuthModule } from './auth/local-auth/local-auth.module';
 import { AuthModule } from './auth/Google/auth.module';
 import { SesssionSerialaize } from './auth/utils/Serialaizer';
 import { FtAuthModule } from './auth/ft-auth/ft-auth.module';
-import { AuthanticaterModule } from './auth/authanticater/authanticater.module';
 import { Blocks } from './typeorm/entities/blocks';
 import { Avatar } from './typeorm/entities/avatar';
 import { BlockUserModule } from './block-user/block-user.module';
 import { UploadsModule } from './uploads/uploads.module';
-import { Message } from './typeorm/entities/message';
-import { Channel } from './typeorm/entities/channels';
-import { ChannelUserList } from './typeorm/entities/channelUserList';
-import { ChatModule } from './chat/chat.module';
-import { Chat } from './typeorm/entities/chat';
+import { Message, Message } from './typeorm/entities/message';
+import { Channel, Channel } from './typeorm/entities/channels';
+import { ChannelUserList, ChannelUserList } from './typeorm/entities/channelUserList';
+import { ChatModule, ChatModule } from './chat/chat.module';
+import { Chat, Chat } from './typeorm/entities/chat';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtModule, JwtService } from '@nestjs/jwt';
+import { jwtConstants } from './auth/local-auth/constants';
+import { JwtAuthGuard } from './auth/utils/jwt-auth.guard';
+import { JwtStrategy } from './auth/utils/jwt.strategy';
+import { GoogleStrategy } from './auth/Google/utils/GoogleStrategy';
+import { AuthanticatorModule } from './auth/twofactorauth/authanticator.module';
+import * as cookieParser from 'cookie-parser';
 
 @Module({
   imports: [TypeOrmModule.forRoot({
@@ -45,9 +52,20 @@ import { Chat } from './typeorm/entities/chat';
 	synchronize: true,
   }), 
   UsersModule, StatsModule, MatchHistoriesModule, UserAchievementsModule, FriendsModule, AuthModule, 
-  PassportModule.register({session:true}), AchievementsModule, LocalAuthModule, FtAuthModule, AuthanticaterModule,  BlockUserModule, UploadsModule, ChatModule],
+  PassportModule.register({session:true}), AchievementsModule, LocalAuthModule, FtAuthModule, AuthanticatorModule,  BlockUserModule, UploadsModule, ChatModule],
   controllers: [AppController],
-  providers: [AppService, SesssionSerialaize],
+  providers: [AppService, SesssionSerialaize, JwtStrategy,
+	{
+		provide: APP_GUARD,
+		useClass: JwtAuthGuard,
+	}],
 })
 
-export class AppModule{}
+export class AppModule implements NestModule {
+	configure(consumer: MiddlewareConsumer) {
+	  consumer
+		.apply(cookieParser())
+		.forRoutes('*');
+	}
+  }
+  

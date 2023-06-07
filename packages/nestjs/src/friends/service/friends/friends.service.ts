@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, Req } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable, Req } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToClass } from 'class-transformer';
 import { CreateFriendsParam } from 'src/friends/utils/type';
@@ -15,13 +15,16 @@ export class FriendsService {
 		this.userRepository = dataSource.getRepository(User);
 	}
 
-	async getFriends(user : any){
-		const friends = await this.friendRepository.find({where:{user:user}, relations:['Friend']});
+	async getFriends(userName : string){
+		const user = await this.userRepository.findOneBy({Login:userName});
+		const friends = await this.friendRepository.find({where:{user:user}, relations:['friend']});
+		if (!friends.length)
+			throw new HttpException('you dont have any friends', HttpStatus.OK);
 		return friends.map((fir)=>plainToClass(SerializedUser, fir.friend));
 	}
 
-	async getFriendById(userId:number, friendId:number){
-		const user = await this.userRepository.findOneBy({Id:userId});
+	async getFriendById(userName:string, friendId:number){
+		const user = await this.userRepository.findOneBy({Login:userName});
 		const myFriend = await this.userRepository.findOneBy({Id:friendId});
 		const friends = await this.friendRepository.find({
 			where: {user:user, friend:myFriend },
@@ -30,14 +33,16 @@ export class FriendsService {
 		  return friends.map((temp)=>plainToClass(SerializedUser, temp.friend));
 	}
 
-	async getFriendByName(name:string, user: any){
+	async getFriendByName(name:string, userName: string){
+		const user = await this.userRepository.findOneBy({Login:userName});
 		const friend = await this.userRepository.findOneBy({FirstName:name});
 		if (!friend || friend === undefined)
 			return null;
 		return await this.friendRepository.findOne({where:{user:user}, relations:['Friend']});
 	}
 
-	async addFriend(user:any, friendLogin:string){
+	async addFriend(userName:string, friendLogin:string){
+		const user = await this.userRepository.findOneBy({Login:userName});
 		const friend = await this.userRepository.findOneBy({Login:friendLogin});
 		if (!friend) return null;
 		await this.friendRepository.save({

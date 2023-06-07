@@ -1,18 +1,19 @@
-import { Body, Controller, Post, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
-import { AuthenticatedGuard } from 'src/auth/local-auth/authenticated.guard';
+import { Body, Controller, Post, Request, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/utils/jwt-auth.guard';
 import { CreateMatchDto } from 'src/match-histories/dto/CreateMatch.dto';
 import { MatchHistoriesService } from 'src/match-histories/services/match-histories/match-histories.service';
 
-@UseGuards(AuthenticatedGuard)
+@UseGuards(JwtAuthGuard)
 @Controller('match-histories')
 @ApiTags('match')
+@ApiBearerAuth()
 export class MatchHistoriesController {
     constructor(private matchService: MatchHistoriesService){}
 
     @Post('addMatch')
     @UsePipes(new ValidationPipe())
-    async addMatch(@Body() createMatch: CreateMatchDto){
-        await this.matchService.addMatch(createMatch);
+    async addMatch(@Body() createMatch: CreateMatchDto, @Request() req){
+        await this.matchService.addMatch(createMatch, req.user.Login);
     }
 }

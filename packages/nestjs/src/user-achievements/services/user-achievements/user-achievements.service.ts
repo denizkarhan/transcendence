@@ -17,9 +17,8 @@ export class UserAchievementsService {
             User: user,
             Achivement: achievement,
         });
-		console.log(await this.userAchievementsRepository.findOneBy({...newUserAchievement}))
-		// if ()
-		// 	throw new HttpException('Tekrar Eden Kayıt', HttpStatus.FORBIDDEN);
+		if (await this.userAchievementsRepository.findOneBy({...newUserAchievement}))
+			throw new HttpException('Tekrar Eden Kayıt', HttpStatus.FORBIDDEN);
         return await this.userAchievementsRepository.save(newUserAchievement);
     }
 

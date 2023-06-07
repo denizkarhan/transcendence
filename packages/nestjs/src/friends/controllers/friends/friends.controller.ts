@@ -3,13 +3,12 @@ import { ExceptionHandleFilter } from 'src/exception-handle/exception-handle.fil
 import { CreateFriendDto } from 'src/friends/dto/CreateFriend.dto';
 import { FriendsService } from 'src/friends/service/friends/friends.service';
 import { SerializedUser } from 'src/users/dtos/UserMapper';
-import { AuthenticatedGuard } from 'src/auth/local-auth/authenticated.guard';
 import { LocalAuthGuard } from 'src/auth/local-auth/local-auth.guard';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
-@UseGuards(AuthenticatedGuard)
 @Controller('friends')
 @ApiTags('friends')
+@ApiBearerAuth()
 export class FriendsController {
 
 	constructor(private friendService: FriendsService){}
@@ -17,13 +16,13 @@ export class FriendsController {
 	@Get('all')
 	@UseInterceptors(ClassSerializerInterceptor)
 	async getFriends(@Request() req){
-		return await this.friendService.getFriends(req.user);
+		return await this.friendService.getFriends(req.user.Login);
 	}
 
 	@Get('byname/:firstname')
 	@UseInterceptors(ClassSerializerInterceptor)
 	async getFriendByName(@Param('firstname') firstname: string, @Request() req){
-		const friend = await this.friendService.getFriendByName(firstname, req.user);
+		const friend = await this.friendService.getFriendByName(firstname, req.user.Login);
 		if (!friend) throw new HttpException('Friend Not Found', HttpStatus.NOT_FOUND);
 		return new SerializedUser(friend.friend);
 	}
@@ -33,8 +32,8 @@ export class FriendsController {
 	@UsePipes(new ValidationPipe())
 	@UseFilters(ExceptionHandleFilter)
 	async addFriend(@Param('name') name:string, @Request() req){
-		const res = await this.friendService.addFriend(req.user, name);
-		if (!res) throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
+		const res = await this.friendService.addFriend(req.user.Login, name);
+			if (!res) throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
 	}
 
 }

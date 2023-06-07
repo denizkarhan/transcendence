@@ -4,7 +4,6 @@ import { MatchHistories } from "./matchHistories";
 import { UserAchievements } from "./userAchievements";
 import { IsNotEmpty } from "class-validator";
 import { Blocks } from "./blocks";
-import * as IRC from 'irc';
 import { Exclude } from "class-transformer";
 
 @Entity({name: 'users'})
@@ -24,11 +23,17 @@ export class User{
 	@Column({unique: true})
 	Email: string;
 
-	@Column()
-	Status: number;
+	@Column({default:'offline'})
+	Status: string;
 
 	@Column()
 	Password:string;
+
+	@Column({nullable:true})
+	TwoFactorSecret:string;
+
+	@Column({default:false})
+	TwoFactorAuth: boolean;
 
 	@Column()
 	CreatedAt: Date;

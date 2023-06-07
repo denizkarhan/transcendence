@@ -1,8 +1,6 @@
 import { IsNotEmpty } from "class-validator";
 
 export class CreateStatsDto{
-    @IsNotEmpty()
-    UserId:number;
 
     @IsNotEmpty()
     WinCount:number;

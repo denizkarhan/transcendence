@@ -31,7 +31,7 @@ export class BlockUserService {
         const user = await this.userRepository.findOneBy({ Id: id });
 
         const result = await this.blocksRepository.find({
-            where:{blockingUser:user}, relations:['Block']
+            where:{blockingUser:user}, relations:['blockedUser']
         });
 		return result.map((block)=>plainToClass(SerializedUser, block.blockedUser))
     }

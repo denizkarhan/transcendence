@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+	"types": ["socket.io-client"],
     "target": "es5",
     "lib": [
       "dom",

@@ -1,5 +1,6 @@
 import { Injectable, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { LocalAuthModule } from 'src/auth/local-auth/local-auth.module';
 import { User } from 'src/typeorm/entities/users';
 import { UsersController } from './controllers/users/users.controller';
 import { UsersService } from './service/users/users.service';

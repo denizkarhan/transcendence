@@ -27,11 +27,11 @@ import { Blocks } from './typeorm/entities/blocks';
 import { Avatar } from './typeorm/entities/avatar';
 import { BlockUserModule } from './block-user/block-user.module';
 import { UploadsModule } from './uploads/uploads.module';
-import { IrcModule } from './irc/irc.module';
 import { Message } from './typeorm/entities/message';
 import { Channel } from './typeorm/entities/channels';
 import { ChannelUserList } from './typeorm/entities/channelUserList';
 import { ChatModule } from './chat/chat.module';
+import { Chat } from './typeorm/entities/chat';
 
 @Module({
   imports: [TypeOrmModule.forRoot({
@@ -41,11 +41,11 @@ import { ChatModule } from './chat/chat.module';
 	username: 'ftuncer',
 	password: '123',
 	database: 'ftuncer',
-	entities: [User, Friend, Stats, Achievements, UserAchievements, MatchHistories, Blocks, Avatar, Message, Channel, ChannelUserList],
+	entities: [User, Friend, Stats, Achievements, UserAchievements, MatchHistories, Blocks, Avatar, Message, Channel, ChannelUserList, Chat],
 	synchronize: true,
   }), 
   UsersModule, StatsModule, MatchHistoriesModule, UserAchievementsModule, FriendsModule, AuthModule, 
-  PassportModule.register({session:true}), AchievementsModule, LocalAuthModule, FtAuthModule, AuthanticaterModule,  BlockUserModule, UploadsModule, IrcModule, ChatModule],
+  PassportModule.register({session:true}), AchievementsModule, LocalAuthModule, FtAuthModule, AuthanticaterModule,  BlockUserModule, UploadsModule, ChatModule],
   controllers: [AppController],
   providers: [AppService, SesssionSerialaize],
 })

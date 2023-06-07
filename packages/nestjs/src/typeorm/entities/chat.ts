@@ -1,21 +1,15 @@
-import {
-    Entity,
-    Column,
-    PrimaryGeneratedColumn,
-    CreateDateColumn,
-   } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, OneToOne, JoinColumn, } from 'typeorm';
+import { User } from './users';
 
 @Entity()
 export class Chat {
-    @PrimaryGeneratedColumn('uuid')
+    @PrimaryGeneratedColumn()
     id: number;
     
-    @Column()
-    email: string;
-    
-    @Column({ unique: true })
-    text: string;
-    
-    @CreateDateColumn()
-    createdAt: Date;
+    @Column({ nullable: true })
+    socketid: string;
+
+    @OneToOne(()=>User)
+    @JoinColumn()
+    user: User;
 }

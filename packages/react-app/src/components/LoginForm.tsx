@@ -5,6 +5,8 @@ import { Alert, Container, Stack, Card, Button } from "react-bootstrap";
 import api, { getCookie, deleteCookie } from "../api";
 import { useSignIn } from "react-auth-kit";
 import jwtDecode from "jwt-decode";
+import ModalComponent from "./Tfa";
+import Cookies from 'js-cookie';
 
 const onFinishFailed = (errorInfo: any) => {
 	console.log("Failed:", errorInfo);
@@ -24,36 +26,43 @@ interface decodedToken {
 
 
 const App: React.FC = () => {
+	const [showModal, setShowModal] = useState(false);
 	const signin = useSignIn();
 	const navigate = useNavigate();
-	const [user, setUser] = useState<string | null>('');
-	const [token, setToken] = useState<string | null>('');
-	useEffect(() => {
-		setToken(getCookie('token'));
-		setUser(getCookie('user'));
-		if (token) {
-			const user = jwtDecode<decodedToken>(token);
-			signin({
-				token: token,
-				tokenType: "Bearer",
-				expiresIn: 9999,
-				authState: { username: user.Login }
-			});
-			deleteCookie("token");
-			navigate("/")
-		}
-		else if (user){
-			navigate("/tfa");
-		}
-	})
+	// const [user, setUser] = useState<string | null>(null);
+	// const [token, setToken] = useState<string | null>(null);
+	const handleCloseModal = () => {
+		Cookies.remove('user');
+		setShowModal(false);
+	}
+	// // useEffect(() => {
+	// 	setToken(getCookie('token'));
+	// 	setUser(getCookie('user'));
+	// 	if (token) {
+	// 		const user = jwtDecode<decodedToken>(token);
+	// 		signin({
+	// 			token: token,
+	// 			tokenType: "Bearer",
+	// 			expiresIn: 9999,
+	// 			authState: { username: user.Login }
+	// 		});
+	// 		deleteCookie("token");
+	// 		navigate("/")
+	// 	}
+	// 	else if (user){
+	// 		// navigate("/tfa");
+	// 		setShowModal(true);
+	// 	}
+	// })
 	const onFinish = async (values: any) => {
 		await api
 			.post("/auth/login", values)
 			.then((response: any) => {
+				// response.preventDefault();
 				if (response.data.username)
 				{
-					document.cookie = `user=${response.data.username}; expires=Thu, 01 Jan 2025 00:00:00 UTC; path=/`;
-					navigate("/tfa");
+					document.cookie = `user=${response.data.username}; expires=Thu, 01 Jan 2030 00:00:00 UTC; path=/`;
+					setShowModal(true);
 				}
 				const user = jwtDecode<decodedToken>(response.data.access_token);
 				signin({
@@ -116,6 +125,7 @@ const App: React.FC = () => {
 									<Alert.Heading>Error!</Alert.Heading>
 									<p>{alert.message}</p>
 								</Alert>
+								<ModalComponent show={showModal} onHide={handleCloseModal} />
 								<Stack gap={1} direction="vertical" style={{ flexDirection: "column", alignItems: "stretch" }}>
 									<Stack gap={1} direction="vertical" style={{ flexDirection: "column", alignItems: "stretch" }}>
 										<Button type="submit" bsPrefix="btn btn-outline-primary">

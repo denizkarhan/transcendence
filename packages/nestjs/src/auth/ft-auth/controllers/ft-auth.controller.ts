@@ -22,7 +22,7 @@ export class FtAuthController {
 	@Get('/redirect')
 	async handleRedirect(@Req() request : Request, @Res() response: Response) {
 		const token = (await this.authService.login(request.user));
-		const url = new URL("http://localhost:3000/login");
+		const url = new URL("http://"+ request.ip + "/login");
 		url.port = "3000";
 		url.pathname = 'login';
 		if (token?.access_token)

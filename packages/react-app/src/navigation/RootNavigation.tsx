@@ -23,7 +23,6 @@ const RootNavigation = () => {
 			<Route path="loginorregister" element={isAuthenticated() ? <Home/> : <LoginAndRegister />} />
 			<Route path="profile" element={isAuthenticated() ? <Profile /> : <LoginAndRegister />} />
 			<Route path="settings" element={isAuthenticated() ? <Settings /> : <LoginAndRegister />} />
-			<Route path="tfa" element={<Tfa/>}/>
 			<Route path="chat" element={<Chat/>}/>
 			{/* <Route path="settings" element= /> */}
 			{/* <Route path="logout" element={<RequireAuth loginPath={'/loginorregister'}><Logout /></RequireAuth>} /> */}

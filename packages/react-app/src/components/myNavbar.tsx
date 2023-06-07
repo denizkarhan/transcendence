@@ -25,9 +25,12 @@ export default function MyNavbar() {
 				responseType: 'blob',
 			})
 				.then((response) => {
-					const blob = new Blob([response.data], { type: 'image/jpeg' });
-					const objectUrl = URL.createObjectURL(blob);
-					setPP(objectUrl);
+					if (response.status !== 204)
+					{
+						const blob = new Blob([response.data], { type: 'image/jpeg' });
+						const objectUrl = URL.createObjectURL(blob);
+						setPP(objectUrl);
+					}
 				})
 				.catch();
 		};

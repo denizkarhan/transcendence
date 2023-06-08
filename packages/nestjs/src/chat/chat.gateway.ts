@@ -17,9 +17,9 @@ import { ChatService } from './chat.service';
     origin: '*',
   },
 })
-export class ChatGateway implements OnGatewayConnection {
-  
-  constructor(private chatService: ChatService, private userService: UsersService, private authService: LocalAuthService, ) {}
+export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
+
+  constructor(private chatService: ChatService, private userService: UsersService, private authService: LocalAuthService,) { }
 
   @WebSocketServer()
   server: Server;
@@ -31,18 +31,14 @@ export class ChatGateway implements OnGatewayConnection {
     const nick = client.handshake.headers.cookie.split("%22")[3];
     const sessionID = client.handshake.headers.cookie.split('=')[1].split(';')[0];
 
-    const newChatter = this.chatService.chatterRepository.create({
-      socketid: client.id,
-      user: (await this.userService.getUserByLogin(nick)),
-    });
-    this.chatService.chatterRepository.save(newChatter)
+    if (!nick || !sessionID) {
+      client.disconnect(true);
+    } else {
+      console.log(`Client ${client.id} connected. Auth token: ${sessionID}`);
+    }
   }
-  
-  @SubscribeMessage('events')
-  handleEvent(
-    @MessageBody() data: string,
-    @ConnectedSocket() client: Socket,
-    ): string {
-    return data;
+
+  async handleDisconnect(client: Socket) {
+    console.log(`Client ${client.id} disconnected`);
   }
 }

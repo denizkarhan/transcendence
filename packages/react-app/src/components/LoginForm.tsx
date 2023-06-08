@@ -64,7 +64,7 @@ const App: React.FC = () => {
 				signin({
 					token: response.data.access_token,
 					tokenType: "Bearer",
-					expiresIn: 9999,
+					expiresIn: 9999999,
 					authState: { username: user.Login }
 				});
 				showSuccess("Successful");

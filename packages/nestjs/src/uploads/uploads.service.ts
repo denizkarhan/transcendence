@@ -7,7 +7,7 @@ import { UsersService } from 'src/users/service/users/users.service';
 
 @Injectable()
 export class UploadsService {
-    constructor(@InjectRepository(Avatar) private readonly avatarRepository: Repository<Avatar>, ) {}
+    constructor(@InjectRepository(Avatar) private readonly avatarRepository: Repository<Avatar>,) { }
 
     async getImage(id: number) {
         return await (await this.avatarRepository.findOneBy({ id }));
@@ -17,12 +17,12 @@ export class UploadsService {
         return await this.avatarRepository.save(image);
     }
 
-	async updateImage(image: Avatar) {
+    async updateImage(image: Avatar) {
         const oldAvatar = await this.getUserAvatar(image.user);
         const newAvatar = await this.avatarRepository.create({
-            id:oldAvatar.id,
-            user:oldAvatar.user,
-            path:image.path,
+            id: oldAvatar.id,
+            user: oldAvatar.user,
+            path: image.path,
             name: image.name
         });
         return await this.avatarRepository.save(newAvatar);

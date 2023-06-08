@@ -1,7 +1,7 @@
 import { Container } from 'react-bootstrap';
 import api from '../api';
-// import UpdateProfile from './UpdateProfile';
-// import UpdatePP from './UpdatePP';
+import UpdateProfile from './UpdateProfile';
+import UpdatePP from './UpdatePP';
 
 interface Props {
 	pp : string,
@@ -19,8 +19,8 @@ export default function Settings(prop : Props) {
     }
     return (
         <Container>
-            {/* <UpdateProfile />
-            <UpdatePP pp={prop.pp} setPP={prop.setPP}/> */}
+            <UpdateProfile />
+            <UpdatePP pp={prop.pp} setPP={prop.setPP}/>
         </Container>
     );
 }

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useLocation, useNavigate } from 'react-router-dom';
+// import 'dotenv/config';
 
 export function getCookie(cookieName) {
 	const cookieString = document.cookie;
@@ -17,8 +17,10 @@ export function deleteCookie(name) {
 	document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
 };
 
+// console.log(process.env.BACK_END_URI);
+
 const api = axios.create({
-	baseURL: 'http://localhost:3001',
+	baseURL: "http://localhost:3001",
 	headers: {
 		'Authorization': 'Bearer ' + getCookie('42_auth'),
 	}
@@ -27,7 +29,7 @@ const api = axios.create({
 api.interceptors.request.use(req => {
 	const auth = getCookie("42_auth");
 	if (auth) {
-		req.headers[ "Authorization" ] = 'Bearer ' + auth;
+		req.headers["Authorization"] = 'Bearer ' + auth;
 	}
 	return req;
 });

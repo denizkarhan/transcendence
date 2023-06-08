@@ -14,27 +14,27 @@ import { ToastProvider } from '../components/Toast'
 
 
 interface Props {
-	pp : string,
+	pp: string,
 	setPP: React.Dispatch<React.SetStateAction<string>>,
 }
 
-const RootNavigation = (prop : Props) => {
+const RootNavigation = (prop: Props) => {
 	const isAuthenticated = useIsAuthenticated();
 	return (
 		<ToastProvider>
-		<Routes>
-			<Route path="/" element={isAuthenticated() ? <Home /> : <LoginAndRegister />} />
-			<Route path="home" element={isAuthenticated() ? <Home />: <LoginAndRegister />} />
-			<Route path="login" element={isAuthenticated() ? <Home/> : <LoginForm />} />
-			<Route path="register" element={isAuthenticated() ? <Home/> : <RegisterForm />} />
-			<Route path="loginorregister" element={isAuthenticated() ? <Home/> : <LoginAndRegister />} />
-			<Route path="profile" element={isAuthenticated() ? <Profile /> : <LoginAndRegister />} />
-			<Route path="settings" element={isAuthenticated() ? <Settings pp={prop.pp} setPP={prop.setPP}/> : <LoginAndRegister />} />
-			{/* <Route path="settings" element= /> */}
-			{/* <Route path="logout" element={<RequireAuth loginPath={'/loginorregister'}><Logout /></RequireAuth>} /> */}
-			{/* <Route path="game" element={<GameComponent/>}/> */}
-			<Route path="*" element={<NotFoundPage />} />
-		</Routes>
+			<Routes>
+				<Route path="/" element={isAuthenticated() ? <Home /> : <LoginAndRegister />} />
+				<Route path="home" element={isAuthenticated() ? <Home /> : <LoginAndRegister />} />
+				<Route path="login" element={isAuthenticated() ? <Home /> : <LoginForm />} />
+				<Route path="register" element={isAuthenticated() ? <Home /> : <RegisterForm />} />
+				<Route path="loginorregister" element={isAuthenticated() ? <Home /> : <LoginAndRegister />} />
+				<Route path="profile" element={isAuthenticated() ? <Profile /> : <LoginAndRegister />} />
+				<Route path="settings" element={isAuthenticated() ? <Settings pp={prop.pp} setPP={prop.setPP} /> : <LoginAndRegister />} />
+				{/* <Route path="settings" element= /> */}
+				{/* <Route path="logout" element={<RequireAuth loginPath={'/loginorregister'}><Logout /></RequireAuth>} /> */}
+				{/* <Route path="game" element={<GameComponent/>}/> */}
+				<Route path="*" element={<NotFoundPage />} />
+			</Routes>
 		</ToastProvider>
 	)
 }

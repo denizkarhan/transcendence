@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import "./Nav.css";
 import { useSignOut, useAuthUser } from "react-auth-kit";
 import api from '../api';
-import { getPP } from "./Main";
+import { getPP } from './Main';
 
 
 interface Props {

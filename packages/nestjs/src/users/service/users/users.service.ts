@@ -57,4 +57,5 @@ export class UsersService {
 		return await this.userRepository.save(newUser);
 	}
 
+	
 }

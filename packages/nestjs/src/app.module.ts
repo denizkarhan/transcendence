@@ -47,7 +47,11 @@ import * as cookieParser from 'cookie-parser';
 	synchronize: true,
   }), 
   UsersModule, StatsModule, MatchHistoriesModule, UserAchievementsModule, FriendsModule, AuthModule, 
-  PassportModule.register({session:true}), AchievementsModule, LocalAuthModule, FtAuthModule, AuthanticatorModule,  BlockUserModule, UploadsModule,],
+  PassportModule.register({session:true}), AchievementsModule, LocalAuthModule, FtAuthModule, AuthanticatorModule,  BlockUserModule, UploadsModule,
+  JwtModule.register({
+	secret: jwtConstants.secret,
+	// signOptions: { expiresIn: '15m' },
+})],
   controllers: [AppController],
   providers: [AppService, SesssionSerialaize, JwtStrategy,
 	{

@@ -30,7 +30,7 @@ import { Message } from './typeorm/entities/message';
 import { Channel } from './typeorm/entities/channels';
 import { ChannelUserList } from './typeorm/entities/channelUserList';
 import { ChatModule } from './chat/chat.module';
-import { Chat } from './typeorm/entities/chat';
+import { Chatter } from './typeorm/entities/chat';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { jwtConstants } from './auth/local-auth/constants';
@@ -48,7 +48,7 @@ import * as cookieParser from 'cookie-parser';
 	username: 'ftuncer',
 	password: '123',
 	database: 'ftuncer',
-	entities: [User, Friend, Stats, Achievements, UserAchievements, MatchHistories, Blocks, Avatar, Message, Channel, ChannelUserList, Chat],
+	entities: [User, Friend, Stats, Achievements, UserAchievements, MatchHistories, Blocks, Avatar, Message, Channel, ChannelUserList, Chatter],
 	synchronize: true,
   }), 
   UsersModule, StatsModule, MatchHistoriesModule, UserAchievementsModule, FriendsModule, AuthModule, 

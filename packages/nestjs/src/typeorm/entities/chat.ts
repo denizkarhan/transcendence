@@ -2,7 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, OneToOne, Joi
 import { User } from './users';
 
 @Entity()
-export class Chat {
+export class Chatter {
     @PrimaryGeneratedColumn()
     id: number;
     

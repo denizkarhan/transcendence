@@ -29,36 +29,34 @@ const App: React.FC = () => {
 	const [showModal, setShowModal] = useState(false);
 	const signin = useSignIn();
 	const navigate = useNavigate();
-	// const [user, setUser] = useState<string | null>(null);
-	// const [token, setToken] = useState<string | null>(null);
+	const [user, setUser] = useState<string | null>(null);
+	const [token, setToken] = useState<string | null>(null);
 	const handleCloseModal = () => {
-		Cookies.remove('user');
+		deleteCookie('user');
 		setShowModal(false);
 	}
-	// // useEffect(() => {
-	// 	setToken(getCookie('token'));
-	// 	setUser(getCookie('user'));
-	// 	if (token) {
-	// 		const user = jwtDecode<decodedToken>(token);
-	// 		signin({
-	// 			token: token,
-	// 			tokenType: "Bearer",
-	// 			expiresIn: 9999,
-	// 			authState: { username: user.Login }
-	// 		});
-	// 		deleteCookie("token");
-	// 		navigate("/")
-	// 	}
-	// 	else if (user){
-	// 		// navigate("/tfa");
-	// 		setShowModal(true);
-	// 	}
-	// })
+	useEffect(() => {
+		setToken(getCookie('token'));
+		setUser(getCookie('user'));
+		if (token) {
+			const user = jwtDecode<decodedToken>(token);
+			signin({
+				token: token,
+				tokenType: "Bearer",
+				expiresIn: 9999,
+				authState: { username: user.Login }
+			});
+			deleteCookie("token");
+			navigate("/")
+		}
+		else if (user){
+			setShowModal(true);
+		}
+	},[]);
 	const onFinish = async (values: any) => {
 		await api
 			.post("/auth/login", values)
 			.then((response: any) => {
-				// response.preventDefault();
 				if (response.data.username)
 				{
 					document.cookie = `user=${response.data.username}; expires=Thu, 01 Jan 2030 00:00:00 UTC; path=/`;
@@ -121,10 +119,10 @@ const App: React.FC = () => {
 								>
 									<Input.Password placeholder="Password" />
 								</Form.Item>
-								<Alert variant="danger" show={alert.state}>
+								{/* <Alert variant="danger" show={alert.state}>
 									<Alert.Heading>Error!</Alert.Heading>
 									<p>{alert.message}</p>
-								</Alert>
+								</Alert> */}
 								<ModalComponent show={showModal} onHide={handleCloseModal} />
 								<Stack gap={1} direction="vertical" style={{ flexDirection: "column", alignItems: "stretch" }}>
 									<Stack gap={1} direction="vertical" style={{ flexDirection: "column", alignItems: "stretch" }}>

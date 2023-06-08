@@ -10,11 +10,18 @@ import NotFoundPage from "../404/404";
 import LoginAndRegister from '../components/LoginAndRegister';
 import Tfa from '../components/Tfa';
 import Chat from '../components/Chat';
+import { ToastProvider } from '../components/Toast'
 
 
-const RootNavigation = () => {
+interface Props {
+	pp : string,
+	setPP: React.Dispatch<React.SetStateAction<string>>,
+}
+
+const RootNavigation = (prop : Props) => {
 	const isAuthenticated = useIsAuthenticated();
 	return (
+		<ToastProvider>
 		<Routes>
 			<Route path="/" element={isAuthenticated() ? <Home /> : <LoginAndRegister />} />
 			<Route path="home" element={isAuthenticated() ? <Home />: <LoginAndRegister />} />
@@ -22,13 +29,13 @@ const RootNavigation = () => {
 			<Route path="register" element={isAuthenticated() ? <Home/> : <RegisterForm />} />
 			<Route path="loginorregister" element={isAuthenticated() ? <Home/> : <LoginAndRegister />} />
 			<Route path="profile" element={isAuthenticated() ? <Profile /> : <LoginAndRegister />} />
-			<Route path="settings" element={isAuthenticated() ? <Settings /> : <LoginAndRegister />} />
-			<Route path="chat" element={<Chat/>}/>
+			<Route path="settings" element={isAuthenticated() ? <Settings pp={prop.pp} setPP={prop.setPP}/> : <LoginAndRegister />} />
 			{/* <Route path="settings" element= /> */}
 			{/* <Route path="logout" element={<RequireAuth loginPath={'/loginorregister'}><Logout /></RequireAuth>} /> */}
 			{/* <Route path="game" element={<GameComponent/>}/> */}
 			<Route path="*" element={<NotFoundPage />} />
 		</Routes>
+		</ToastProvider>
 	)
 }
 export default RootNavigation;

@@ -6,7 +6,6 @@ import reportWebVitals from "./reportWebVitals";
 import Main from "./components/Main";
 import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "react-auth-kit";
-import ReactErrorBoundary from "./components/ErrorHandle";
 // import ErrorBoundary from "./components/ErrorHandle";
 
 const root = ReactDOM.createRoot(

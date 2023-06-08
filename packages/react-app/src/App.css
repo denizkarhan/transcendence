@@ -41,3 +41,11 @@
   padding: 20px;
   text-align: center;
 }
+
+.ant-select-selection-placeholder {
+  color: #000000;
+}
+
+.ant-picker-input input::placeholder {
+  color: #000000;
+}

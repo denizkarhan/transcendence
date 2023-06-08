@@ -1,10 +1,10 @@
-import { Button, Form, Input } from "antd";
+import { Form, Input } from "antd";
 import React, { useState } from "react";
-// import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Alert from "react-bootstrap/Alert";
-import { Container } from "react-bootstrap";
-import axios from "axios";
+import { Container, Stack, Card, Button } from "react-bootstrap";
+import api from "../api";
+import { useToast } from "./Toast";
 
 const formItemLayout = {
   labelCol: {
@@ -17,18 +17,18 @@ const formItemLayout = {
   },
 };
 
-const tailFormItemLayout = {
-  wrapperCol: {
-    xs: {
-      span: 24,
-      offset: 0,
-    },
-    sm: {
-      span: 16,
-      offset: 8,
-    },
-  },
-};
+// const tailFormItemLayout = {
+//   wrapperCol: {
+//     xs: {
+//       span: 24,
+//       offset: 0,
+//     },
+//     sm: {
+//       span: 16,
+//       offset: 8,
+//     },
+//   },
+// };
 
 interface alerts {
   state: boolean;
@@ -36,24 +36,16 @@ interface alerts {
 }
 
 const App: React.FC = () => {
+  const {showError, showSuccess} = useToast();
   const [form] = Form.useForm();
   const navigate = useNavigate();
-  const [alert, setAlert] = useState<alerts>({
-    state: false,
-    message: "",
-  });
 
   const onFinish = (values: any) => {
-    axios
-      .post("http://localhost:3001/auth/register", values)
-      .then((data:any) => navigate("/login"))
-      .catch((error:any) =>
-        setAlert({
-          state: true,
-          message: error.response?.data.message,
-        })
+    const response = api.post("/auth/register", values)
+      .then((data: any) => {showSuccess("Redirect to Login"); navigate("/login")})
+      .catch((error: any) =>
+        showError(error.response?.data.message)
       );
-    // navigate("/login");
   };
 
   const handleClick = () => {
@@ -61,114 +53,118 @@ const App: React.FC = () => {
   };
 
   return (
-    <Container>
-      <Form
-        {...formItemLayout}
-        form={form}
-        name="register"
-        onFinish={onFinish}
-        style={{ maxWidth: 600 }}
-        scrollToFirstError
-      >
-        <Form.Item
-          name="Login"
-          label="Nickname"
-          tooltip="What do you want others to call you?"
-          rules={[
-            {
-              required: true,
-              message: "Please input your nickname!",
-              whitespace: true,
-            },
-          ]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          name="FirstName"
-          label="FirstName"
-          rules={[{ required: true, message: "Please input your first name!" }]}
-        >
-          <Input />
-        </Form.Item>
+    <div className="App">
+      <Container className="d-flex flex-column justify-content-center align-items-center bg-black" style={{ height: '100vh', width: '50vh' }}>
+        <Stack gap={3} direction="vertical" style={{ flexDirection: "column", alignSelf: "stretch", alignItems: "stretch" }}>
+          <Card>
+            <Card.Body>
+              <Form className="text-body"
+                form={form}
+                name="register"
+                onFinish={onFinish}
+                style={{ maxWidth: 600 }}
+                scrollToFirstError
+              >
+                <Form.Item
+                  name="Login"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please input your nickname!",
+                      whitespace: true,
+                    },
+                  ]}
+                >
+                  <Input placeholder="Username"/>
+                </Form.Item>
+                <Form.Item
+                  name="FirstName"
+                  rules={[{ required: true, message: "Please input your first name!" }]}
+                >
+                  <Input placeholder="First Name"/>
+                </Form.Item>
 
-        <Form.Item
-          name="LastName"
-          label="LastName"
-          rules={[{ required: true, message: "Please input your last name!" }]}
-        >
-          <Input />
-        </Form.Item>
+                <Form.Item
+                  name="LastName"
+                  rules={[{ required: true, message: "Please input your last name!" }]}
+                >
+                  <Input placeholder="Last Name"/>
+                </Form.Item>
 
-        <Form.Item
-          name="Email"
-          label="E-mail"
-          rules={[
-            {
-              type: "email",
-              message: "The input is not valid E-mail!",
-            },
-            {
-              required: true,
-              message: "Please input your E-mail!",
-            },
-          ]}
-        >
-          <Input />
-        </Form.Item>
+                <Form.Item
+                  name="Email"
+                  rules={[
+                    {
+                      type: "email",
+                      message: "The input is not valid E-mail!",
+                    },
+                    {
+                      required: true,
+                      message: "Please input your E-mail!",
+                    },
+                  ]}
+                >
+                  <Input placeholder="Email"/>
+                </Form.Item>
 
-        <Form.Item
-          name="Password"
-          label="Password"
-          rules={[
-            {
-              required: true,
-              message: "Please input your password!",
-            },
-          ]}
-          hasFeedback
-        >
-          <Input.Password />
-        </Form.Item>
+                <Form.Item
+                  name="Password"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please input your password!",
+                    },
+                  ]}
+                  hasFeedback
+                >
+                  <Input.Password placeholder="Password"/>
+                </Form.Item>
 
-        <Form.Item
-          name="confirm"
-          label="Confirm Password"
-          dependencies={["password"]}
-          hasFeedback
-          rules={[
-            {
-              required: true,
-              message: "Please confirm your password!",
-            },
-            ({ getFieldValue }) => ({
-              validator(_, value) {
-                if (!value || getFieldValue("Password") === value) {
-                  return Promise.resolve();
-                }
-                return Promise.reject(
-                  new Error("The two passwords that you entered do not match!")
-                );
-              },
-            }),
-          ]}
-        >
-          <Input.Password />
-        </Form.Item>
-        <Alert variant="danger" show={alert.state}>
-          <Alert.Heading>Error!</Alert.Heading>
-          <p>{alert.message}</p>
-        </Alert>
-        <Form.Item {...tailFormItemLayout}>
-          <Button type="primary" htmlType="submit">
-            Register
-          </Button>
-          <Button type="ghost" onClick={handleClick}>
-            Login
-          </Button>
-        </Form.Item>
-      </Form>
-    </Container>
+                <Form.Item
+                  name="confirm"
+                  dependencies={["password"]}
+                  hasFeedback
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please confirm your password!",
+                    },
+                    ({ getFieldValue }) => ({
+                      validator(_, value) {
+                        if (!value || getFieldValue("Password") === value) {
+                          return Promise.resolve();
+                        }
+                        return Promise.reject(
+                          new Error("The two passwords that you entered do not match!")
+                        );
+                      },
+                    }),
+                  ]}
+                >
+                  <Input.Password placeholder="Password"/>
+                </Form.Item>
+                {/* <Form.Item {...tailFormItemLayout}>
+                  <Button type="primary" htmlType="submit">
+                    Register
+                  </Button>
+                  <Button type="ghost" onClick={handleClick}>
+                    Login
+                  </Button>
+                </Form.Item> */}
+                <Stack gap={1} direction="horizontal" style={{ flexDirection: "column", alignItems: "stretch" }}>
+                  <Button type="submit" bsPrefix="btn btn-outline-primary">
+											Register
+										</Button>
+										<Button onClick={handleClick} bsPrefix="btn btn-outline-primary">
+											Login
+										</Button>
+									</Stack>
+              </Form>
+            </Card.Body>
+          </Card>
+        </Stack>
+      </Container>
+    </div>
   );
 };
 

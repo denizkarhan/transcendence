@@ -67,7 +67,6 @@ export class UploadsController {
 		ava.path = file.path;
 		ava.user = await this.userService.getUserByLogin(req.user.Login);
 		const user = await this.avatarService.getUserAvatar(ava.user);
-		console.log(user);
 		if (user !== null)
 			return await this.avatarService.updateImage(ava);
 		await this.avatarService.createImage(ava);

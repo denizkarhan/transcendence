@@ -44,7 +44,6 @@ export class AppController {
 	@Get('auth/logout')
 	// @Public()
 	async logout(@Request() req) {
-		console.log(req.user);
 		await this.authService.logout(req.user);
 	}
 }

@@ -1,16 +1,14 @@
-import { BrowserRouter, Navigate, Outlet, Route, RouteProps, Routes } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
 import Home from '../components/Home'
 import LoginForm from '../components/LoginForm'
 import RegisterForm from '../components/RegisterForm'
-// import Logout from '../components/Logout'
 import Profile from '../components/Profile'
 import Settings from '../components/Settings'
-import { RequireAuth, useIsAuthenticated } from "react-auth-kit";
+import { useIsAuthenticated } from "react-auth-kit";
 import NotFoundPage from "../404/404";
 import LoginAndRegister from '../components/LoginAndRegister';
-import Tfa from '../components/Tfa';
-import Chat from '../components/Chat';
 import { ToastProvider } from '../components/Toast'
+import "bootswatch/dist/lumen/bootstrap.min.css";
 
 
 interface Props {

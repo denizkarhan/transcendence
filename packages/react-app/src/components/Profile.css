@@ -1,0 +1,11 @@
+.image-style {
+	height: 13%;
+	width: auto;
+}
+
+.card.card-style {
+	border-style: solid;
+	width: 100%;
+	height: 100%;
+	border-width: 0px 6px 0px 0px
+}

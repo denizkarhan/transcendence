@@ -32,6 +32,7 @@ export class UsersController {
 	@UseInterceptors(ClassSerializerInterceptor)
 	@ApiBearerAuth()
 	async getUserByName(@Param('userName') userName: string) {
+		console.log(userName);
 		const user = await this.userService.getUserByLogin(userName);
 		if (!user) throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
 		return new SerializedUser(user);

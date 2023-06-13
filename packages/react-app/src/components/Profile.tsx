@@ -1,18 +1,32 @@
-import { Container, CardGroup, Row, Col, Button, Offcanvas, Image } from 'react-bootstrap';
+import { Container, CardGroup, Row, Col, Button, Offcanvas, Image, Alert, Tabs, Tab } from 'react-bootstrap';
 import Card from 'react-bootstrap/Card';
 import React, { useState, useEffect } from 'react';
-import api from "../api";
+import api, { getCookie } from "../api";
 import { getPP } from './Main';
 import { User } from '../interfaces/user';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Badge from 'react-bootstrap/Badge';
 import Table from 'react-bootstrap/Table';
 import "./Profile.css";
+import { Match } from '../interfaces/match';
+import { format } from 'date-fns';
+import Friends from './Friends';
 
-const App: React.FC = () => {
+interface Props {
+	userName: string | null;
+}
+
+const App: React.FC<Props> = (username: Props) => {
 	const [pp, setPP] = useState('');
 	const [user, setUser] = useState<User>();
-	const [matches, setMatches] = useState([]);
+	const [matches, setMatches] = useState<Match[]>([]);
+	const [activeTab, setActiveTab] = useState<string>('friends');
+
+	const handleTabSelect = (tab: string | null): void => {
+		if (tab) {
+			setActiveTab(tab);
+		}
+	};
 	useEffect(() => {
 		const fetchData = async () => {
 			setPP(await getPP());
@@ -21,17 +35,28 @@ const App: React.FC = () => {
 	}, []);
 	useEffect(() => {
 		const fetchData = async () => {
-			await api.get('/users/profile').then((response: any) => {
-				setUser({
-					FirstName: response?.data.FirstName, LastName: response?.data.LastName,
-					Email: response?.data.Email, Login: response?.data.Login,
-					Status: response?.data.Status
-				});
-			}).catch();
-			const response = await api.get('/match-histories');
-			console.log(response.data);
-			if (response.data.length !== 0)
-				setMatches(response.data);
+			if (username.userName === '') {
+				await api.get('/users/profile').then((response: any) => {
+					setUser({
+						FirstName: response?.data.FirstName, LastName: response?.data.LastName,
+						Email: response?.data.Email, Login: response?.data.Login,
+						Status: response?.data.Status
+					});
+				}).catch();
+			}
+			else{
+				await api.get(`/users/userName/${username.userName}`).then((response: any) => {
+					setUser({
+						FirstName: response?.data.FirstName, LastName: response?.data.LastName,
+						Email: response?.data.Email, Login: response?.data.Login,
+						Status: response?.data.Status
+					});
+				}).catch();
+			}
+			const resMatch = await api.get('/match-histories');
+			if (resMatch.data.length !== 0)
+				setMatches(resMatch.data);
+			
 		}
 		fetchData();
 	}, [])
@@ -48,11 +73,11 @@ const App: React.FC = () => {
 		<Container>
 			<div className="main-body">
 				<Row>
-					<Col lg="4">
+					<Col className=''>
 						<Card>
 							<Card.Body>
 								<div className="d-flex flex-column align-items-center text-center">
-									<Image src={pp} className="rounded-circle p-1 bg-primary" width="110" />
+									<Image src={pp} className='image-style' />
 									<div className="mt-3">
 										<h4>{user?.FirstName} {user?.LastName}</h4>
 										<p className="text-secondary mb-1">{user?.Login}</p>
@@ -75,31 +100,29 @@ const App: React.FC = () => {
 						</Card>
 					</Col>
 					<Col lg='8'>
-						<Table bsPrefix='table table-hover'>
-							<thead>
-								<tr>
-									<th>#</th>
-									<th>First Name</th>
-									<th>Last Name</th>
-									<th>Email</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr className='table-danger'>
-									<td>1</td>
-									<td>John</td>
-									<td>Doe</td>
-									<td>john@example.com</td>
-								</tr>
-								<tr className='table-primary'>
-									<td>2</td>
-									<td>Jane</td>
-									<td>Smith</td>
-									<td>jane@example.com</td>
-								</tr>
-								{/* Diğer satırları buraya ekleyin */}
-							</tbody>
-						</Table>
+						<Tabs activeKey={activeTab} onSelect={handleTabSelect} className="mb-3" fill>
+							<Tab eventKey="friends" title="Arkadaşlar">
+								<Friends userName={username.userName} />
+							</Tab>
+							<Tab eventKey="matches" title="Maçlar">
+								<div className="match-results-container">
+									{matches.map((match) => (
+										<Alert key={match?.Id} variant={match.MatchResult === 1 ? 'primary' : match.MatchResult === 0 ? 'info' : 'danger'}>
+											<div className="d-flex justify-content-between align-items-center">
+												<span>{user?.Login}</span>
+												<span>{match.MyResult}</span>
+												<span>{format(new Date(match.MatchDate.toString()), 'dd MMM')}</span>
+												<span>{match.EnemyResult}</span>
+												<span>{match.Enemy.Login}</span>
+											</div>
+										</Alert>
+									))}
+								</div>
+							</Tab>
+							<Tab eventKey="achievements" title="Başarımlar">
+								{/* Başarımlar sekmesine ait içerik */}
+							</Tab>
+						</Tabs>
 					</Col>
 				</Row>
 			</div>

@@ -3,7 +3,7 @@ import { Button, Container, Nav, Navbar, NavDropdown, NavLink } from "react-boot
 import { Link } from "react-router-dom";
 import "./Nav.css";
 import { useSignOut, useAuthUser } from "react-auth-kit";
-import api from '../api';
+import api, { getCookie } from '../api';
 import { getPP } from './Main';
 
 
@@ -13,6 +13,10 @@ interface Props {
 }
 
 export default function MyNavbar(prop: Props) {
+	const userName = getCookie('42_auth_state');
+	let decodeUsersName;
+	if (userName !== null)
+		decodeUsersName = JSON.parse(decodeURIComponent(userName)).username;
 	const signOut = useSignOut();
 
 	const handleSignOut = async () => {
@@ -42,7 +46,7 @@ export default function MyNavbar(prop: Props) {
 					<Nav>
 						<img src={prop.pp} className="img-style" />
 						<NavDropdown title={user} id="collasible-nav-dropdown" align={"end"}>
-							<NavDropdown.Item as={Link} to="/profile"> Profile</NavDropdown.Item>
+							<NavDropdown.Item as={Link} to={`/profile/${decodeUsersName}`}> Profile</NavDropdown.Item>
 							<NavDropdown.Item as={Link} to="/settings"> Settings</NavDropdown.Item>
 							<NavDropdown.Item onClick={handleSignOut}>Log Out</NavDropdown.Item>
 						</NavDropdown>

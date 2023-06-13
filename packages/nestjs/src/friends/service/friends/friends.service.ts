@@ -38,7 +38,7 @@ export class FriendsService {
 		const friend = await this.userRepository.findOneBy({FirstName:name});
 		if (!friend || friend === undefined)
 			return null;
-		return await this.friendRepository.findOne({where:{user:user}, relations:['Friend']});
+		return await this.friendRepository.findOne({where:{user:user}, relations:['friend']});
 	}
 
 	async addFriend(userName:string, friendLogin:string){

@@ -1,4 +1,4 @@
-import { Container, Form, Modal, Button, Image } from 'react-bootstrap';
+import { Card, Container, FloatingLabel, Form, Modal, Button, Image } from 'react-bootstrap';
 import api from '../api';
 import './Settings.css';
 import '../App.css';
@@ -35,7 +35,7 @@ export default function UpdatePP(prop: Props) {
 
     return (
         <Container>
-                <Button bsPrefix="btn btn-outline-primary" onClick={handleShow}>Change Profile Pic</Button>
+                <Button variant="primary" onClick={handleShow}>Change Profile Pic</Button>
                 <Modal show={show} onHide={handleClose}>
                     <Modal.Header closeButton>
                         <Modal.Title>Change your profile picture.</Modal.Title>

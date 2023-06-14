@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { useAuthUser } from "react-auth-kit";
 // import 'dotenv/config';
 
 export function getCookie(cookieName) {

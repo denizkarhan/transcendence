@@ -74,7 +74,7 @@ const App: React.FC = () => {
 										<Stack direction="horizontal" className='justify-content-center' gap={2}>
 											<Button bsPrefix="btn btn-outline-danger">Follow</Button>
 											<Button bsPrefix="btn btn-outline-primary">Message</Button>
-										</Stack> : <Settings />}
+										</Stack> : null}
 									</div>
 								</div>
 							</Card.Body>

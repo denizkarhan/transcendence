@@ -27,7 +27,7 @@ const RootNavigation = (prop: Props) => {
 				<Route path="register" element={isAuthenticated() ? <Home /> : <RegisterForm />} />
 				<Route path="loginorregister" element={isAuthenticated() ? <Home /> : <LoginAndRegister />} />
 				<Route path="profile/:username" element={isAuthenticated() ? <Profile/> : <LoginAndRegister />} />
-				<Route path="settings" element={isAuthenticated() ? <Settings /> : <LoginAndRegister />} />
+				<Route path="settings" element={isAuthenticated() ? <Settings pp={prop.pp} setPP={prop.setPP} /> : <LoginAndRegister />} />
 				<Route path="*" element={<NotFoundPage />} />
 			</Routes>
 		</ToastProvider>

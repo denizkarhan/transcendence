@@ -1,8 +1,5 @@
 import {Container} from 'react-bootstrap';
-<<<<<<< HEAD
-=======
 import { useEffect } from 'react';
->>>>>>> main
 
 export default function Home() {
     return (

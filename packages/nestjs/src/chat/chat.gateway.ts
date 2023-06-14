@@ -25,20 +25,62 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   server: Server;
 
   async handleConnection(client: Socket) {
-    console.log('NICK ', client.handshake.headers.cookie.split("%22")[3]);
-    console.log('CLIENTID ', client.id);
-    console.log('SESSIONID', client.handshake.headers.cookie.split('=')[1].split(';')[0]);
-    const nick = client.handshake.headers.cookie.split("%22")[3];
-    const sessionID = client.handshake.headers.cookie.split('=')[1].split(';')[0];
+    const nick = client.handshake.auth.nick.split("%22")[3];
+    const token = client.handshake.auth.token;
 
-    if (!nick || !sessionID) {
+    if (!nick || !token) {
       client.disconnect(true);
     } else {
-      console.log(`Client ${client.id} connected. Auth token: ${sessionID}`);
+      console.log(`Client ${client.id} connected. Nickname: ${nick}, Auth token: ${token}`);
     }
   }
 
   async handleDisconnect(client: Socket) {
     console.log(`Client ${client.id} disconnected`);
   }
+
+  @SubscribeMessage('join')
+  handleJoin(
+    @MessageBody() data: any,
+    @ConnectedSocket() client: Socket,
+    ): string {
+      const oldSize = client.rooms.size;
+      client.join(data?.name);
+      if (client.rooms.size > oldSize)
+        return "Join Success";
+      else
+        return "Join Fail"
+  }
+
+  @SubscribeMessage('leave')
+  handleLeave(
+    @MessageBody() data: any,
+    @ConnectedSocket() client: Socket,
+    ): string {
+      const oldSize = client.rooms.size;
+      client.leave(data?.name);
+      if (client.rooms.size < oldSize)
+        return "Leave Success";
+      else
+        return "Leave Fail";
+    }
+
+  @SubscribeMessage('toROOM')
+  handletoROOM(
+    @MessageBody() data: any,
+    @ConnectedSocket() client: Socket,
+    ): string {
+      if (client.to(data?.name).emit("MSG", data?.msg))
+        return "Msg Success";
+      else
+        return "MSG Fail";
+  }
+
+  @SubscribeMessage('MSG')
+  handleMSG(
+    @MessageBody() data: any,
+    @ConnectedSocket() client: Socket,
+    ): string {
+      return data;
+    }
 }

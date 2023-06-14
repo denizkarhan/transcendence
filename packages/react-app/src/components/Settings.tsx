@@ -1,10 +1,3 @@
-<<<<<<< HEAD
-export default function Settings(){
-
-
-    return (
-        <h2>Settings Page!</h2>
-=======
 import { Container } from 'react-bootstrap';
 import api from '../api';
 
@@ -25,6 +18,5 @@ export default function Settings() {
                 <input name="photo" type="file" accept='image/*' onInput={onSubmit}></input>
             </form>
         </Container>
->>>>>>> main
     );
 }

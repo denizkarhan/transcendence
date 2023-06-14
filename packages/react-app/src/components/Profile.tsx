@@ -1,12 +1,3 @@
-<<<<<<< HEAD
-
-
-export default function Profile() {
-    return (
-        <h1>This is the Profile page!</h1>
-    );
-}
-=======
 import { Container } from 'react-bootstrap';
 import axios, { AxiosResponse } from 'axios';
 import React from 'react';
@@ -61,4 +52,3 @@ export default App;
 // 		</Container>
 // 	);
 // }
->>>>>>> main

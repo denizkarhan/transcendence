@@ -17,7 +17,7 @@ export function deleteCookie(name) {
 	document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
   };
 const api = axios.create({
-	baseURL: 'http://localhost:3001',
+	baseURL: 'http://10.12.13.3:3001',
 	headers: {
 		'Authorization': 'Bearer ' + getCookie('42_auth'),
 	}

@@ -8,11 +8,12 @@ import { CreateUserParams, UpdateUserParams } from 'src/users/utils/types';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { LocalAuthService } from 'src/auth/local-auth/local-auth.service';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UsersService {
 
-	constructor(@InjectRepository(User) private userRepository: Repository<User>) { }
+	constructor(@InjectRepository(User) private userRepository: Repository<User>, private jwtService: JwtService) { }
 
 	async getUsers() {
 		return (await this.userRepository.find()).map((User) => plainToClass(SerializedUser, User));
@@ -54,8 +55,15 @@ export class UsersService {
 	async updateUser(userDetail: UpdateUserDto, user: any) {
 		const oldUser = await this.userRepository.findOneBy({ Login: user.Login });
 		const newUser = await this.userRepository.create({ ...oldUser, ...userDetail });
-		return await this.userRepository.save(newUser);
+		const res = await this.userRepository.save(newUser);
+		if (userDetail?.Login) {
+			const payload = { Login: newUser.Login, Id: newUser.Id, Status: newUser.Status };
+			return {
+				access_token: await this.jwtService.sign(payload),
+			};
+		}
+		return {data : res};
 	}
 
-	
+
 }

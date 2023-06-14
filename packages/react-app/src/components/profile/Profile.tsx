@@ -1,18 +1,22 @@
 import { Container, Row, Col, Button, Image, Tabs, Tab, Stack } from 'react-bootstrap';
 import Card from 'react-bootstrap/Card';
 import React, { useState, useEffect } from 'react';
-import api, { getUserName} from "../../api";
-import { getPP } from '../Main';
+import api from "../../api";
+import { getPP, getUserName } from '../Main';
 import { User } from '../../interfaces/user';
 import "./Profile.css";
 import Friends from './Friends';
 import Matches from './Match';
 import { useParams } from 'react-router-dom';
 import Achievements from './Achievements';
+import Settings from '../Settings';
 
 interface Props {
-	userName: string | null;
-  }
+	pp: string,
+	setPP: React.Dispatch<React.SetStateAction<string>>,
+}
+
+
 const App: React.FC = () => {
 	const { username } = useParams<string>();
 	const [pp, setPP] = useState('');
@@ -24,13 +28,12 @@ const App: React.FC = () => {
 			setActiveTab(tab);
 		}
 	};
-	
 	useEffect(() => {
 		const fetchData = async () => {
-			setPP(await getPP());
+			setPP(await getPP(username));
 		}
 		fetchData();
-	}, []);
+	}, [username]);
 	useEffect(() => {
 		const fetchData = async () => {
 			if (username === null) {
@@ -71,7 +74,7 @@ const App: React.FC = () => {
 										<Stack direction="horizontal" className='justify-content-center' gap={2}>
 											<Button bsPrefix="btn btn-outline-danger">Follow</Button>
 											<Button bsPrefix="btn btn-outline-primary">Message</Button>
-										</Stack> : null}
+										</Stack> : <Settings />}
 									</div>
 								</div>
 							</Card.Body>

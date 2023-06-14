@@ -1,25 +1,9 @@
 import { Form, Input } from "antd";
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Container, Stack, Card, Button } from "react-bootstrap";
 import { useToast } from "./Toast";
 import api from "../api";
-
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 8 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 16 },
-  },
-};
-
-interface alerts {
-  state: boolean;
-  message: string;
-}
 
 const App: React.FC = () => {
   const {showError, showSuccess} = useToast();

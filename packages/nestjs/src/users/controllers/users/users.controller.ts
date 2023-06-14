@@ -64,7 +64,9 @@ export class UsersController {
 	async updateUser(@Body() userDetail : UpdateUserParams, @Request() request)
 	{
 		const if_update = await this.userService.updateUser(userDetail, request.user);
-		if (if_update)
+		if (if_update?.access_token)
+			return if_update
+		else if (if_update?.data)
 			return {msg:"Successfully", status: 200};
 		throw new HttpException('Eksik Birşeyler var hayatında', HttpStatus.FORBIDDEN);
 	}

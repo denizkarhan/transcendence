@@ -31,7 +31,7 @@ export class AuthanticatorService {
 
 	async Login(user:User)
 	{
-		user = await this.userService.updateUser({Status:'online'}, user);
+		user = (await this.userService.updateUser({Status:'online'}, user)).data;
 		return { access_token: await this.jwtService.sign({ Login: user.Login, Id: user.Id , Status: user.Status}) };
 	}
 }

@@ -3,6 +3,7 @@ import { User } from "../../interfaces/user";
 import api from "../../api";
 import { Alert, Col, Container, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { getPP } from "../Main";
 
 export interface Props {
 	userName: string | undefined;
@@ -10,7 +11,7 @@ export interface Props {
 
 export default function Friends(props: Props) {
 	const [friends, setFriends] = useState<User[] | null>(null);
-
+	const [pp, setPP] = useState<string[]>([]);
 	useEffect(() => {
 		const fetchData = async () => {
 			let resFriend;
@@ -20,22 +21,26 @@ export default function Friends(props: Props) {
 				resFriend = await api.get('/friends/all');
 			}
 			if (Array.isArray(resFriend.data))
+			{
 				setFriends(resFriend.data);
+				const profilePhotos = await Promise.all(
+					resFriend.data.map(async (user) => await getPP(user.Login))
+				  );
+				  setPP(profilePhotos);
+			}
 		};
-
 		fetchData();
 	}, [props.userName]);
-
 	return (
 		<Container>
 			<Row>
-				{Array.isArray(friends) ? (friends.map((user) => (
+				{Array.isArray(friends) ? (friends.map((user, index) => (
 					<Col key={user.Login} lg={4} md={6} sm={12} as={Link} to={`/profile/${user.Login}`}  style={{ textDecoration: 'none' }}>
 						<Alert variant="secondary">
 								<div className="media align-items-center">
 									
 								<span
-								style={{backgroundImage: 'url(https://bootdey.com/img/Content/avatar/avatar6.png)',
+								style={{backgroundImage: `url(${pp.at(index)})`,
 								width: '50px',
 								height: '50px',
 								display: 'inline-block',

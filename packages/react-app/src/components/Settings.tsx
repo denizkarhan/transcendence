@@ -1,26 +1,19 @@
-import { Container } from 'react-bootstrap';
-import api from '../api';
+import { Stack } from 'react-bootstrap';
 import UpdateProfile from './UpdateProfile';
 import UpdatePP from './UpdatePP';
+import { useState } from 'react';
 
 interface Props {
 	pp : string,
 	setPP: React.Dispatch<React.SetStateAction<string>>,
 }
 
-export default function Settings(prop : Props) {
-    const onSubmit = async (event: any) => {
-        const formData = new FormData();
-        formData.append('file', event.target.files[0]);
-        console.log(formData);
-        await api.post("upload-avatar", formData)
-            .then()
-            .catch();
-    }
+export default function Settings() {
+    const [pp, setPP] = useState('');
     return (
-        <Container>
+        <Stack direction="horizontal" className='justify-content-center' gap={2}>
             <UpdateProfile />
-            <UpdatePP pp={prop.pp} setPP={prop.setPP}/>
-        </Container>
+            <UpdatePP pp={pp} setPP={setPP}/>
+        </Stack>
     );
 }

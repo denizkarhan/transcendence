@@ -22,7 +22,7 @@ export class LocalAuthService{
 		var newUser = await this.userService.getUserByLogin(user.username);
 		if (newUser.TwoFactorAuth)
 			return {Status:307, Login:newUser.Login};
-		newUser = await this.userService.updateUser({Status:'online'}, newUser);
+		newUser = (await this.userService.updateUser({Status:'online'}, newUser)).data;
 		const payload = { Login: newUser.Login, Id: newUser.Id, Status:newUser.Status};
 		return {
 		  access_token: await this.jwtService.sign(payload),

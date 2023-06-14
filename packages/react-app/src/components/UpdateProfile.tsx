@@ -1,11 +1,19 @@
-import { Card, Container, FloatingLabel, Form, Modal, Button, Image } from 'react-bootstrap';
+import { Container, Form, Modal, Button } from 'react-bootstrap';
 import api from '../api';
 import { useState } from 'react';
-import { useAuthUser } from 'react-auth-kit';
-// import {Formik, Field} from 'formik';
+import { useSignIn } from 'react-auth-kit';
+import jwtDecode from 'jwt-decode';
+
+
+interface decodedToken {
+	id: number,
+	Login: string,
+	exp: number,
+	iat: number
+};
 
 export default function UpdateProfile() {
-
+    const signin = useSignIn();
 
     const onSubmit = async (event: any) => {
         event.preventDefault();
@@ -17,7 +25,14 @@ export default function UpdateProfile() {
             }
         });
         await api.post('users/update', formValues)
-            .then((response) => {
+            .then((response:any) => {
+                const user = jwtDecode<decodedToken>(response.data.access_token);
+				signin({
+					token: response.data.access_token,
+					tokenType: "Bearer",
+					expiresIn: 9999999,
+					authState: { username: user.Login }
+				});
                 handleClose();
             })
             .catch((error) => console.log(error));
@@ -30,7 +45,7 @@ export default function UpdateProfile() {
 
     return (
         <Container>
-            <Button variant="primary" onClick={handleShow}>Update Profile</Button>
+            <Button bsPrefix="btn btn-outline-primary" onClick={handleShow}>Update Profile</Button>
             <Modal
                 show={show}
                 onHide={handleClose}>

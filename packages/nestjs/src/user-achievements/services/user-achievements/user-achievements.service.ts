@@ -9,7 +9,7 @@ import { Repository } from 'typeorm';
 @Injectable()
 export class UserAchievementsService {
     
-    constructor(@InjectRepository(UserAchievements) private userAchievementsRepository: Repository<UserAchievements>, @InjectRepository(User) private userRepository: Repository<User>, @InjectRepository(Achievements) private AchievementsRepository: Repository<Achievements>, ) {}
+    constructor(@InjectRepository(UserAchievements) private userAchievementsRepository: Repository<UserAchievements>, @InjectRepository(Achievements) private AchievementsRepository: Repository<Achievements>, ) {}
 
     async addAchievement(id:number, user: User) {
         const achievement = await this.AchievementsRepository.findOneBy({ Id: id });

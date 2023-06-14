@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Alert, Card, Col, Row } from "react-bootstrap";
+import { Alert, Col, Row } from "react-bootstrap";
 import api from "../../api";
 import { Achievement } from "../../interfaces/achievement";
 

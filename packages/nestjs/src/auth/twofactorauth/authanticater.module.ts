@@ -9,7 +9,6 @@ import { AuthanticatorService } from './service/authanticator/authanticator.serv
 @Module({
 	imports: [UsersModule, JwtModule.register({
 		secret: jwtConstants.secret,
-		// signOptions: { expiresIn: '15m' },
 	}),],
 	controllers: [AuthanticatorController],
 	providers: [AuthanticatorService],

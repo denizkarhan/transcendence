@@ -27,18 +27,10 @@ const RootNavigation = (prop: Props) => {
 				<Route path="register" element={isAuthenticated() ? <Home /> : <RegisterForm />} />
 				<Route path="loginorregister" element={isAuthenticated() ? <Home /> : <LoginAndRegister />} />
 				<Route path="profile/:username" element={isAuthenticated() ? <Profile/> : <LoginAndRegister />} />
-				<Route path="settings" element={isAuthenticated() ? <Settings pp={prop.pp} setPP={prop.setPP} /> : <LoginAndRegister />} />
-				{/* <Route path="settings" element= /> */}
-				{/* <Route path="logout" element={<RequireAuth loginPath={'/loginorregister'}><Logout /></RequireAuth>} /> */}
-				{/* <Route path="game" element={<GameComponent/>}/> */}
+				<Route path="settings" element={isAuthenticated() ? <Settings /> : <LoginAndRegister />} />
 				<Route path="*" element={<NotFoundPage />} />
 			</Routes>
 		</ToastProvider>
 	)
 }
 export default RootNavigation;
-{/* 
-// {<RequireAuth loginPath={'/loginorregister'}><Home /></RequireAuth>}
-// {<RequireAuth loginPath={'/loginorregister'}><Profile /></RequireAuth>}
-// {<RequireAuth loginPath={'/loginorregister'}><Settings /></RequireAuth>}
-// {<RequireAuth loginPath={'/loginorregister'}><Home /></RequireAuth>} */}

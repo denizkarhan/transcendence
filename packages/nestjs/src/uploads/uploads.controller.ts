@@ -1,4 +1,4 @@
-import { Controller, Get, HttpException, HttpStatus, Post, Request, Res, UploadedFile, UseGuards, UseInterceptors, StreamableFile  } from '@nestjs/common';
+import { Controller, Get, HttpException, HttpStatus, Post, Request, Res, UploadedFile, UseGuards, UseInterceptors, StreamableFile, Param  } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { diskStorage } from 'multer';
@@ -75,6 +75,27 @@ export class UploadsController {
 	@Get('get-image')
 	async serveAvatar(@Request() req, @Res() res) {
 		const user = await this.userService.getUserByLogin(req.user.Login);
+		const ava = await this.avatarService.getUserAvatar(user);
+		if (ava===null)
+		{
+			res.status(204).send(null);
+			return;
+		}
+		const isUrl = ava.path.startsWith('https' || 'http');
+		if (!isUrl) {
+			res.set('Content-type', 'image/jpeg');
+			res.sendFile(ava.path, { root: './' });
+			return;
+		}
+		const protocol = ava.path.startsWith('https') ? https : http;
+		protocol.get(ava.path, (response) => {
+			res.set('Content-Type', 'image/jpeg');
+			response.pipe(res);
+		});
+	}
+	@Get('get-image/:username')
+	async serveAvatarByUserName(@Param('username') username:string, @Res() res) {
+		const user = await this.userService.getUserByLogin(username);
 		const ava = await this.avatarService.getUserAvatar(user);
 		if (ava===null)
 		{

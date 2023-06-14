@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import "./Nav.css";
-import { useSignOut, useAuthUser } from "react-auth-kit";
-import api, { getUserName } from '../api';
-import { getPP } from './Main';
+import { useSignOut } from "react-auth-kit";
+import api from '../api';
+import { getPP, getUserName } from './Main';
 
 
 interface Props {
@@ -14,23 +14,18 @@ interface Props {
 
 export default function MyNavbar(prop: Props) {
 	const signOut = useSignOut();
-
 	const handleSignOut = async () => {
 		await api.get("auth/logout");
 		signOut();
 	};
-	const auth = useAuthUser();
-	const user = auth()?.username ?? "User";
+	const user = getUserName();
 
-	const [pp, setPP] = useState<string>("pps/default.png");
 	useEffect(() => {
 		const fetchData = async () => {
-			prop.setPP(await getPP());
+			prop.setPP(await getPP(undefined));
 		};
-
 		fetchData();
 	}, []);
-
 	return (
 		<Navbar className="navbar navbar-expand-lg navbar-dark bg-black" expand="true">
 			<Container fluid className="ml-4">
@@ -42,7 +37,7 @@ export default function MyNavbar(prop: Props) {
 					<Nav>
 						<img src={prop.pp} className="img-style" />
 						<NavDropdown title={user} id="collasible-nav-dropdown" align={"end"}>
-							<NavDropdown.Item as={Link} to={`/profile/${getUserName()}`}> Profile</NavDropdown.Item>
+							<NavDropdown.Item as={Link} to={`/profile/${user}`}> Profile</NavDropdown.Item>
 							<NavDropdown.Item as={Link} to="/settings"> Settings</NavDropdown.Item>
 							<NavDropdown.Item onClick={handleSignOut}>Log Out</NavDropdown.Item>
 						</NavDropdown>

@@ -1,41 +1,50 @@
 import RootNavigation from "../navigation/RootNavigation";
-import api from '../api';
+import api, { getCookie } from '../api';
 import "../App.css";
 import MyNavbar from "./myNavbar";
-import Footer from "./Footer";
-import { useIsAuthenticated } from 'react-auth-kit';
+import { useAuthUser, useIsAuthenticated } from 'react-auth-kit';
 import { useState } from 'react';
 import { useEffect } from "react";
 
-export async function getPP() {
-  const pp = await api.get('upload-avatar/get-image', { responseType: 'blob' })
-    .then((response:any) => {
-      if (response.status === 200) {
-        const imgBlob = new Blob([response.data], { type: 'image/jpeg' });
-        const imgURL = URL.createObjectURL(imgBlob);
-        return imgURL;
-      } else {
-        return "pps/default.png";
-      }
-    })
-    .catch(() => { return "pps/default.png"; });
+const repeatString = (str: string, count: number) => {
+  return str.repeat(count);
+};
 
-  return pp;
+export async function getPP(username: string | undefined) {
+  if (await getCookie('42_auth_state')) {
+    let response;
+    if (username !== undefined)
+      response = await api.get(`upload-avatar/get-image/${username}`, { responseType: 'blob' })
+    else
+      response = await api.get(`upload-avatar/get-image`, { responseType: 'blob' })
+    if (response.status === 200) {
+      const imageBlob = new Blob([response.data], { type: 'image/jpeg' });
+      const imgURL = URL.createObjectURL(imageBlob);
+      return imgURL;
+    }
+  }
+  const path = window.location.pathname.split('/');
+  const endPoint = repeatString('../', path.length - 2);
+  return endPoint + "pps/default.png";
 }
 
+export function getUserName(){
+	const auth = useAuthUser();
+	const user = auth()?.username ?? "User";
+	return user;
+}
+
+
 export default function Main() {
-
-
   const [pp, setPP] = useState("pps/default.png");
-
   useEffect(() => {
     const fetchData = async () => {
-      setPP(await getPP());
+      setPP(await getPP(undefined));
     };
 
     fetchData();
   }, []);
-
+  
   const isAuthenticated = useIsAuthenticated();
   return (
 

@@ -8,12 +8,6 @@ import jwtDecode from "jwt-decode";
 import ModalComponent from "./Tfa";
 import { useToast } from "./Toast";
 
-
-interface alerts {
-	state: boolean;
-	message: string;
-}
-
 interface decodedToken {
 	id: number,
 	Login: string,

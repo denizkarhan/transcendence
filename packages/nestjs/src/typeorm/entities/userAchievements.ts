@@ -14,5 +14,5 @@ export class UserAchievements{
 
 	@OneToOne(()=>Achievements)
 	@JoinColumn()
-	Achivement: Achievements;
+	Achievement: Achievements;
 }

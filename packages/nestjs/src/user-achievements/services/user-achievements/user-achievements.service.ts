@@ -15,7 +15,7 @@ export class UserAchievementsService {
         const achievement = await this.AchievementsRepository.findOneBy({ Id: id });
         const newUserAchievement = this.userAchievementsRepository.create({
             User: user,
-            Achivement: achievement,
+            Achievement: achievement,
         });
 		if (await this.userAchievementsRepository.findOneBy({...newUserAchievement}))
 			throw new HttpException('Tekrar Eden Kayıt', HttpStatus.FORBIDDEN);
@@ -25,7 +25,7 @@ export class UserAchievementsService {
     async getUserAchievements(user:User) {
         return await this.userAchievementsRepository.find({
             relations: {
-                Achivement: true,
+                Achievement: true,
             },
             where: {
                 User: user

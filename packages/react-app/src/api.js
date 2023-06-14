@@ -17,6 +17,14 @@ export function deleteCookie(name) {
 	document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
 };
 
+export function getUserName(){
+	const userName = getCookie('42_auth_state');
+	let decodeUserName;
+	if (userName !== null)
+		decodeUserName = JSON.parse(decodeURIComponent(userName)).username;
+	return decodeUserName;
+}
+
 // console.log(process.env.BACK_END_URI);
 
 const api = axios.create({

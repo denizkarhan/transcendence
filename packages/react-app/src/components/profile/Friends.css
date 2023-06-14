@@ -1,0 +1,52 @@
+.friend-item {
+	display: flex;
+	align-items: center;
+	margin-bottom: 8px;
+}
+
+.username {
+	margin-right: 8px;
+}
+
+.status-indicator {
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	margin-left: auto;
+	background-color: green; 
+  }
+
+.card {
+	background-color: #fff;
+	border: 0 solid #eee;
+	border-radius: 0;
+}
+
+.card {
+	margin-bottom: 30px;
+	-webkit-box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.1), -1px 0 2px rgba(0, 0, 0, 0.05);
+	box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.1), -1px 0 2px rgba(0, 0, 0, 0.05);
+}
+
+.card-body {
+	padding: 1.25rem;
+}
+
+.avatar.avatar-xl {
+	width: 5rem;
+	height: 5rem;
+}
+
+.avatar {
+	width: 2rem;
+	height: 2rem;
+	line-height: 2rem;
+	border-radius: 50%;
+	display: inline-block;
+	background: #ced4da no-repeat center/cover;
+	position: relative;
+	text-align: center;
+	color: #868e96;
+	font-weight: 600;
+	vertical-align: bottom;
+}

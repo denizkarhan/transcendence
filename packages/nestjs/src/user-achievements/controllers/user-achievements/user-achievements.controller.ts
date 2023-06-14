@@ -20,7 +20,7 @@ export class UserAchievementsController {
     async addUserAchievement(@Param('id') id:number, @Request() req) {
         const achievement = await this.achievementsService.getArchievementById(id);
         if (!achievement) throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
-        return await this.userAchievementsService.addAchievement(id, req.user);
+        await this.userAchievementsService.addAchievement(id, req.user);
     }
 
     @Get()
@@ -32,4 +32,11 @@ export class UserAchievementsController {
         return await this.userAchievementsService.getUserAchievements(user);
     }
 
+	@Get(':username')
+    @UseFilters(ExceptionHandleFilter)
+    @UseInterceptors(ClassSerializerInterceptor)   
+    async getUserAchievementsByUserName(@Param('username') username : string) {
+        const user = await this.userService.getUserByLogin(username);
+        return await this.userAchievementsService.getUserAchievements(user);
+    }
 }

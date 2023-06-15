@@ -1,5 +1,5 @@
-import { IsStrongPassword } from "class-validator";
-import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm"
+import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm"
+import { User } from "./users";
 
 @Entity({ name: 'channels' })
 export class Channel {
@@ -10,8 +10,12 @@ export class Channel {
     Name : string;
 
     @Column({ type: 'boolean' })
-    isPublic : Boolean;
+    isPublic : boolean;
 
     @Column({ nullable: true })
     password : string;
-}
+
+    @ManyToOne(()=>User, (user) => user.Channel)
+    @JoinColumn()
+    admin: User;
+} 

@@ -1,14 +1,6 @@
-import { Controller, Get, OnModuleInit, Req, UseGuards } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
 import { ConnectedSocket, MessageBody, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
-import cookieParser from 'cookie-parser';
-import { Request } from 'express';
-import { authenticate } from 'passport';
 import { Server, Socket } from 'socket.io';
-import { AuthanticaterService } from 'src/auth/authanticater/service/authanticater/authanticater.service';
 import { LocalAuthService } from 'src/auth/local-auth/local-auth.service';
-import { JwtAuthGuard } from 'src/auth/utils/jwt-auth.guard';
-import { Chatter } from 'src/typeorm/entities/chat';
 import { UsersService } from 'src/users/service/users/users.service';
 import { ChatService } from './chat.service';
 ``
@@ -19,19 +11,21 @@ import { ChatService } from './chat.service';
 })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
-  constructor(private chatService: ChatService, private userService: UsersService, private authService: LocalAuthService,) { }
+  constructor(private chatService: ChatService, private userService: UsersService) { }
 
   @WebSocketServer()
   server: Server;
 
-  async handleConnection(client: Socket) {
+  async handleConnection(client: Socket): Promise<Boolean> {
     const nick = client.handshake.auth.nick.split("%22")[3];
     const token = client.handshake.auth.token;
 
     if (!nick || !token) {
       client.disconnect(true);
+      return false;
     } else {
       console.log(`Client ${client.id} connected. Nickname: ${nick}, Auth token: ${token}`);
+      return true;
     }
   }
 
@@ -40,16 +34,21 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('join')
-  handleJoin(
+  async handleJoin(
     @MessageBody() data: any,
     @ConnectedSocket() client: Socket,
-    ): string {
+    ): Promise<string> {
       const oldSize = client.rooms.size;
-      client.join(data?.name);
-      if (client.rooms.size > oldSize)
-        return "Join Success";
+      console.log(this.chatService.checkPass(data?.name, data?.pass));
+      if (await this.chatService.checkPass(data?.name, data?.pass)) {
+        client.join(data?.name);
+        if (client.rooms.size > oldSize)
+          return "Join Success";
+        else
+          return "Join Fail";
+      }
       else
-        return "Join Fail"
+        return "Wrong Pass";
   }
 
   @SubscribeMessage('leave')
@@ -65,15 +64,47 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         return "Leave Fail";
     }
 
+  @SubscribeMessage('create')
+  async handleCreate(
+    @MessageBody() data: any,
+    @ConnectedSocket() client: Socket,
+    ): Promise<string> {
+      if (await this.chatService.createRoom(data)) {
+        const oldSize = client.rooms.size;
+        client.join(data?.roomName);
+        if (client.rooms.size > oldSize)
+          return "Create Success";
+        else
+          return "Create Fail";
+      }
+      else
+        return "Channel name already in use";
+    }
+  
   @SubscribeMessage('toROOM')
   handletoROOM(
     @MessageBody() data: any,
     @ConnectedSocket() client: Socket,
     ): string {
-      if (client.to(data?.name).emit("MSG", data?.msg))
+      if (client.in(data?.name).emit("MSG", data?.msg))
         return "Msg Success";
       else
         return "MSG Fail";
+  }
+
+  @SubscribeMessage('changePass')
+  handleChange(
+    @MessageBody() data: any,
+    @ConnectedSocket() client: Socket,
+  ): string {
+    const username = client.handshake.auth.nick.split("%22")[3];
+    if (!this.chatService.findChannel(data?.channel))
+      return "Channel Doesn't Exist";
+    if (!this.chatService.checkAuth(data?.channel, username))
+      return "Authorization Fail";
+    else {
+      this.chatService.updatePass(data?.channel, data?.newpass)
+    }
   }
 
   @SubscribeMessage('MSG')

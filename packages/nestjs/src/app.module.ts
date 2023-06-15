@@ -26,17 +26,13 @@ import { Blocks } from './typeorm/entities/blocks';
 import { Avatar } from './typeorm/entities/avatar';
 import { BlockUserModule } from './block-user/block-user.module';
 import { UploadsModule } from './uploads/uploads.module';
-import { Message } from './typeorm/entities/message';
+import { Message } from './typeorm/entities/messages';
 import { Channel } from './typeorm/entities/channels';
 import { ChannelUserList } from './typeorm/entities/channelUserList';
 import { ChatModule } from './chat/chat.module';
-import { Chatter } from './typeorm/entities/chat';
 import { APP_GUARD } from '@nestjs/core';
-import { JwtModule, JwtService } from '@nestjs/jwt';
-import { jwtConstants } from './auth/local-auth/constants';
 import { JwtAuthGuard } from './auth/utils/jwt-auth.guard';
 import { JwtStrategy } from './auth/utils/jwt.strategy';
-import { GoogleStrategy } from './auth/Google/utils/GoogleStrategy';
 import { AuthanticatorModule } from './auth/twofactorauth/authanticator.module';
 import * as cookieParser from 'cookie-parser';
 
@@ -48,7 +44,7 @@ import * as cookieParser from 'cookie-parser';
 	username: 'ftuncer',
 	password: '123',
 	database: 'ftuncer',
-	entities: [User, Friend, Stats, Achievements, UserAchievements, MatchHistories, Blocks, Avatar, Message, Channel, ChannelUserList, Chatter],
+	entities: [User, Friend, Stats, Achievements, UserAchievements, MatchHistories, Blocks, Avatar, Message, Channel, ChannelUserList],
 	synchronize: true,
   }), 
   UsersModule, StatsModule, MatchHistoriesModule, UserAchievementsModule, FriendsModule, AuthModule, 

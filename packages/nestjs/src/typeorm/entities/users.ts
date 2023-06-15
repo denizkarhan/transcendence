@@ -5,6 +5,7 @@ import { UserAchievements } from "./userAchievements";
 import { IsNotEmpty } from "class-validator";
 import { Blocks } from "./blocks";
 import { Exclude } from "class-transformer";
+import { Channel } from "./channels";
 
 @Entity({name: 'users'})
 export class User{
@@ -52,5 +53,7 @@ export class User{
 
 	@OneToMany(()=> Blocks, (Blocks)=> Blocks.blockedUser)
 	Blocks: Blocks[];
-
+	
+	@OneToMany(()=> Channel, (Channel)=> Channel.admin)
+	Channel : Channel[];
 }

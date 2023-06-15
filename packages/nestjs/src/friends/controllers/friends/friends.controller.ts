@@ -11,37 +11,64 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 @ApiBearerAuth()
 export class FriendsController {
 
-	constructor(private friendService: FriendsService){}
+	constructor(private friendService: FriendsService) { }
 
 	@Get('all')
 	@UseInterceptors(ClassSerializerInterceptor)
-	async getFriends(@Request() req){
+	@UseFilters(ExceptionHandleFilter)
+	async getFriends(@Request() req) {
 		return await this.friendService.getFriends(req.user.Login);
 	}
 
 	@Get('usersFriend/:userName')
 	@UseInterceptors(ClassSerializerInterceptor)
-	async getFriendsByUserName(@Param('userName') userName: string){
+	async getFriendsByUserName(@Param('userName') userName: string) {
 		const friend = await this.friendService.getFriends(userName);
-		if (!friend) throw new HttpException('Friend Not Found', HttpStatus.NOT_FOUND);
+		if (!friend) throw new HttpException('Friend Not Found', HttpStatus.NO_CONTENT);
 		return friend;
+		
+	}
+
+	@Get('isFriend/:userName')
+	@UseInterceptors(ClassSerializerInterceptor)
+	async getIsFriend(@Param('userName') userName: string, @Request() req) {
+		const friend = await this.friendService.getIsFriend(req.user.Login, userName);
+		if (!friend) throw new HttpException('Friend Not Found', HttpStatus.NO_CONTENT);
+		return {message:'OK', status:200};
+	}
+
+	@Get('followers/:username')
+	@UseInterceptors(ClassSerializerInterceptor)
+	@UseFilters(ExceptionHandleFilter)
+	async getFollowers(@Param('username') username:string) {
+		return await this.friendService.getFollowers(username);
 	}
 
 	@Get('byname/:firstname')
 	@UseInterceptors(ClassSerializerInterceptor)
-	async getFriendByName(@Param('firstname') firstname: string, @Request() req){
+	async getFriendByName(@Param('firstname') firstname: string, @Request() req) {
 		const friend = await this.friendService.getFriendByName(firstname, req.user.Login);
-		if (!friend) throw new HttpException('Friend Not Found', HttpStatus.NOT_FOUND);
+		if (!friend) throw new HttpException('Friend Not Found', HttpStatus.NO_CONTENT);
 		return new SerializedUser(friend.friend);
 	}
-	
 
-	@Post('addfriend/:name')
-	@UsePipes(new ValidationPipe())
+
+	@Get('addfriend/:name')
 	@UseFilters(ExceptionHandleFilter)
-	async addFriend(@Param('name') name:string, @Request() req){
+	async addFriend(@Param('name') name: string, @Request() req) {
 		const res = await this.friendService.addFriend(req.user.Login, name);
-			if (!res) throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
+		if (res !== null)
+			return {message:'OK', status:200};
+		if (!res) throw new HttpException('Something Is Wrong', HttpStatus.NO_CONTENT);
+	}
+
+	@Get('delete/:username')
+	@UseFilters(ExceptionHandleFilter)
+	async deleteFriend(@Param('username') username: string, @Request() req) {
+		const response = await this.friendService.deleteFriend(req.user.Login, username)
+		if (response !== null)
+			return {message:'OK', status:200};
+		throw new HttpException('User Not Found', HttpStatus.NO_CONTENT);
 	}
 
 }

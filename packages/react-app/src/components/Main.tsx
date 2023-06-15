@@ -28,6 +28,13 @@ export async function getPP(username: string | undefined) {
   return endPoint + "pps/default.png";
 }
 
+export async function isBlock(username:any){
+  const response = await api.get(`/block-user/isBlock/${username}`);
+  if (response.data.message === 'Is Block')
+    return true;
+  return false;
+}
+
 export default function Main() {
   const [pp, setPP] = useState('');
   useEffect(() => {

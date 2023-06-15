@@ -33,7 +33,7 @@ export class UsersController {
 	@ApiBearerAuth()
 	async getUserByName(@Param('userName') userName: string) {
 		const user = await this.userService.getUserByLogin(userName);
-		if (!user) throw new HttpException('User Not Found', HttpStatus.BAD_REQUEST);
+		if (!user) throw new HttpException('User Not Found', HttpStatus.NO_CONTENT);
 		return new SerializedUser(user);
 	}
 
@@ -43,7 +43,7 @@ export class UsersController {
 	@UseInterceptors(ClassSerializerInterceptor)
 	async getUserByEmail(@Param('email') email: string) {
 		const user = await this.userService.getUserByEmail(email);
-		if (!user) throw new HttpException('User Not Found', HttpStatus.BAD_REQUEST);
+		if (!user) throw new HttpException('User Not Found', HttpStatus.NO_CONTENT);
 		return new SerializedUser(user);
 	}
 
@@ -53,7 +53,7 @@ export class UsersController {
 	@ApiBearerAuth()
 	async getUserById(@Param('id') id: number) {
 		const user = await this.userService.findById(id);
-		if (!user) throw new HttpException('User Not Found', HttpStatus.BAD_REQUEST);
+		if (!user) throw new HttpException('User Not Found', HttpStatus.NO_CONTENT);
 		return new SerializedUser(user);
 	}
 

@@ -14,7 +14,7 @@ import { join } from 'path';
 
 export const imageFileFilter = (req, file, callback) => {
 	if (!file.originalname.match(/\.(jpeg|jpg)$/)) {
-		return callback(new HttpException('Only image files are allowed!', HttpStatus.BAD_REQUEST), false);
+		return callback(new HttpException('Only image files are allowed!', HttpStatus.NO_CONTENT), false);
 	}
 	callback(null, true);
 };

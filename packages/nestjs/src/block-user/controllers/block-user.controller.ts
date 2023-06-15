@@ -12,34 +12,33 @@ import { JwtAuthGuard } from 'src/auth/utils/jwt-auth.guard';
 @ApiBearerAuth()
 export class BlockUserController {
 
-    constructor(private userService: UsersService, private blockUserService: BlockUserService) {}
+    constructor(private blockUserService: BlockUserService) {}
     
-    @Post('id/:id')
-    @UseFilters(ExceptionHandleFilter)
-    async blockUser(@Param('id') id: number, @Request() req) {
-        
-        const user = await this.userService.findById(req.user.Id);
-        const user2 = await this.userService.findById(id);
-
-        if (!user || !user2) throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
-        return await this.blockUserService.blockUser({blockingUser : user, blockedUser: user2});
+    @Get(':username')
+    async blockUser(@Param('username') username: string, @Request() req) {
+        const res = await this.blockUserService.blockUser(req.user.Login, username);
+        if (res)
+            return {message:'OK', status:200};
     }
 
-    @Post('unblock/id/:id')
-    @UseFilters(ExceptionHandleFilter)
-    async unblockUser(@Param('id') id: number, @Request() req) {
-
-        const user = await this.userService.findById(req.user.Id);
-        const user2 = await this.userService.findById(id);
-
-        if (!user || !user) throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
-        return this.blockUserService.unblockUser({unblockingUser : user, unblockedUser: user2});
+    @Get('unblock/:username')
+    async unblockUser(@Param('username') username: string, @Request() req) {
+        const res = await this.blockUserService.unblockUser(req.user.Login, username);
+        if (res)
+            return {message:'OK', status:200};
     }
 
-    @Get('show-all')
-    @UseFilters(ExceptionHandleFilter)
+    @Get('show/all')
     async getBlockedUsers(@Request() req) {
-        return await this.blockUserService.blockedUsers(req.user.Id);
+        return await this.blockUserService.blockedUsers(req.user.Login);
     }
 
+
+    @Get('isBlock/:username')
+    async getIsBlock(@Param('username') username:string, @Request() req){
+        const res = await this.blockUserService.isBlock(req.user.Login, username);
+        if (res)
+            return {message:'Is Block', status:200};
+        return {message: 'Is Not Block', status:200};
+    }
 }

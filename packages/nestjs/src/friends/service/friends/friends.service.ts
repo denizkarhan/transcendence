@@ -1,63 +1,69 @@
 import { HttpException, HttpStatus, Inject, Injectable, Req } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToClass } from 'class-transformer';
+import { first } from 'rxjs';
 import { CreateFriendsParam } from 'src/friends/utils/type';
 import { Friend } from 'src/typeorm/entities/friends';
 import { User } from 'src/typeorm/entities/users';
 import { SerializedUser } from 'src/users/dtos/UserMapper';
-import { DataSource, Like, Repository } from 'typeorm';
+import { UsersService } from 'src/users/service/users/users.service';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class FriendsService {
-	private userRepository:any;
 	constructor(@InjectRepository(Friend) private friendRepository: Repository<Friend>,
-	private readonly dataSource : DataSource){
-		this.userRepository = dataSource.getRepository(User);
+	private readonly userService: UsersService){
+	}
+
+	async getIsFriend(userName:string, friendName:string){
+		const user = await this.userService.getUserByLogin(userName);
+		const friend = await this.userService.getUserByLogin(friendName);
+		const isFriend = await this.friendRepository.exist({where:{user:user, friend:friend}});
+		if (isFriend)
+			return true;
+		return false;
 	}
 
 	async getFriends(userName : string){
-		const user = await this.userRepository.findOneBy({Login:userName});
+		const user = await this.userService.getUserByLogin(userName);
 		const friends = await this.friendRepository.find({where:{user:user}, relations:['friend']});
 		if (!friends.length)
 			throw new HttpException('you dont have any friends', HttpStatus.OK);
 		return friends.map((fir)=>plainToClass(SerializedUser, fir.friend));
 	}
 
-	async getFriendById(userName:string, friendId:number){
-		const user = await this.userRepository.findOneBy({Login:userName});
-		const myFriend = await this.userRepository.findOneBy({Id:friendId});
-		const friends = await this.friendRepository.find({
-			where: {user:user, friend:myFriend },
-			relations: ['Friend'],
-		  }); 
-		  return friends.map((temp)=>plainToClass(SerializedUser, temp.friend));
+	async getFollowers(userName:string){
+		const user = await this.userService.getUserByLogin(userName);
+		const friends = await this.friendRepository.find({where : {friend:user}, relations:['user']})
+		return friends.map((fir)=>plainToClass(SerializedUser, fir.user));
 	}
 
 	async getFriendByName(name:string, userName: string){
-		const user = await this.userRepository.findOneBy({Login:userName});
-		const friend = await this.userRepository.findOneBy({FirstName:name});
+		const user = await this.userService.getUserByLogin(userName);
+		const friend = await this.userService.getUserByLogin(name);
 		if (!friend || friend === undefined)
 			return null;
 		return await this.friendRepository.findOne({where:{user:user}, relations:['friend']});
 	}
 
 	async addFriend(userName:string, friendLogin:string){
-		const user = await this.userRepository.findOneBy({Login:userName});
-		const friend = await this.userRepository.findOneBy({Login:friendLogin});
+		const user = await this.userService.getUserByLogin(userName);
+		const friend = await this.userService.getUserByLogin(friendLogin);
+		const isExist = await this.friendRepository.find({where:{user:user, friend:friend}})
+		if (user === friend || isExist.length)
+			return null;
 		if (!friend) return null;
-		await this.friendRepository.save({
+		return await this.friendRepository.save({
 			user: user,
 			friend: friend
 		});
-		await this.friendRepository.save({
-			user:friend,
-			friend:user
-		});
-		return friend;
 	}
 
-	async deleteFriend(id: number){
-		const friend = await this.userRepository.findOneBy({Id: id});
-		return this.friendRepository.delete({friend:friend});
+	async deleteFriend(userName:string, friendLogin:string){
+		const user = await this.userService.getUserByLogin(userName);
+		const friend = await this.userService.getUserByLogin(friendLogin);
+		const isExist = await this.friendRepository.find({where:{user:user, friend:friend}})
+		if (!friend || !isExist) return null;
+		return this.friendRepository.delete({friend:friend, user:user});
 	}
 }

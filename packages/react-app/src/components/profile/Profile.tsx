@@ -11,6 +11,9 @@ import Achievements from './Achievements';
 import { useAuthUser } from 'react-auth-kit';
 import ProfileImage from './ProfileImage';
 import UpdateProfile from '../UpdateProfile';
+import Followers from './Followers';
+import ProfileButton from './ProfileButton';
+import { isBlock } from '../Main';
 
 
 
@@ -24,9 +27,8 @@ const App: React.FC<Props> = (props: Props) => {
 	const { username } = useParams<string>();
 	const [user, setUser] = useState<User>();
 	const [activeTab, setActiveTab] = useState<string>('friends');
-	const auth = useAuthUser();
 
-	const login = auth()?.username ?? "User";
+
 	const handleTabSelect = (tab: string | null): void => {
 		if (tab) {
 			setActiveTab(tab);
@@ -34,6 +36,12 @@ const App: React.FC<Props> = (props: Props) => {
 	};
 	useEffect(() => {
 		const fetchData = async () => {
+			const block = await isBlock(username);
+			console.log(block);
+			if (block){
+				navigate('/');
+				return;
+			}
 			try {
 				const response = await api.get(`/users/userName/${username}`);
 				setUser({
@@ -61,26 +69,26 @@ const App: React.FC<Props> = (props: Props) => {
 										<h4>{user?.FirstName} {user?.LastName}</h4>
 										<p className="text-secondary mb-1">{user?.Login}</p>
 										<p className="text-muted font-size-sm">{user?.Email}</p>
-										{username !== login ?
-											<Stack direction="horizontal" className='justify-content-center' gap={2}>
-												<Button bsPrefix="btn btn-outline-danger">Follow</Button>
-												<Button bsPrefix="btn btn-outline-primary">Message</Button>
-											</Stack> : <UpdateProfile />}
 									</div>
-
+									<Stack direction="horizontal" className="justify-content-center" gap={2}>
+										<ProfileButton key={username} friendName={username} />
+									</Stack>
 								</div>
 							</Card.Body>
 						</Card>
 					</Col>
 					<Col lg='9'>
 						<Tabs activeKey={activeTab} onSelect={handleTabSelect} className="mb-3" fill>
-							<Tab eventKey="friends" title="Arkadaşlar">
+							<Tab eventKey="friends" title="Follow">
 								<Friends key={username} userName={username} />
 							</Tab>
-							<Tab eventKey="matches" title="Maçlar">
+							<Tab eventKey="follower" title="Follower">
+								<Followers key={username} userName={username} />
+							</Tab>
+							<Tab eventKey="matches" title="Matches">
 								<Matches key={username} userName={username} />
 							</Tab>
-							<Tab eventKey="achievements" title="Başarımlar">
+							<Tab eventKey="achievements" title="Achievements">
 								<Achievements key={username} userName={username} />
 							</Tab>
 						</Tabs>

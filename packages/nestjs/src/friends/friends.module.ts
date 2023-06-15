@@ -8,7 +8,7 @@ import { UsersService } from 'src/users/service/users/users.service';
 import { User } from 'src/typeorm/entities/users';
 
 @Module({
-	imports:[TypeOrmModule.forFeature([Friend])],
+	imports:[TypeOrmModule.forFeature([Friend]), UsersModule],
 	controllers: [FriendsController],
 	providers: [FriendsService]
 })

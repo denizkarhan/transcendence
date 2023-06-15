@@ -48,7 +48,7 @@ export class UsersService {
 		try {
 			return await this.userRepository.save(newUser);
 		} catch {
-			throw new HttpException('Tekrar Eden Kayıt', HttpStatus.BAD_REQUEST);
+			throw new HttpException('Tekrar Eden Kayıt', HttpStatus.NO_CONTENT);
 		}
 	}
 

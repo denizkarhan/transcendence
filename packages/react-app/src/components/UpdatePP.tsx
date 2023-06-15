@@ -35,7 +35,8 @@ export default function UpdatePP(prop: Props) {
 
     return (
         <Container>
-                <Button variant="primary" onClick={handleShow}>Change Profile Pic</Button>
+				<i onClick={handleShow} className="bi bi-image-fill fs-3" ></i>
+                {/* <Button variant="primary" onClick={handleShow}>Change Profile Pic</Button> */}
                 <Modal show={show} onHide={handleClose}>
                     <Modal.Header closeButton>
                         <Modal.Title>Change your profile picture.</Modal.Title>

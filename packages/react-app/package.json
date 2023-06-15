@@ -16,6 +16,7 @@
     "antd": "^5.5.0",
     "axios": "^1.4.0",
     "bootstrap": "^4.6.0",
+    "bootstrap-icons": "^1.10.5",
     "bootswatch": "^5.2.3",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",

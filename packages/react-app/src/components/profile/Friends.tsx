@@ -35,7 +35,7 @@ export default function Friends(props: Props) {
 		<Container>
 			<Row>
 				{Array.isArray(friends) ? (friends.map((user, index) => (
-					<Col key={user.Login} lg={4} md={6} sm={12} as={Link} to={`/profile/${user.Login}`}  style={{ textDecoration: 'none' }}>
+					<Col key={index} lg={4} md={6} sm={12} as={Link} to={`/profile/${user.Login}`}  style={{ textDecoration: 'none' }}>
 						<Alert variant="secondary">
 								<div className="media align-items-center">
 									

@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import "./Nav.css";
-import { useSignOut } from "react-auth-kit";
+import { useAuthUser, useSignOut } from "react-auth-kit";
 import api from '../api';
-import { getPP, getUserName } from './Main';
+import { getPP } from './Main';
 
 
 interface Props {
@@ -14,11 +14,13 @@ interface Props {
 
 export default function MyNavbar(prop: Props) {
 	const signOut = useSignOut();
+	const auth = useAuthUser();
+
+	const user = auth()?.username ?? "User";
 	const handleSignOut = async () => {
 		await api.get("auth/logout");
 		signOut();
 	};
-	const user = getUserName();
 
 	useEffect(() => {
 		const fetchData = async () => {

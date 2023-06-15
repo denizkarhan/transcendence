@@ -28,15 +28,8 @@ export async function getPP(username: string | undefined) {
   return endPoint + "pps/default.png";
 }
 
-export function getUserName(){
-	const auth = useAuthUser();
-	const user = auth()?.username ?? "User";
-	return user;
-}
-
-
 export default function Main() {
-  const [pp, setPP] = useState("pps/default.png");
+  const [pp, setPP] = useState('');
   useEffect(() => {
     const fetchData = async () => {
       setPP(await getPP(undefined));

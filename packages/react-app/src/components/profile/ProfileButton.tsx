@@ -19,7 +19,6 @@ export default function ProfileButton(props: Props) {
 
     const fetchData = async () => {
         const response = await api.get(`/friends/isFriend/${props.friendName}`);
-        console.log(response);
         if (response.data.status === 200)
             setFollow(true);
     };

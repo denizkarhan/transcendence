@@ -29,7 +29,7 @@ export default function MyNavbar(prop: Props) {
 		fetchData();
 	}, []);
 	return (
-		<Navbar className="navbar navbar-expand-lg navbar-dark bg-black" expand="true">
+		<Navbar className="navbar navbar-expand-lg navbar-dark bg-black" expand="true" style={{borderColor:'black', borderBlockColor:'#54B4D3'}}>
 			<Container fluid className="ml-4">
 				<Navbar.Brand as={Link} to="/">
 					Winx Club

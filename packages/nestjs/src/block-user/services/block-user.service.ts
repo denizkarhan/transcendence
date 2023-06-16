@@ -12,27 +12,27 @@ export class BlockUserService {
     constructor(private userService: UsersService, @InjectRepository(Blocks) private blocksRepository: Repository<Blocks>) { }
 
     async blockUser(username: string, blockUserName: string) {
-        if (await this.isBlock(username, blockUserName))
-            throw new HttpException('Already Is Block', HttpStatus.NO_CONTENT);
+        if ((await this.isBlock(username, blockUserName)))
+            return { message: 'User Is Block', status: 204 };
         const user = await this.userService.getUserByLogin(username);
         const blockUser = await this.userService.getUserByLogin(blockUserName);
-        if (!blockUser) throw new HttpException('Not Found', HttpStatus.NO_CONTENT);
-        return await this.blocksRepository.save({
+        await this.blocksRepository.save({
             blockingUser: user,
             blockedUser: blockUser
         });
+        return { message: 'OK', status: 200 };
     }
 
     async unblockUser(username: string, blockUserName: string) {
         if (!(await this.isBlock(username, blockUserName)))
-            throw new HttpException('User Is Not Block', HttpStatus.NO_CONTENT);
+            return { message: 'User Is Not Block', status: 204 };
         const user = await this.userService.getUserByLogin(username);
         const blockUser = await this.userService.getUserByLogin(blockUserName);
-        if (!blockUser) throw new HttpException('Not Found', HttpStatus.NO_CONTENT);
-        return await this.blocksRepository.delete({
+        await this.blocksRepository.delete({
             blockingUser: user,
             blockedUser: blockUser
         });
+        return { message: 'OK', status: 200 };
     }
 
     async blockedUsers(userName: string) {
@@ -48,7 +48,6 @@ export class BlockUserService {
     async isBlock(userName: string, blockUserName: string) {
         const user = await this.userService.getUserByLogin(userName);
         const blockUser = await this.userService.getUserByLogin(blockUserName);
-
-        return await this.blocksRepository.exist({ where: { blockingUser: blockUser, blockedUser: user } });
+        return await this.blocksRepository.exist({ where: { blockingUser: user, blockedUser: blockUser } });
     }
 }

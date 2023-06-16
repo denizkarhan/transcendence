@@ -8,11 +8,10 @@ import { useState } from 'react';
 interface Props {
     pp: string,
     setPP: React.Dispatch<React.SetStateAction<string>>,
-    // setIsHovered:React.Dispatch<React.SetStateAction<boolean>>,
+    setIsHovered:React.Dispatch<React.SetStateAction<boolean>>,
 }
 
 export default function UpdatePP(prop: Props) {
-    // prop.setIsHovered(false);
     const onFinish = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const formData = new FormData();
@@ -32,14 +31,14 @@ export default function UpdatePP(prop: Props) {
 
     const [show, setShow] = useState(false);
 
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    const handleClose = () => {setShow(false); prop.setIsHovered(false);}
+    const handleShow = () => {setShow(true);}
 
     return (
         <Container>
 				<i onClick={handleShow} className="bi bi-image-fill fs-3" ></i>
                 {/* <Button variant="primary" onClick={handleShow}>Change Profile Pic</Button> */}
-                <Modal show={show} onHide={handleClose}>
+                <Modal show={show} onHide={handleClose} >
                     <Modal.Header closeButton>
                         <Modal.Title>Change your profile picture.</Modal.Title>
                     </Modal.Header>

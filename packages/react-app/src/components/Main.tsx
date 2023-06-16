@@ -2,7 +2,7 @@ import RootNavigation from "../navigation/RootNavigation";
 import api, { getCookie } from '../api';
 import "../App.css";
 import MyNavbar from "./myNavbar";
-import { useAuthUser, useIsAuthenticated } from 'react-auth-kit';
+import { useIsAuthenticated } from 'react-auth-kit';
 import { useState } from 'react';
 import { useEffect } from "react";
 
@@ -28,8 +28,8 @@ export async function getPP(username: string | undefined) {
   return endPoint + "pps/default.png";
 }
 
-export async function isBlock(username:any){
-  const response = await api.get(`/block-user/isBlock/${username}`);
+export async function isBlock(username:any, friendName:any){
+  const response = await api.get(`/block-user/isBlock/${username}/${friendName}`);
   if (response.data.message === 'Is Block')
     return true;
   return false;
@@ -48,9 +48,9 @@ export default function Main() {
   const isAuthenticated = useIsAuthenticated();
   return (
 
-    <>
+    <div className="App">
       {isAuthenticated() && <MyNavbar pp={pp} setPP={setPP} />}
       <RootNavigation pp={pp} setPP={setPP} />
-    </>
+    </div>
   );
 }

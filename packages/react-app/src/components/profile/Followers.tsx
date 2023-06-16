@@ -4,6 +4,8 @@ import api from "../../api";
 import { Alert, Col, Container, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { getPP } from "../Main";
+import "./Profile.css";
+
 
 export interface Props {
     userName: string | undefined;
@@ -30,7 +32,7 @@ export default function Followers(props: Props) {
             <Row>
                 {Array.isArray(followers) ? (followers.map((user, index) => (
                     <Col key={index} lg={4} md={6} sm={12} as={Link} to={`/profile/${user.Login}`} style={{ textDecoration: 'none' }}>
-                        <Alert variant="secondary">
+                        <Alert variant="secondary" className="my-alert">
                             <div className="media align-items-center">
 
                                 <span
@@ -42,13 +44,14 @@ export default function Followers(props: Props) {
                                         backgroundSize: 'cover',
                                         border: `2px solid ${(user?.Status === 'online') ? '#14A44D' : '#DC4C64'}`,
                                         borderRadius: '50%',
+                                        borderWidth: '3px'
                                     }}
                                     className="avatar avatar-xl mr-3"></span>
 
                                 <div className="media-body overflow-hidden">
 
                                     <h5 className="card-text mb-0">{user?.FirstName}</h5>
-                                    <p className="card-text text-uppercase text-muted">{user?.LastName}</p>
+                                    <p className="card-text text-uppercase">{user?.LastName}</p>
                                     <p className="card-text">{user?.Login}</p>
                                 </div>
                             </div>

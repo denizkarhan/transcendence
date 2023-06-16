@@ -46,3 +46,21 @@
 .custom-tab.text-center {
 	text-align: center;
 }
+
+.alert.my-alert {
+	border-block-color: #54B4D3;
+	border-color: #54B4D3;
+	background: black;
+	color: white
+}
+
+.nav .nav-link {
+	color: white !important;
+	border-color: #54B4D3 !important;
+}
+
+.nav .nav-link.active {
+	color: white !important;
+	border-color: #54B4D3 !important;
+	background-color: black !important;
+}

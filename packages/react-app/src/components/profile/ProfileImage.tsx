@@ -43,8 +43,7 @@ export default function ProfileImage(props: Props) {
 						padding: '0'
 					}}
 				>
-					<UpdatePP pp={props.pp} setPP={props.setPP}/>
-					
+					<UpdatePP pp={props.pp} setPP={props.setPP} setIsHovered={setIsHovered}/>
 				</div>
 			);
 		}

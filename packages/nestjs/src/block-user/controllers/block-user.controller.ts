@@ -16,16 +16,12 @@ export class BlockUserController {
     
     @Get(':username')
     async blockUser(@Param('username') username: string, @Request() req) {
-        const res = await this.blockUserService.blockUser(req.user.Login, username);
-        if (res)
-            return {message:'OK', status:200};
+        return await this.blockUserService.blockUser(req.user.Login, username);
     }
 
     @Get('unblock/:username')
     async unblockUser(@Param('username') username: string, @Request() req) {
-        const res = await this.blockUserService.unblockUser(req.user.Login, username);
-        if (res)
-            return {message:'OK', status:200};
+        return await this.blockUserService.unblockUser(req.user.Login, username);
     }
 
     @Get('show/all')
@@ -34,9 +30,9 @@ export class BlockUserController {
     }
 
 
-    @Get('isBlock/:username')
-    async getIsBlock(@Param('username') username:string, @Request() req){
-        const res = await this.blockUserService.isBlock(req.user.Login, username);
+    @Get('isBlock/:username/:friendname')
+    async getIsBlock(@Param('username') username:string, @Param('friendname') friendname:string){
+        const res = await this.blockUserService.isBlock(username, friendname);
         if (res)
             return {message:'Is Block', status:200};
         return {message: 'Is Not Block', status:200};

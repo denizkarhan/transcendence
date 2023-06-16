@@ -14,8 +14,8 @@ import UpdateProfile from '../UpdateProfile';
 import Followers from './Followers';
 import ProfileButton from './ProfileButton';
 import { isBlock } from '../Main';
-
-
+import Block from './Block';
+import "./Profile.css"
 
 interface Props {
 	pp: string,
@@ -23,20 +23,25 @@ interface Props {
 }
 
 const App: React.FC<Props> = (props: Props) => {
+	
 	const navigate = useNavigate();
 	const { username } = useParams<string>();
 	const [user, setUser] = useState<User>();
 	const [activeTab, setActiveTab] = useState<string>('friends');
+	const auth = useAuthUser();
 
-
+    const login = auth()?.username ?? "User";
 	const handleTabSelect = (tab: string | null): void => {
 		if (tab) {
 			setActiveTab(tab);
 		}
 	};
+
+	
+
 	useEffect(() => {
 		const fetchData = async () => {
-			const block = await isBlock(username);
+			const block = await isBlock(username, login);
 			if (block){
 				navigate('/');
 				return;
@@ -59,18 +64,18 @@ const App: React.FC<Props> = (props: Props) => {
 		<Container>
 			<div className="main-body">
 				<Row>
-					<Col className=''>
-						<Card>
+					<Col>
+						<Card style={{background:'black', borderColor:'#54B4D3', borderBlockColor:'#54B4D3', color:'white'}}>
 							<Card.Body>
 								<div style={{position:'absolute', right:'1rem'}}>
-								<i className="bi bi-person-fill-slash fs-4"></i>
+									<Block key={username} userName={username} />
 								</div>
 								<div className="d-flex flex-column align-items-center text-center">
 									<ProfileImage key={username} userName={username} pp={props.pp} setPP={props.setPP} />
 									<div className="mt-3">
 										<h4>{user?.FirstName} {user?.LastName}</h4>
-										<p className="text-secondary mb-1">{user?.Login}</p>
-										<p className="text-muted font-size-sm">{user?.Email}</p>
+										<p className="mb-1">{user?.Login}</p>
+										<p className="font-size-sm">{user?.Email}</p>
 									</div>
 									<Stack direction="horizontal" className="justify-content-center" gap={2}>
 										<ProfileButton key={username} friendName={username} />

@@ -227,15 +227,15 @@ io.on('connection', function (socket: Socket) {
 });
 
 app.get('/', function (request, response) {
-	response.sendFile('/home/dkarhan/transcendence/pong_game2/index.html');
+	response.sendFile('/home/dkarhan/transcendence/packages/nestjs/index.html'); // Yolu düzenle
 });
 
 app.get('/src/pong.js', function (request, response) {
-	response.sendFile(__dirname + '/pong.js');
+	response.sendFile(__dirname + '/pong.js'); // Yolu düzenle
 });
 
 app.get('/src/style.css', function (request, response) {
-	response.sendFile(__dirname + '/style.css');
+	response.sendFile(__dirname + '/style.css'); // Yolu düzenle
 });
 
 server.listen(1234, function(){

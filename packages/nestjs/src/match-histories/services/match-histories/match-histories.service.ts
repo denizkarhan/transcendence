@@ -13,7 +13,7 @@ export class MatchHistoriesService {
 
   async addMatch(createMatch: CreateMatchParams, userName: string) {
     const user = await this.userService.getUserByLogin(userName);
-    const enemy = await this.userService.getUser(createMatch.EnemyId);
+    const enemy = await this.userService.getUserByLogin(createMatch.EnemyUserName);
     if (!user) return;
     var match = new MatchHistories();
     match.User = user;

@@ -18,9 +18,10 @@ export default function ProfileButton(props: Props) {
     const [follow, setFollow] = useState<boolean>(false);
 
     const fetchData = async () => {
-        await api.get(`/friends/isFriend/${props.friendName}`).then((response:any)=>{
+        const response = await api.get(`/friends/isFriend/${props.friendName}`);
+        console.log(response);
+        if (response.data.status === 200)
             setFollow(true);
-        }).catch((error:any)=> setFollow(false))
     };
 
     useEffect(() => {
@@ -51,14 +52,16 @@ export default function ProfileButton(props: Props) {
                 <>
                     {follow ? (
                         <Button onClick={handleUnFollow} bsPrefix="btn btn-outline-danger">
-                            Unfollow
+                            <i className="bi bi-person-dash fs-4"></i>
                         </Button>
                     ) : (
                         <Button onClick={handleFollow} bsPrefix="btn btn-outline-danger">
-                            Follow
+                            <i className="bi bi-person-add fs-4"></i>
                         </Button>
                     )}
-                    <Button bsPrefix="btn btn-outline-primary">Message</Button>
+                    <Button bsPrefix="btn btn-outline-dark">
+                        <i className="bi bi-chat-left fs-4"></i>
+                    </Button>
                 </>
             ) : (
                 <UpdateProfile />

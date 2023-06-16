@@ -44,6 +44,7 @@ export default function ProfileImage(props: Props) {
 					}}
 				>
 					<UpdatePP pp={props.pp} setPP={props.setPP}/>
+					
 				</div>
 			);
 		}

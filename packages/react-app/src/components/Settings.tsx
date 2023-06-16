@@ -11,7 +11,7 @@ export default function Settings(prop : Props) {
     return (
         <Stack direction="horizontal" className='justify-content-center' gap={2}>
             <UpdateProfile />
-            <UpdatePP pp={prop.pp} setPP={prop.setPP}/>
+            {/* <UpdatePP pp={prop.pp} setPP={prop.setPP}/> */}
         </Stack>
     );
 }

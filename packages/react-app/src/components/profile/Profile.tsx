@@ -37,7 +37,6 @@ const App: React.FC<Props> = (props: Props) => {
 	useEffect(() => {
 		const fetchData = async () => {
 			const block = await isBlock(username);
-			console.log(block);
 			if (block){
 				navigate('/');
 				return;
@@ -63,6 +62,9 @@ const App: React.FC<Props> = (props: Props) => {
 					<Col className=''>
 						<Card>
 							<Card.Body>
+								<div style={{position:'absolute', right:'1rem'}}>
+								<i className="bi bi-person-fill-slash fs-4"></i>
+								</div>
 								<div className="d-flex flex-column align-items-center text-center">
 									<ProfileImage key={username} userName={username} pp={props.pp} setPP={props.setPP} />
 									<div className="mt-3">

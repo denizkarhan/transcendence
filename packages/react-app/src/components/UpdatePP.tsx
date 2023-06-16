@@ -8,9 +8,11 @@ import { useState } from 'react';
 interface Props {
     pp: string,
     setPP: React.Dispatch<React.SetStateAction<string>>,
+    // setIsHovered:React.Dispatch<React.SetStateAction<boolean>>,
 }
 
 export default function UpdatePP(prop: Props) {
+    // prop.setIsHovered(false);
     const onFinish = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const formData = new FormData();

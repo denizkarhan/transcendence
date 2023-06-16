@@ -3,7 +3,7 @@ import { IsNotEmpty } from "class-validator";
 export class CreateMatchDto{
 
     @IsNotEmpty()
-    EnemyId:number;
+    EnemyUserName:string;
 
     @IsNotEmpty()
     MyResult:number;

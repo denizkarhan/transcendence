@@ -33,7 +33,7 @@ export class FriendsController {
 	@UseInterceptors(ClassSerializerInterceptor)
 	async getIsFriend(@Param('userName') userName: string, @Request() req) {
 		const friend = await this.friendService.getIsFriend(req.user.Login, userName);
-		if (!friend) throw new HttpException('Friend Not Found', HttpStatus.NO_CONTENT);
+		if (!friend) return {message:'OK', status:204};
 		return {message:'OK', status:200};
 	}
 

@@ -1,9 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Blocks } from 'src/typeorm/entities/blocks';
-import { User } from 'src/typeorm/entities/users';
 import { Repository } from 'typeorm';
-import { BlockUserParams, unBlockUserParams } from '../utils/types';
 import { plainToClass } from 'class-transformer';
 import { SerializedUser } from 'src/users/dtos/UserMapper';
 import { UsersService } from 'src/users/service/users/users.service';

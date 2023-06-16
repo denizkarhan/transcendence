@@ -30,7 +30,7 @@ export default function Friends(props: Props) {
 			}
 		};
 		fetchData();
-	}, [props.userName, friends]);
+	}, []);
 	return (
 		<Container>
 			<Row>

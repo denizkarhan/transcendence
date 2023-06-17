@@ -9,7 +9,10 @@ import * as passport from 'passport';
 // 	methods: ['GET', 'POST'],
 //   }},
 async function bootstrap() {
-	const app = await NestFactory.create(AppModule, {cors:true});
+	const app = await NestFactory.create(AppModule,  {cors:{
+		origin:'*',
+		credentials: true,
+	}});
 	app.use(session({
 		secret: 'asdajhfdsdkjfjksghfkjjhjjkjaksdas', // oturumun gizli kimliği
 		saveUninitialized: false, //bilgiler güncellendikten sonra eski bilgileri tutmayacak

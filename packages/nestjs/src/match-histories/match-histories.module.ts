@@ -10,6 +10,7 @@ import { UsersModule } from 'src/users/users.module';
 @Module({
   imports: [TypeOrmModule.forFeature([MatchHistories]), UsersModule],
   providers: [MatchHistoriesService],
-  controllers: [MatchHistoriesController]
+  controllers: [MatchHistoriesController],
+  exports:[MatchHistoriesService]
 })
 export class MatchHistoriesModule {}

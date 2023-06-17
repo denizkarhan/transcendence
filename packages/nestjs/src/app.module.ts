@@ -34,6 +34,8 @@ import { JwtStrategy } from './auth/utils/jwt.strategy';
 import { GoogleStrategy } from './auth/Google/utils/GoogleStrategy';
 import { AuthanticatorModule } from './auth/twofactorauth/authanticator.module';
 import * as cookieParser from 'cookie-parser';
+import { PongGateway } from './game/pong.gateway';
+import { GameModule } from './game/game.module';
 
 @Module({
   imports: [TypeOrmModule.forRoot({
@@ -51,7 +53,8 @@ import * as cookieParser from 'cookie-parser';
   JwtModule.register({
 	secret: jwtConstants.secret,
 	// signOptions: { expiresIn: '15m' },
-})],
+}),
+  GameModule,],
   controllers: [AppController],
   providers: [AppService, SesssionSerialaize, JwtStrategy,
 	{

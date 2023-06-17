@@ -7,10 +7,9 @@
 
 body
 {
-	font-family: 'Press Start 2P', cursive;
 	background-color: black;
 	color: white;
-	cursor: none;
+	/* cursor: none; */
 }
 
 canvas
@@ -25,7 +24,7 @@ canvas
 	box-shadow: 2px 2px 120px rgba(255, 255, 255, 0.7); /*gölge efekti*/
 	transform: translate(-50%, -50%);
 	border: 3px solid white;
-	--cursor: default;
+	/* --cursor: default; */
 }
 
 #lobi-container {
@@ -38,7 +37,6 @@ canvas
 }
 
 #lobi-container h1 {
-	font-family: 'Press Start 2P', cursive;
 	font-size: 20px;
 	margin-bottom: 10px;
 }
@@ -47,11 +45,10 @@ canvas
 	padding: 20px;
 	background: linear-gradient(to right, #6ac364, #28a51fd6, #024c05);
 	color: white;
-	border: none;
+	/* border: none; */
 	cursor: pointer;
 	border-radius: 12px;
 	margin-bottom: 50px;
-	font-family: 'Press Start 2P', cursive;
 }
 
 .random-room-button {
@@ -60,10 +57,9 @@ canvas
 	background-size: 200% auto;
 	color: white;
 	border: none;
-	cursor: pointer;
+	/* cursor: pointer; */
 	border-radius: 12px;
 	margin-bottom: 50px;
-	font-family: 'Press Start 2P', cursive;
 	animation: gradientAnimation 10s linear infinite;
 }
 
@@ -81,7 +77,7 @@ canvas
 	background-color: #4CAF50;
 	color: white;
 	border: none;
-	cursor: pointer;
+	/* cursor: pointer; */
 	border-radius: 25px;
 	display: none;
   }

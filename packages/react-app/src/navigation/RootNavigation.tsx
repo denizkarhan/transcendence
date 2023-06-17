@@ -9,6 +9,8 @@ import NotFoundPage from "../404/404";
 import LoginAndRegister from '../components/LoginAndRegister';
 import { ToastProvider } from '../components/Toast'
 import "bootswatch/dist/lumen/bootstrap.min.css";
+import Canvas from '../game/Canvas'
+import Game from '../game/pong'
 
 
 interface Props {
@@ -29,6 +31,7 @@ const RootNavigation = (prop: Props) => {
 				<Route path="profile/:username" element={isAuthenticated() ? <Profile pp={prop.pp} setPP={prop.setPP}/> : <LoginAndRegister />} />
 				<Route path="settings" element={isAuthenticated() ? <Settings pp={prop.pp} setPP={prop.setPP} /> : <LoginAndRegister />} />
 				<Route path="*" element={<NotFoundPage />} />
+				<Route path='/game' element={<Game/>}/>
 			</Routes>
 		</ToastProvider>
 	)

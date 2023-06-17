@@ -1,0 +1,87 @@
+*
+{
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body
+{
+	font-family: 'Press Start 2P', cursive;
+	background-color: black;
+	color: white;
+	cursor: none;
+}
+
+canvas
+{
+	width: 650px;
+	height: 400px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	border: 1px solid #ccc; /*kenarlık*/
+	border-radius: 5px; /*kenar yuvarlatma*/
+	box-shadow: 2px 2px 120px rgba(255, 255, 255, 0.7); /*gölge efekti*/
+	transform: translate(-50%, -50%);
+	border: 3px solid white;
+	--cursor: default;
+}
+
+#lobi-container {
+	padding: 50px;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	justify-content: flex-start;
+	align-items: flex-start;
+}
+
+#lobi-container h1 {
+	font-family: 'Press Start 2P', cursive;
+	font-size: 20px;
+	margin-bottom: 10px;
+}
+
+.room-button {
+	padding: 20px;
+	background: linear-gradient(to right, #6ac364, #28a51fd6, #024c05);
+	color: white;
+	border: none;
+	cursor: pointer;
+	border-radius: 12px;
+	margin-bottom: 50px;
+	font-family: 'Press Start 2P', cursive;
+}
+
+.random-room-button {
+	padding: 20px;
+	background: linear-gradient(to right, #ae0505c4, #3ae845ca, #2634c8ce, #ae0505c4, #3ae845ca, #2634c8ce);
+	background-size: 200% auto;
+	color: white;
+	border: none;
+	cursor: pointer;
+	border-radius: 12px;
+	margin-bottom: 50px;
+	font-family: 'Press Start 2P', cursive;
+	animation: gradientAnimation 10s linear infinite;
+}
+
+@keyframes gradientAnimation {
+	0% { background-position: 0% }
+	100% { background-position: 100% }
+}
+
+#buton-div button {
+	position: fixed;
+	top: 20px;
+	right: 20px;
+	padding: 12px 24px;
+	font-size: 26px;
+	background-color: #4CAF50;
+	color: white;
+	border: none;
+	cursor: pointer;
+	border-radius: 25px;
+	display: none;
+  }

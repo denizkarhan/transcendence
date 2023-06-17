@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<style>
+		html, body {
+		  height: 55%;
+		  margin: 0;
+		  display: flex;
+		  justify-content: center;
+		  align-items: center;
+		}
+		
+		#buton-div {
+		  text-align: center;
+		}
+		
+		#buton-div button {
+		  padding: 12px 24px;
+		  font-size: 26px;
+		  background-color: #4CAF50;
+		  color: white;
+		  border: none;
+		  cursor: pointer;
+		  border-radius: 25px;
+		  display: none;
+		}
+	</style>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="src/style.css">
+	<title>Pong Game</title>
+</head>
+<body>
+	<div id="buton-div">
+	  <button onclick="location.reload()">Tekrar Oyna</button>
+	</div>
+	<div id="text-container"></div>
+	<div id="buton-div"></div>
+	<script src="//cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+	<canvas id="pongGame" style="background-color: black;"></canvas>
+	<script src="./src/pong.js"> </script>
+</body>
+</html>

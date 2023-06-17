@@ -11,24 +11,28 @@ const G = '\x1b[32m';
 const RB = '\x1b[31;1m';
 const R = '\x1b[0m';
 
-@WebSocketGateway({cors:'*'})
+@WebSocketGateway({ cors: '*' })
 export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
     constructor(private matchService: MatchHistoriesService) { }
 
     @WebSocketServer()
     server: Server;
 
-    async handleConnection(client: Socket): Promise<boolean> {
-        const nick = client.handshake.auth.nick.split("%22")[3];
-        const token = client.handshake.auth.token;
+    async handleConnection(socket: Socket): Promise<boolean> {
+        const nick = socket.handshake.auth.nick.split("%22")[3];
+        const token = socket.handshake.auth.token;
 
         if (!nick || !token) {
-            client.disconnect(true);
+            socket.disconnect(true);
             return false;
         }
-
-        console.log(`Client ${client.id} connected. Nickname: ${nick}, Auth token: ${token}`);
+        //socker id işi bozuyor onu userName yap;-------------------
+        console.log(`Client ${socket.id} connected. Nickname: ${nick}, Auth token: ${token}`);
         console.log("User", nick + G, "Connected" + R);
+        userCount += 1;
+        const userId = nextUserId++;
+        const roomName = "NULL";
+        connectedUsers.set(socket.id, { id: userId, socket: socket, roomName: roomName });
         connectedUsers.forEach(element => {
             const roomKeys = Array.from(rooms.keys());
             for (const key of roomKeys) {
@@ -39,20 +43,56 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
                 }
             }
         });
+
         return true;
     }
 
-    async handleDisconnect(client: Socket) {
-        console.log(`Client ${client.id} disconnected`);
+    async handleDisconnect(socket: Socket) {
+        console.log(`Client ${socket.id} disconnected`);
+        const usersKeys = Array.from(connectedUsers.keys());
+        for (const key of usersKeys) {
+            if (socket!.id === connectedUsers.get(key)!.socket.id) {
+                console.log(RB + "User", connectedUsers.get(key)!.id + G, "Disconnected!" + R);
+                const roomName = connectedUsers.get(key)!.roomName;
+                if (rooms.has(roomName) && rooms.get(roomName)![0] === 2) {
+                    const pOne = rooms.get(roomName)![1];
+                    const pTwo = rooms.get(roomName)![2];
+                    const scoreOne = rooms.get(roomName)![4];
+                    const scoreTwo = rooms.get(roomName)![5];
+
+                    if (pOne === connectedUsers.get(key)!.id) {
+                        rooms.set(roomName, [1, -1, pTwo, 0, scoreOne, scoreTwo]);
+                    } else if (pTwo === connectedUsers.get(key)!.id) {
+                        rooms.set(roomName, [1, pOne, -1, 0, scoreOne, scoreTwo]);
+                    }
+                    connectedUsers.forEach(element => {
+                        element.socket.emit('buttonUpdated', [roomName, 2]);
+                    });
+                }
+                else if (rooms.has(roomName) && rooms.get(roomName)![0] === 1) {
+                    rooms.delete(roomName);
+                    connectedUsers.forEach(element => {
+                        element.socket.emit('buttonUpdated', [roomName, 1]);
+                    });
+                }
+                userCount -= 1;
+                console.log("User", connectedUsers.get(key)!.id, RB + "Disconnected" + R);
+                connectedUsers.delete(key);
+                socket.leave(roomName);
+                if (userCount % 2 === 1)
+                    socket.to(roomName).emit('userDisconnected', 1);
+            }
+        }
     }
 
     @SubscribeMessage('keydown')
     async keyDown(@MessageBody() key: string, @MessageBody() data: any, @ConnectedSocket() socket: Socket) {
-        if (connectedUsers.get(socket.id)!.roomName == "NULL") {
+        if (connectedUsers.get(socket.id)!.roomName === "NULL") {
             console.log(RB + "Bir odada değilsiniz, lütfen bir odaya giriş yapınız." + R);
             return;
         }
 
+        console.log(key, data);
         let playerOne = data[0];
         let playerTwo = data[1];
         let ball = data[4];
@@ -62,29 +102,30 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
         let scoreOne = rooms.get(room)![4];
         let scoreTwo = rooms.get(room)![5];
-
-        if (rooms.get(room)![0] == 2) {
-            if (user!.id == rooms.get(room)![1]) {
-                if (key == "w" && playerOne.y - playerOne.gravity > 0)
+        console.log("-----------------------> ",rooms.get(room));
+        console.log("-----------------------> ", user);
+        if (rooms.get(room)[0] === 2) {
+            if (user!.id === rooms.get(room)![1]) {
+                if (key === "w" && playerOne.y - playerOne.gravity > 0)
                     playerOne.y -= playerOne.gravity * 4;
-                else if (key == "s" && playerOne.y + playerOne.height + playerOne.gravity < 500)
+                else if (key === "s" && playerOne.y + playerOne.height + playerOne.gravity < 500)
                     playerOne.y += playerOne.gravity * 4;
             }
-            if (user!.id == rooms.get(room)![2]) {
-                if (key == "w" && playerTwo.y - playerTwo.gravity > 0)
+            if (user!.id === rooms.get(room)![2]) {
+                if (key === "w" && playerTwo.y - playerTwo.gravity > 0)
                     playerTwo.y -= playerTwo.gravity * 4;
-                else if (key == "s" && playerTwo.y + playerTwo.height + playerTwo.gravity < 500)
+                else if (key === "s" && playerTwo.y + playerTwo.height + playerTwo.gravity < 500)
                     playerTwo.y += playerTwo.gravity * 4;
             }
 
             connectedUsers.forEach(element => {
-                if (element.roomName == room && rooms.get(room)![3] < 2) { // Oyunculardan herhangi biri ilk tuşa basınca
+                if (element.roomName === room && rooms.get(room)![3] < 2) { // Oyunculardan herhangi biri ilk tuşa basınca
                     let val = rooms.get(room);
                     val![3] += 1;
                     rooms.set(room, val!); // oyuna giren kullanıcı sayısını odada güncelliyorum
                     element.socket.to(room).emit('startGame', data); // Hareketi room(x) odasındakilere gönder
                 }
-                else if (element.roomName == room) {
+                else if (element.roomName === room) {
                     element.socket.to(room).emit('movePlayer', [playerOne, playerTwo, scoreOne, scoreTwo, ball]);
                 }
             });
@@ -121,7 +162,7 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
 
     @SubscribeMessage('enterRoom')
-    async handleRoom(@MessageBody() roomName:string, @ConnectedSocket() socket:Socket){
+    async handleRoom(@MessageBody() roomName: any, @ConnectedSocket() socket: Socket) {
         const user = connectedUsers.get(socket.id);
         let color = 1;
 
@@ -174,7 +215,7 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
             if (element.roomName === roomName && rooms.get(user.roomName)?.[0] === 2) {
                 element.socket.emit('userRegister', [element.id]);
             }
-        });   
+        });
     }
 }
 

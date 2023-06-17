@@ -77,19 +77,19 @@ function Game() {
 			textContainer.style.cursor = "default";
 		}
 
-		for (let i = 0; i < buttons.length; i++) { // Odaya giriş yapma butonu
-			buttons[i].addEventListener("click", () => {
-				const buttonText: string = buttons[i].innerText;
+		for (let i = 0; i < randomButton.length; i++) { // Odaya giriş yapma butonu
+			randomButton[i].addEventListener("click", () => {
+				const buttonText: string = randomButton[i].innerText;
 				console.log("1 Tıklanan buton: " + buttonText);
 				canvas.socket.emit('enterRoom', {roomName: buttonText});
 			});
 		}
 
-		randomButton[0].addEventListener("click", () => {
-			const buttonText: string = randomButton[0].innerText;
-			console.log("2 Tıklanan buton: " + buttonText);
-			canvas.socket.emit('enterRoom', {roomName : buttonText});
-		});
+		// randomButton[0].addEventListener("click", () => {
+		// 	const buttonText: string = randomButton[0].innerText;
+		// 	console.log("2 Tıklanan buton: " + buttonText);
+		// 	canvas.socket.emit('enterRoom', {roomName : buttonText});
+		// });
 
 		const buttonColors: string[] = [
 			"linear-gradient(to right, #964747d6, #bd1b1bca, #640206d7)",

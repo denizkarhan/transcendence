@@ -11,6 +11,8 @@ const G = '\x1b[32m';
 const RB = '\x1b[31;1m';
 const R = '\x1b[0m';
 
+console.log("Server açıldı")
+
 @WebSocketGateway({ cors: '*' })
 export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
     constructor(private matchService: MatchHistoriesService) { }
@@ -19,6 +21,9 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
     server: Server;
 
     async handleConnection(socket: Socket): Promise<boolean> {
+        console.log("handleConnection");
+
+        // const nick = socket.handshake.auth && socket.handshake.auth.nick ? socket.handshake.auth.nick.split("%22")[3] : null;
         const nick = socket.handshake.auth.nick.split("%22")[3];
         const token = socket.handshake.auth.token;
 
@@ -48,6 +53,8 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
 
     async handleDisconnect(socket: Socket) {
+        console.log("handleDisconnect");
+
         console.log(`Client ${socket.id} disconnected`);
         const usersKeys = Array.from(connectedUsers.keys());
         for (const key of usersKeys) {
@@ -86,13 +93,13 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
 
     @SubscribeMessage('keydown')
-    async keyDown(@MessageBody() key: string, @MessageBody() data: any, @ConnectedSocket() socket: Socket) {
+        async keyDown(@MessageBody() key: string, @MessageBody() data: any, @ConnectedSocket() socket: Socket) {
         if (connectedUsers.get(socket.id)!.roomName === "NULL") {
             console.log(RB + "Bir odada değilsiniz, lütfen bir odaya giriş yapınız." + R);
             return;
         }
 
-        console.log(key, data);
+        // console.log(key, data);
         let playerOne = data[0];
         let playerTwo = data[1];
         let ball = data[4];
@@ -102,8 +109,8 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
         let scoreOne = rooms.get(room)![4];
         let scoreTwo = rooms.get(room)![5];
-        console.log("-----------------------> ",rooms.get(room));
-        console.log("-----------------------> ", user);
+        // console.log("-----------------------> ",rooms.get(room));
+        // console.log("-----------------------> ", user);
         if (rooms.get(room)[0] === 2) {
             if (user!.id === rooms.get(room)![1]) {
                 if (key === "w" && playerOne.y - playerOne.gravity > 0)
@@ -170,49 +177,51 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
             return; // Zaten bir odası var
         }
 
-        if (roomName === "Hemen Oyna") {
+        if (roomName.roomName === "HEMEN OYNA") {
             // Rastgele boş bir odaya gir
             user.roomName = availableRoom(user.id, 0);
+            console.log("user.roomName: ", user.roomName)
             if (rooms.get(user.roomName)?.[0] === 2) {
                 color = 0;
             } else if (rooms.get(user.roomName)?.[0] === 1) {
                 color = 2;
             }
             connectedUsers.set(socket.id, user);
-        } else if (rooms.has(roomName) && rooms.get(roomName)?.[0] === 0) {
+        } else if (rooms.has(roomName.roomName) && rooms.get(roomName.roomName)?.[0] === 0) {
             // Boş oda
-            user.roomName = roomName;
-            rooms.set(roomName, [1, user.id, -1, 0, 0, 0]);
+            user.roomName = roomName.roomName;
+            rooms.set(roomName.roomName, [1, user.id, -1, 0, 0, 0]);
             color = 2;
             connectedUsers.set(socket.id, user);
-        } else if (rooms.has(roomName) && rooms.get(roomName)?.[0] === 1) {
+        } else if (rooms.has(roomName.roomName) && rooms.get(roomName.roomName)?.[0] === 1) {
             // Odada 1 kişi var
-            user.roomName = roomName;
-            const one = rooms.get(roomName)?.[1];
-            const two = rooms.get(roomName)?.[2];
+            user.roomName = roomName.roomName;
+            const one = rooms.get(roomName.roomName)?.[1];
+            const two = rooms.get(roomName.roomName)?.[2];
             if (one === -1) {
-                rooms.set(roomName, [2, user.id, two!, 0, 0, 0]);
+                rooms.set(roomName.roomName, [2, user.id, two!, 0, 0, 0]);
             } else if (two === -1) {
-                rooms.set(roomName, [2, one!, user.id, 0, 0, 0]);
+                rooms.set(roomName.roomName, [2, one!, user.id, 0, 0, 0]);
             }
             color = 0;
             connectedUsers.set(socket.id, user);
-        } else if (rooms.has(roomName) && rooms.get(roomName)?.[0] === 2) {
+        } else if (rooms.has(roomName.roomName) && rooms.get(roomName.roomName)?.[0] === 2) {
             // Oda dolu
             console.log(RB + "Oda dolu!" + R);
             return;
-        } else if (!rooms.has(roomName)) {
-            user.roomName = roomName;
-            rooms.set(roomName, [1, user.id, -1, 0, 0]);
+        } else if (!rooms.has(roomName.roomName)) {
+            user.roomName = roomName.roomName;
+            rooms.set(roomName.roomName, [1, user.id, -1, 0, 0]);
             color = 2;
             connectedUsers.set(socket.id, user);
         }
 
         socket.join(user.roomName);
+        console.log("Room name->", user.roomName);
         console.log("usercount->", rooms.get(user.roomName)?.[0]);
         connectedUsers.forEach(element => {
             element.socket.emit('buttonUpdated', [user.roomName, color]);
-            if (element.roomName === roomName && rooms.get(user.roomName)?.[0] === 2) {
+            if (element.roomName === roomName.roomName && rooms.get(user.roomName)?.[0] === 2) {
                 element.socket.emit('userRegister', [element.id]);
             }
         });
@@ -224,6 +233,7 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
 // const io = new Server(server);
 
 function availableRoom(userId: number, i: number): string {
+    console.log("availableRoom")
     while (i++ < rooms.size) {
         const rName = "room" + i.toString();
         if (rooms.get(rName)![0] < 2) {

@@ -93,16 +93,16 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
 
     @SubscribeMessage('keydown')
-        async keyDown(@MessageBody() key: string, @MessageBody() data: any, @ConnectedSocket() socket: Socket) {
+        async keyDown(@MessageBody() game: any, @ConnectedSocket() socket: Socket) {
         if (connectedUsers.get(socket.id)!.roomName === "NULL") {
             console.log(RB + "Bir odada değilsiniz, lütfen bir odaya giriş yapınız." + R);
             return;
         }
 
-        // console.log(key, data);
-        let playerOne = data[0];
-        let playerTwo = data[1];
-        let ball = data[4];
+        const key = game.key;
+        console.log("------------------>", game);
+        let playerOne = game.pOne;
+        let playerTwo = game.pTwo;
 
         const user = connectedUsers.get(socket.id);
         const room = connectedUsers.get(socket.id)!.roomName;
@@ -130,10 +130,10 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
                     let val = rooms.get(room);
                     val![3] += 1;
                     rooms.set(room, val!); // oyuna giren kullanıcı sayısını odada güncelliyorum
-                    element.socket.to(room).emit('startGame', data); // Hareketi room(x) odasındakilere gönder
+                    element.socket.to(room).emit('startGame', [game.pOne, game.pTwo, game.sOne, game.sTwo, game.ball]); // Hareketi room(x) odasındakilere gönder
                 }
                 else if (element.roomName === room) {
-                    element.socket.to(room).emit('movePlayer', [playerOne, playerTwo, scoreOne, scoreTwo, ball]);
+                    element.socket.to(room).emit('movePlayer', [playerOne, playerTwo, scoreOne, scoreTwo, game.ball]);
                 }
             });
         }
@@ -143,7 +143,9 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
 
     @SubscribeMessage('scoreUpdate')
-    async handleScoreUpdate(@MessageBody() scoreOne: number, @MessageBody() scoreTwo: number, @ConnectedSocket() socket: Socket) {
+    async handleScoreUpdate(@MessageBody() scores: any, @ConnectedSocket() socket: Socket) {
+        const scoreOne = scores.sOne;
+        const scoreTwo = scores.sTwo;
         const room = connectedUsers.get(socket.id)?.roomName;
         if (room) {
             const setupRoom = rooms.get(room);
@@ -173,12 +175,14 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
         const user = connectedUsers.get(socket.id);
         let color = 1;
 
+        console.log(roomName);
         if (user?.roomName !== "NULL") {
             return; // Zaten bir odası var
         }
 
         if (roomName.roomName === "HEMEN OYNA") {
             // Rastgele boş bir odaya gir
+            console.log("---------------------->",user.id);
             user.roomName = availableRoom(user.id, 0);
             console.log("user.roomName: ", user.roomName)
             if (rooms.get(user.roomName)?.[0] === 2) {

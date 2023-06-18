@@ -61,8 +61,7 @@ function Game() {
 		let playerWidth: number = 15;
 		let scoreOne: number = 0;
 		let scoreTwo: number = 0;
-		let intervalID: any = 0;
-		console.log(canvas);
+		let intervalID: NodeJS.Timer;
 		const trail: { x: number; y: number; }[] = [];
 		const trailLength: number = 50;
 
@@ -105,7 +104,8 @@ function Game() {
 		});
 
 		const doKeyPress = (e: KeyboardEvent) => { // Oyun ekranındaki tuşları dinle ve server'a yolluyor
-			canvas.socket.emit('keydown',  e.key, [playerOne, playerTwo, scoreOne, scoreTwo, ball]); // Sunucuya hareket bilgisini gönder
+			canvas.socket.emit('keydown',  {key: e.key, sOne:scoreOne, sTwo:scoreTwo, pOne: playerOne,
+				pTwo: playerTwo, ball: ball}); // Sunucuya hareket bilgisini gönder
 		}
 
 
@@ -244,12 +244,12 @@ function Game() {
 				ball.x = canvas.width / 2;
 				ball.y += ball.gravity;
 			} else if (ball.x + ball.speed > playerTwo.x + playerTwo.width) {
-				scoreOne += 1;
+				scoreOne++;
 				ball.speed = ball.speed * -1;
 				ball.x = canvas.width / 2;
 				ball.y += ball.gravity;
 			}
-			canvas.socket.emit('scoreUpdate', scoreOne, scoreTwo); // Sunucuya score bilgisini gönder
+			canvas.socket.emit('scoreUpdate', {sOne: scoreOne, sTwo:scoreTwo}); // Sunucuya score bilgisini gönder
 			drawElements();
 		}
 
@@ -274,6 +274,7 @@ function Game() {
 
 		// diğer oyuncunun hareketini işlemek için movePlayer olayını dinleyin
 		canvas.socket.on('movePlayer', (data: any) => {
+			console.log("-------------------> ", data);
 			playerOne.y = data[0].y;
 			playerTwo.y = data[1].y;
 			scoreOne = data[2];

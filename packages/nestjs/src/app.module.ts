@@ -34,16 +34,15 @@ import { JwtStrategy } from './auth/utils/jwt.strategy';
 import { GoogleStrategy } from './auth/Google/utils/GoogleStrategy';
 import { AuthanticatorModule } from './auth/twofactorauth/authanticator.module';
 import * as cookieParser from 'cookie-parser';
-import { PongGateway } from './game/pong.gateway';
 import { GameModule } from './game/game.module';
 
 @Module({
   imports: [TypeOrmModule.forRoot({
 	type: 'postgres',
-	host: 'postgres',
+	host: 'localhost',
 	port: 5432,
 	username: 'postgres',
-	password: 'example',
+	password: '1',
 	database: 'postgres',
 	entities: [User, Friend, Stats, Achievements, UserAchievements, MatchHistories, Blocks, Avatar],
 	synchronize: true,

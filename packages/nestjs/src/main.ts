@@ -9,10 +9,7 @@ import * as passport from 'passport';
 // 	methods: ['GET', 'POST'],
 //   }},
 async function bootstrap() {
-	const app = await NestFactory.create(AppModule,  {cors:{
-		origin:'*',
-		credentials: true,
-	}});
+	const app = await NestFactory.create(AppModule,  {cors:true});
 	app.use(session({
 		secret: 'asdajhfdsdkjfjksghfkjjhjjkjaksdas', // oturumun gizli kimliği
 		saveUninitialized: false, //bilgiler güncellendikten sonra eski bilgileri tutmayacak
@@ -39,12 +36,12 @@ async function bootstrap() {
 		.build();
 	const document = SwaggerModule.createDocument(app, config);
 	SwaggerModule.setup('api', app, document);
-	app.enableCors({
-		origin: [
-			'http://localhost:3000',
-		],
-		credentials: true,
-	});
+	// app.enableCors({
+	// 	origin: [
+	// 		'http://10.12.13.5:3000',
+	// 	],
+	// 	credentials: true,
+	// });
 	app.use(passport.initialize());
 	app.use(passport.session());
 	await app.listen(3001);

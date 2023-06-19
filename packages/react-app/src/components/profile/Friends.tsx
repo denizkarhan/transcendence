@@ -17,7 +17,6 @@ export default function Friends(props: Props) {
 	useEffect(() => {
 		const fetchData = async () => {
 			let resFriend;
-			console.log(props.userName);
 			if (props.userName !== undefined) {
 				resFriend = await api.get(`/friends/usersFriend/${props.userName}`);
 			} else {

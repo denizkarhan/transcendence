@@ -23,26 +23,25 @@ interface Props {
 }
 
 const App: React.FC<Props> = (props: Props) => {
-	
+	const { param } = useParams<string>();
 	const navigate = useNavigate();
-	const { username } = useParams<string>();
 	const [user, setUser] = useState<User>();
 	const [activeTab, setActiveTab] = useState<string>('friends');
 	const auth = useAuthUser();
 
-    const login = auth()?.username ?? "User";
+	const login = auth()?.username ?? "User";
 	const handleTabSelect = (tab: string | null): void => {
 		if (tab) {
 			setActiveTab(tab);
 		}
 	};
+	const username  = (param === undefined) ? login : param;
 
-	
 
 	useEffect(() => {
 		const fetchData = async () => {
 			const block = await isBlock(username, login);
-			if (block){
+			if (block) {
 				navigate('/');
 				return;
 			}
@@ -65,9 +64,9 @@ const App: React.FC<Props> = (props: Props) => {
 			<div className="main-body">
 				<Row>
 					<Col>
-						<Card style={{background:'black', borderColor:'#54B4D3', borderBlockColor:'#54B4D3', color:'white'}}>
+						<Card style={{ background: 'black', borderColor: '#54B4D3', borderBlockColor: '#54B4D3', color: 'white' }}>
 							<Card.Body>
-								<div style={{position:'absolute', right:'1rem'}}>
+								<div style={{ position: 'absolute', right: '1rem' }}>
 									<Block key={username} userName={username} />
 								</div>
 								<div className="d-flex flex-column align-items-center text-center">

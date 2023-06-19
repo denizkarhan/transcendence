@@ -20,9 +20,9 @@ export function deleteCookie(name) {
 };
 
 // console.log(process.env.BACK_END_URI);
-
+console.log(window.location.hostname);
 const api = axios.create({
-	baseURL: "http://localhost:3001",
+	baseURL: "http://10.12.13.5:3001",
 	headers: {
 		'Authorization': 'Bearer ' + getCookie('42_auth'),
 	}

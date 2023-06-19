@@ -39,10 +39,10 @@ import { GameModule } from './game/game.module';
 @Module({
   imports: [TypeOrmModule.forRoot({
 	type: 'postgres',
-	host: 'localhost',
+	host: 'postgres',
 	port: 5432,
 	username: 'postgres',
-	password: '1',
+	password: 'example',
 	database: 'postgres',
 	entities: [User, Friend, Stats, Achievements, UserAchievements, MatchHistories, Blocks, Avatar],
 	synchronize: true,

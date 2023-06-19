@@ -17,7 +17,8 @@ export default function Friends(props: Props) {
 	useEffect(() => {
 		const fetchData = async () => {
 			let resFriend;
-			if (props.userName?.length !== 0) {
+			console.log(props.userName);
+			if (props.userName !== undefined) {
 				resFriend = await api.get(`/friends/usersFriend/${props.userName}`);
 			} else {
 				resFriend = await api.get('/friends/all');
@@ -33,6 +34,7 @@ export default function Friends(props: Props) {
 		};
 		fetchData();
 	}, []);
+
 	return (
 		<Container>
 			<Row>

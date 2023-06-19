@@ -14,6 +14,7 @@ interface decodedToken {
 };
 
 export default function UpdateProfile() {
+	const [isHovered, setIsHovered] = useState(false);
 	const signin = useSignIn();
 	const navigate = useNavigate();
 
@@ -40,15 +41,26 @@ export default function UpdateProfile() {
 			})
 			.catch((error) => console.log(error));
 	}
+	const handleMouseEnter = () => {
+		setIsHovered(true);
+	};
 
+	const handleMouseLeave = () => {
+		setIsHovered(false);
+	};
 	const [show, setShow] = useState(false);
 
 	const handleClose = () => setShow(false);
 	const handleShow = () => setShow(true);
 
 	return (
-		<Container >
-			<i onClick={handleShow} className="bi bi-gear fs-3"></i>
+		<Container
+			style={{ position: 'relative' }}
+			onMouseEnter={handleMouseEnter}
+			onMouseLeave={handleMouseLeave}
+			onClick={handleShow}
+		>
+			<i className="bi bi-gear fs-4" style={{ color: isHovered ? '#E4A11B' : '#332D2D' }}></i>
 			<Modal
 				show={show}
 				onHide={handleClose}

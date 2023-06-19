@@ -23,14 +23,14 @@ const RootNavigation = (prop: Props) => {
 	return (
 		<ToastProvider>
 			<Routes>
-				<Route path="/" element={isAuthenticated() ? <Home /> : <LoginAndRegister />} />
-				<Route path="home" element={isAuthenticated() ? <Home /> : <LoginAndRegister />} />
-				<Route path="login" element={isAuthenticated() ? <Home /> : <LoginForm />} />
-				<Route path="register" element={isAuthenticated() ? <Home /> : <RegisterForm />} />
-				<Route path="loginorregister" element={isAuthenticated() ? <Home /> : <LoginAndRegister />} />
+				<Route path="/" element={isAuthenticated() ? <Profile pp={prop.pp} setPP={prop.setPP} /> : <LoginAndRegister />} />
+				<Route path="home" element={isAuthenticated() ? <Profile pp={prop.pp} setPP={prop.setPP} /> : <LoginAndRegister />} />
+				<Route path="login" element={isAuthenticated() ? <Profile pp={prop.pp} setPP={prop.setPP} /> : <LoginForm />} />
+				<Route path="register" element={isAuthenticated() ? <Profile pp={prop.pp} setPP={prop.setPP} /> : <RegisterForm />} />
+				<Route path="loginorregister" element={isAuthenticated() ? <Profile pp={prop.pp} setPP={prop.setPP} /> : <LoginAndRegister />} />
 				<Route path="profile/:username" element={isAuthenticated() ? <Profile pp={prop.pp} setPP={prop.setPP}/> : <LoginAndRegister />} />
 				<Route path="settings" element={isAuthenticated() ? <Settings pp={prop.pp} setPP={prop.setPP} /> : <LoginAndRegister />} />
-				<Route path="*" element={<NotFoundPage />} />
+				<Route path="*" element={isAuthenticated() ? <NotFoundPage /> : <LoginAndRegister /> } />
 				<Route path='/game' element={<Game/>}/>
 			</Routes>
 		</ToastProvider>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
+import { Button, Container, Nav, Navbar, NavDropdown, Stack } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import "./Nav.css";
 import { useAuthUser, useSignOut } from "react-auth-kit";
@@ -29,12 +29,18 @@ export default function MyNavbar(prop: Props) {
 		fetchData();
 	}, []);
 	return (
-		<Navbar className="navbar navbar-expand-lg navbar-dark bg-black" expand="true" style={{borderColor:'black', borderBlockColor:'#54B4D3'}}>
+		<Navbar className="navbar navbar-expand-lg navbar-dark bg-black" expand="true" style={{ borderColor: 'black', borderBlockColor: '#54B4D3' }}>
 			<Container fluid className="ml-4">
 				<Navbar.Brand as={Link} to="/">
 					Winx Club
 				</Navbar.Brand>
 				<Navbar.Toggle aria-controls="basic-navbar-nav" />
+				<Navbar.Collapse style={{ justifyContent: 'flex-end' }}>
+					<Stack direction='horizontal' gap={2}>
+						<Nav.Item className='btn btn-outline-primary' as={Link} to='/game'> Game </Nav.Item>
+						<Nav.Item className='btn btn-outline-primary'> Chat </Nav.Item>
+					</Stack>
+				</Navbar.Collapse>
 				<Navbar.Collapse id="responsive-navbar-nav" className="justify-content-end">
 					<Nav>
 						<img src={prop.pp} className="img-style" />

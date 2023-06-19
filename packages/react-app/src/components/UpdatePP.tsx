@@ -31,13 +31,15 @@ export default function UpdatePP(prop: Props) {
 
     const [show, setShow] = useState(false);
 
-    const handleClose = () => {setShow(false); prop.setIsHovered(false);}
+    const handleClose = () => {
+		prop.setIsHovered(false);
+		setShow(false);
+	}
     const handleShow = () => {setShow(true);}
 
     return (
         <Container>
 				<i onClick={handleShow} className="bi bi-image-fill fs-3" ></i>
-                {/* <Button variant="primary" onClick={handleShow}>Change Profile Pic</Button> */}
                 <Modal show={show} onHide={handleClose} >
                     <Modal.Header closeButton>
                         <Modal.Title>Change your profile picture.</Modal.Title>

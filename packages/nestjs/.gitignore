@@ -1,3 +1,4 @@
 node_modules
 dist
 avatars
+package-lock.json

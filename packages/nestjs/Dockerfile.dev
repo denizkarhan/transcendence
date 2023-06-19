@@ -1,3 +1,22 @@
+# FROM debian:buster
+
+# SHELL ["/bin/bash", "--login", "-c"]
+
+# RUN apt-get update -y && apt-get upgrade -y  && apt-get install -y curl wget
+# RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+# RUN source ~/.bashrc
+# RUN nvm install 20
+# # RUN npm i --save @nestjs/core @nestjs/common @nestjs/platform-express --legacy-peer-deps
+
+# WORKDIR /app
+# COPY package.json .
+# RUN npm install -g npm@latest
+# RUN npm install -g @nestjs/cli
+# RUN  npm install --legacy-peer-deps
+# COPY . .
+
+# # CMD ["npm", "run", "start:dev"]
+
 FROM node:20.3.0-buster
 
 WORKDIR /app

@@ -4,8 +4,6 @@
   "private": true,
   "dependencies": {
     "@headlessui/react": "^1.7.15",
-    "@heroicons/react": "^2.0.18",
-    "@react-oauth/google": "^0.11.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -23,7 +21,6 @@
     "date-fns": "^2.30.0",
     "dotenv": "^16.1.4",
     "jwt-decode": "^3.1.2",
-    "mdb-react-ui-kit": "^6.0.0",
     "os": "^0.1.2",
     "path": "^0.12.7",
     "primereact": "^9.4.0",

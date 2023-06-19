@@ -162,6 +162,9 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
                 connectedUsers.forEach(element => {
                     if (element.roomName === room) {
                         if (scoreOne === 3 || scoreTwo === 3) {
+                            // this.matchService.addMatch({
+                            //     EnemyResult:scoreTwo,
+                            // })
                             element.socket.to(element.roomName).emit('gameOver', winner);
                         }
                     }

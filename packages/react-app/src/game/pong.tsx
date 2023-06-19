@@ -1,5 +1,5 @@
 import io, { Socket } from 'socket.io-client';
-import { getCookie } from "../api";
+import api, { getCookie } from "../api";
 import { useEffect, useRef } from "react";
 import { Button} from 'react-bootstrap';
 import './a.css';

@@ -9,7 +9,6 @@ import NotFoundPage from "../404/404";
 import LoginAndRegister from '../components/LoginAndRegister';
 import { ToastProvider } from '../components/Toast'
 import "bootswatch/dist/lumen/bootstrap.min.css";
-import Canvas from '../game/Canvas'
 import Game from '../game/pong'
 
 

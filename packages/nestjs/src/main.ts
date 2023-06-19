@@ -3,13 +3,14 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import * as session from 'express-session';
 import * as passport from 'passport';
-
 // ,  {cors: {
 // 	origin: 'http://localhost:3000',
 // 	methods: ['GET', 'POST'],
 //   }},
+
+
 async function bootstrap() {
-	const app = await NestFactory.create(AppModule,  {cors:true});
+	const app = await NestFactory.create(AppModule, { cors: true });
 	app.use(session({
 		secret: 'asdajhfdsdkjfjksghfkjjhjjkjaksdas', // oturumun gizli kimliği
 		saveUninitialized: false, //bilgiler güncellendikten sonra eski bilgileri tutmayacak
@@ -44,6 +45,32 @@ async function bootstrap() {
 	// });
 	app.use(passport.initialize());
 	app.use(passport.session());
+	// const http = require('http');
+	// const appIP = '127.0.0.1';
+	// const appPort = 3001;
+	// const targetIP = '78.163.157.121';
+	// const targetPort = 8080;
+	// const server = http.createServer((req, res) => {
+	// 	// Gelen istekleri hedef IP adresi ve port'a yönlendirme
+	// 	const options = {
+	// 		hostname: targetIP,
+	// 		port: targetPort,
+	// 		path: req.url,
+	// 		method: req.method,
+	// 		headers: req.headers
+	// 	};
+
+	// 	const proxyReq = http.request(options, (proxyRes) => {
+	// 		// Hedef sunucudan gelen yanıtı istemciye iletiyoruz
+	// 		res.writeHead(proxyRes.statusCode, proxyRes.headers);
+	// 		proxyRes.pipe(res);
+	// 	});
+
+	// 	req.pipe(proxyReq);
+	// });
+	// server.listen(appPort, appIP, () => {
+	// 	console.log(`Server running at http://${appIP}:${appPort}/`);
+	// });
 	await app.listen(3001);
 }
 bootstrap();

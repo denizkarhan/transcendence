@@ -60,7 +60,7 @@ const App: React.FC<Props> = (props: Props) => {
 	}, [username])
 
 	return (
-		<Container>
+		<Container style={{maxWidth:'70%'}}>
 			<div className="main-body">
 				<Row>
 					<Col>

@@ -35,6 +35,8 @@ import { GoogleStrategy } from './auth/Google/utils/GoogleStrategy';
 import { AuthanticatorModule } from './auth/twofactorauth/authanticator.module';
 import * as cookieParser from 'cookie-parser';
 import { GameModule } from './game/game.module';
+import { Chat } from './typeorm/entities/chat';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [TypeOrmModule.forRoot({
@@ -44,7 +46,7 @@ import { GameModule } from './game/game.module';
 	username: 'postgres',
 	password: 'example',
 	database: 'postgres',
-	entities: [User, Friend, Stats, Achievements, UserAchievements, MatchHistories, Blocks, Avatar],
+	entities: [User, Friend, Stats, Achievements, UserAchievements, MatchHistories, Blocks, Avatar, Chat],
 	synchronize: true,
   }), 
   UsersModule, StatsModule, MatchHistoriesModule, UserAchievementsModule, FriendsModule, AuthModule, 
@@ -53,7 +55,7 @@ import { GameModule } from './game/game.module';
 	secret: jwtConstants.secret,
 	// signOptions: { expiresIn: '15m' },
 }),
-  GameModule,],
+  GameModule, ChatModule,],
   controllers: [AppController],
   providers: [AppService, SesssionSerialaize, JwtStrategy,
 	{

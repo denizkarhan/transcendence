@@ -6,6 +6,7 @@ import CountdownButton from './CountdownButton';
 import './a.css';
 
 let x = 0;
+let gameStarter = 0;
 
 interface CanvasWithSocket extends HTMLCanvasElement {
 	socket: Socket;
@@ -130,10 +131,6 @@ function Game() {
 			  flag: x++
 			});
 		  });
-
-		
-
-		
 
 		// net
 		let net: Eleman = new Eleman({
@@ -266,6 +263,8 @@ function Game() {
 
 		// diğer oyuncunun hareketini işlemek için movePlayer olayını dinleyin
 		canvas.socket.on('movePlayer', (data: any) => {
+			if (gameStarter == 0)
+				return;
 			console.log(data[0].y)
 			playerOne.y = data[0].y;
 			playerTwo.y = data[1].y;
@@ -280,6 +279,9 @@ function Game() {
 
 		canvas.socket.on('countDown', (data: any) => {			
 			handleStartCountdown();
+			setTimeout(() => {
+				gameStarter = 1;
+			  }, 3000);
 		});
 
 		const waitingRoom = () => {

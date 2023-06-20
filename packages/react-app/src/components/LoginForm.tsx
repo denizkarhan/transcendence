@@ -7,6 +7,7 @@ import { useSignIn } from "react-auth-kit";
 import jwtDecode from "jwt-decode";
 import ModalComponent from "./Tfa";
 import { useToast } from "./Toast";
+import { useLocation } from 'react-router-dom';
 
 interface decodedToken {
 	id: number,
@@ -27,9 +28,13 @@ const App: React.FC = () => {
 		deleteCookie('user');
 		setShowModal(false);
 	}
+	const location = useLocation();
+
+
 	useEffect(() => {
-		setToken(getCookie('token'));
-		setUser(getCookie('user'));
+		const searchParams = new URLSearchParams(location.search);
+		setToken(searchParams.get('token'));
+		setUser(searchParams.get('user'));
 		if (token) {
 			const user = jwtDecode<decodedToken>(token);
 			signin({
@@ -73,10 +78,10 @@ const App: React.FC = () => {
 	};
 
 	const handleGoogleLogin = async () => {
-		window.location.href = 'http://localhost:3001/auth/google/login';
+		window.location.href = 'http://k2m13s05.42kocaeli.com.tr:3001/auth/google/login';
 	};
 	const handleFTLogin = async () => {
-		window.location.href = 'http://localhost:3001/ft-auth/login';
+		window.location.href = 'http://k2m13s05.42kocaeli.com.tr:3001/ft-auth/login';
 	};
 	return (
 		<div className="App">

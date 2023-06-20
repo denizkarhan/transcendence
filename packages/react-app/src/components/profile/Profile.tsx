@@ -23,7 +23,7 @@ interface Props {
 }
 
 const App: React.FC<Props> = (props: Props) => {
-	const { param } = useParams<string>();
+	let { username } = useParams<string>();
 	const navigate = useNavigate();
 	const [user, setUser] = useState<User>();
 	const [activeTab, setActiveTab] = useState<string>('friends');
@@ -35,7 +35,7 @@ const App: React.FC<Props> = (props: Props) => {
 			setActiveTab(tab);
 		}
 	};
-	const username  = (param === undefined) ? login : param;
+	username  = (username === undefined) ? login : username;
 
 
 	useEffect(() => {

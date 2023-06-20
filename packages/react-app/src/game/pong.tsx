@@ -47,7 +47,7 @@ function Game() {
 		const context = canvas.getContext('2d');
 		if (!context)
 			return;
-		canvas.socket = io("http://localhost:3001", {
+		canvas.socket = io("http://k2m13s05.42kocaeli.com.tr:3001", {
 			auth: {
 				nick: getCookie("42_auth_state"),
 				token: getCookie("42_auth")

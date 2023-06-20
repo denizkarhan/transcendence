@@ -3,7 +3,7 @@ import io from 'socket.io-client';
 
 const ChatComponent = () => {
 	useEffect(() => {
-	  const socket = io('http://localhost:3001'); // Chat sunucusunun URL'sini uygun şekilde güncelleyin
+	  const socket = io('http://k2m13s05.42kocaeli.com.tr:3001'); // Chat sunucusunun URL'sini uygun şekilde güncelleyin
   
 	  // Socket.io üzerinden chat mesajlarını dinleyin
 	  socket.on('chatMessage', (message:any) => {

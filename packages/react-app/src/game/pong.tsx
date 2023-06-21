@@ -7,6 +7,10 @@ import './a.css';
 
 let x = 0;
 let gameStarter = 0;
+let canvasWidth = 750;
+let canvasHeight = 500;
+let playerHeight = 80;
+let playerWidth = 15;
 
 interface CanvasWithSocket extends HTMLCanvasElement {
 	socket: Socket;
@@ -34,26 +38,26 @@ class Eleman {
 
 const playerOne: Eleman = new Eleman({ // first paddle (playerone)
 	x: 10,
-	y: 750 / 2 - 80 / 2,
-	width: 15,
-	height: 80,
+	y: canvasHeight / 2 - playerHeight / 2,
+	width: playerWidth,
+	height: playerHeight,
 	color: "#fff",
 	gravity: 3,
 });
 
 const playerTwo: Eleman = new Eleman({ // second paddle (playertwo)
-	x: 750 - 15 - 10,
-	y: 750 / 2 - 80 / 2,
-	width: 15,
-	height: 80,
+	x: canvasWidth - playerWidth - 10,
+	y: canvasHeight / 2 - playerHeight / 2,
+	width: playerWidth,
+	height: playerHeight,
 	color: "#fff",
 	gravity: 3,
 });
 
 // ball
 const ball: Eleman = new Eleman({
-	x:750 / 2,
-	y: 500 / 2,
+	x: canvasWidth / 2,
+	y: canvasHeight / 2,
 	width: 15,
 	height: 15,
 	color: "#fff",
@@ -72,9 +76,7 @@ function Game() {
 	useEffect(() => {
 		const canvas = canvasRef.current;//document.getElementById("pongGame") as CanvasWithSocket;
 		const style: HTMLCanvasElement = document.querySelector('canvas')!;
-		const buttons = document.getElementsByClassName("room-button") as HTMLCollectionOf<HTMLButtonElement>;
 		const roomButtons: HTMLCollectionOf<HTMLButtonElement> = document.getElementsByClassName("random-room-button") as HTMLCollectionOf<HTMLButtonElement>;
-		const textContainer: HTMLElement = document.getElementById("text-container")!;
 		// const canvas = canvasRef.current;
 		if (!canvas) {
 			console.log("canvas yok");
@@ -83,7 +85,7 @@ function Game() {
 		const context = canvas.getContext('2d');
 		if (!context)
 			return;
-		canvas.socket = io("http://k2m13s05.42kocaeli.com.tr:3001/game", {
+		canvas.socket = io("http://localhost:3001/game", {
 			auth: {
 				nick: getCookie("42_auth_state"),
 				token: getCookie("42_auth")
@@ -93,8 +95,6 @@ function Game() {
 		canvas.height = 500;
 		style.width = canvas.width;
 		style.height = canvas.height;
-		let playerHeight: number = 80;
-		let playerWidth: number = 15;
 		let scoreOne: number = 0;
 		let scoreTwo: number = 0;
 		let intervalID: NodeJS.Timer;
@@ -257,6 +257,8 @@ function Game() {
 		// oyunu başlatmak için startGame olayını dinleyin
 		canvas.socket.on('startGame', (data: any) => {
 			intervalID = setInterval((data: any) => {
+				if (gameStarter === 0)
+					return;
 				ballBounce();
 			}, 0);
 		});
@@ -265,7 +267,6 @@ function Game() {
 		canvas.socket.on('movePlayer', (data: any) => {
 			if (gameStarter === 0)
 				return;
-			// console.log(data[0].y)
 			playerOne.y = data[0].y;
 			playerTwo.y = data[1].y;
 			scoreOne = data[2];
@@ -274,7 +275,6 @@ function Game() {
 			ball.y = data[4].y;
 			ball.speed = data[4].speed;
 			ball.gravity = data[4].gravity;
-			// console.log(playerOne.y)
 		});
 
 		canvas.socket.on('countDown', (data: any) => {			
@@ -309,24 +309,101 @@ function Game() {
 			if (button)
 				button.style.display = "block";
 			clearInterval(intervalID);
+
 			scoreOne = 0;
 			scoreTwo = 0;
+			playerOne.y = canvasHeight / 2 - playerHeight / 2;
+			playerTwo.y = canvasHeight / 2 - playerHeight / 2;
+			ball.x = canvasWidth / 2;
+			ball.y = canvasHeight / 2;
+			gameStarter = 0;
+			x = 0;
+
+			const buttonContainer = document.querySelector('.button-container') as HTMLElement;
+			if (buttonContainer) {
+				buttonContainer.style.zIndex = '9999';
+				buttonContainer.style.position = 'static';
+				buttonContainer.style.top = '50%';
+				buttonContainer.style.right = '40%';
+			}
+
+			const buttonFull = document.querySelector('.button') as HTMLElement;
+			if (buttonFull) {
+				buttonFull.style.zIndex = '9999';
+				buttonFull.style.position = 'fixed';
+				buttonFull.style.top = '50%';
+				buttonFull.style.right = '40%';
+				buttonFull.style.width = '250px';
+				buttonFull.style.height = '100px';
+				buttonFull.style.fontSize = '25px';
+				buttonFull.style.transform = 'translate(-50%, -50%)';
+			}
+			// var div = document.getElementById('.button-container');
+			// div!.style.top = "300px";
+			// div!.style.right = "600px";
+			// div!.style.fontSize = "20px";
+			// div!.style.zIndex = "9999";
 		});
 
 		canvas.socket.on('buttonUpdated', (roomAndColor: any) => {
-			console.log("Room:", roomAndColor[0]);
-			console.log("Color:", roomAndColor[1]);
 			for (var i = 0; i < roomButtons.length; i++) { // Odaya giriş yapma butonu
 				if (roomButtons[i].innerText === roomAndColor[0]) {
 					roomButtons[i].style.background = buttonColors[roomAndColor[1]];
 				}
 			}
 		});
+
+		canvas.socket.on('windowToGame', (modFlag: boolean) => {
+			for (var i = 0; i < roomButtons.length; i++) {
+				roomButtons[i].style.display = "none";
+			}
+			var myCanvas = document.getElementById("pongGame");
+			myCanvas!.style.display = 'block';
+			if (modFlag) {
+				var clasicButton = document.getElementById("clasico");
+				var fastButton = document.getElementById("fastest");
+				clasicButton!.style.display = 'block';
+				fastButton!.style.display = 'block';
+			}
+		});
 	}, []);
+
+	const handleRefresh = () => {
+		window.location.reload();
+	  };
+	
+	const clasicMode = () => {
+		ball.speed = 1;
+		ball.gravity = 1;
+		var div = document.getElementById('clasico');
+		div!.style.background = "#1bc4f6";
+
+		var clasicButton = document.getElementById("clasico");
+		var fastButton = document.getElementById("fastest");
+		clasicButton!.style.display = 'none';
+		fastButton!.style.display = 'none';
+	};
+
+	const fastMode = () => {
+		ball.color = "#fa44ab";
+		ball.speed = 2;
+		ball.gravity = 2;
+		playerOne.gravity = 5;
+		playerTwo.gravity = 5;
+		var div = document.getElementById('fastest');
+		div!.style.background = "#fbce0f";
+
+		var clasicButton = document.getElementById("clasico");
+		var fastButton = document.getElementById("fastest");
+		clasicButton!.style.display = 'none';
+		fastButton!.style.display = 'none';
+	  };
 
 	return (
 		<div>
 		<div id='button-div'>
+			<Button id="clasico" className='clasic-mod' onClick={clasicMode}>Clasic Mod</Button>
+			<Button id="fastest" className='fast-mod' onClick={fastMode}>Fast Mod</Button>
 			<Button className='random-room-button'>Hemen Oyna</Button>
 			<Button className='random-room-button'>room1</Button>
 			<Button className='random-room-button'>room2</Button>
@@ -334,10 +411,10 @@ function Game() {
 			<Button className='random-room-button'>room4</Button>
 			<Button className='random-room-button'>room5</Button>
 			<Button className='random-room-button'>room6</Button>
-			<div className="button-container">
-			<button className="button">
-				<span>Back to lobby</span>
-			</button>
+			<div id="refresh" className="button-container">
+				<button className="button" onClick={handleRefresh}>
+					<span>Back to lobby</span>
+				</button>
 			</div>
 			{startCountdown && <CountdownButton />}
 		</div>

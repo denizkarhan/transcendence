@@ -10,6 +10,8 @@ const CountdownButton = () => {
       const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
       return () => clearTimeout(timer);
     } else if (isCounting && countdown === 0) {
+      var div = document.getElementById('count');
+      div!.style.zIndex = '-1';
       setIsCounting(false);
     }
   }, [isCounting, countdown]);
@@ -20,7 +22,7 @@ const CountdownButton = () => {
   };
 
   return (
-    <div className="countdown-container">
+    <div id='count' className="countdown-container">
       {isCounting && (
         <button className="countdown-button">
           <div className="countdown-overlay">

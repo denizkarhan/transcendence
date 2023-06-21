@@ -1,7 +1,7 @@
 import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
 import { FtAuthGuard } from '../utils/ft-auth.guard';
 import { ApiTags } from '@nestjs/swagger';
-import { Public } from 'src/users/utils/metadata';
+import { Public } from 'src/utils/metadata';
 import { FtAuthService } from '../service/ft-auth.service';
 import { Request, Response } from 'express';
 

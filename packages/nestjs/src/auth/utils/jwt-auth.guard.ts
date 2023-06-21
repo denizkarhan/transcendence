@@ -1,7 +1,7 @@
 import { ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
-import { IS_PUBLIC_KEY } from 'src/users/utils/metadata';
+import { IS_PUBLIC_KEY } from 'src/utils/metadata';
 import { GoogleAuthGuard } from '../Google/utils/Guards';
 
 @Injectable()

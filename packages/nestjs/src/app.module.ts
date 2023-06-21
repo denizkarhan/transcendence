@@ -35,7 +35,11 @@ import { GoogleStrategy } from './auth/Google/utils/GoogleStrategy';
 import { AuthanticatorModule } from './auth/twofactorauth/authanticator.module';
 import * as cookieParser from 'cookie-parser';
 import { GameModule } from './game/game.module';
-
+import { ChatModule } from './chat/chat.module';
+import { GroupChat } from './typeorm/entities/groupChat';
+import { GroupChatUsers } from './typeorm/entities/groupChatUsers';
+import { GroupMessages } from './typeorm/entities/GroupMessages';
+// import { PrivateChat } from './typeorm/entities/PrivateChat';
 @Module({
   imports: [TypeOrmModule.forRoot({
 	type: 'postgres',
@@ -44,7 +48,7 @@ import { GameModule } from './game/game.module';
 	username: 'postgres',
 	password: 'example',
 	database: 'postgres',
-	entities: [User, Friend, Stats, Achievements, UserAchievements, MatchHistories, Blocks, Avatar],
+	entities: [User, Friend, Stats, Achievements, UserAchievements, MatchHistories, Blocks, Avatar, GroupChat, GroupChatUsers, GroupMessages],
 	synchronize: true,
   }), 
   UsersModule, StatsModule, MatchHistoriesModule, UserAchievementsModule, FriendsModule, AuthModule, 
@@ -53,7 +57,7 @@ import { GameModule } from './game/game.module';
 	secret: jwtConstants.secret,
 	// signOptions: { expiresIn: '15m' },
 }),
-  GameModule,],
+  GameModule, ChatModule,],
   controllers: [AppController],
   providers: [AppService, SesssionSerialaize, JwtStrategy,
 	{
@@ -69,4 +73,5 @@ export class AppModule implements NestModule {
 		.forRoutes('*');
 	}
   }
+  
   

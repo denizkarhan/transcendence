@@ -10,6 +10,7 @@ import { UsersModule } from 'src/users/users.module';
 @Module({
   imports: [TypeOrmModule.forFeature([Blocks]), UsersModule],
   controllers: [BlockUserController],
-  providers: [BlockUserService]
+  providers: [BlockUserService],
+  exports:[BlockUserService]
 })
 export class BlockUserModule {}

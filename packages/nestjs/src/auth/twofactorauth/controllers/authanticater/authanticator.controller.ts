@@ -2,7 +2,7 @@ import { Controller, Get, Param, Post, Request, Res, UnauthorizedException } fro
 import { AuthanticatorService } from '../../service/authanticator/authanticator.service';
 import { UsersService } from 'src/users/service/users/users.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { Public } from 'src/users/utils/metadata';
+import { Public } from 'src/utils/metadata';
 import * as qrcode from 'qrcode';
 import * as bcrypt from 'bcrypt';
 

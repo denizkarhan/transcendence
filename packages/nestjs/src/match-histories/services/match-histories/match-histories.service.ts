@@ -14,6 +14,7 @@ export class MatchHistoriesService {
   async addMatch(createMatch: CreateMatchParams, userName: string) {
     const user = await this.userService.getUserByLogin(userName);
     const enemy = await this.userService.getUserByLogin(createMatch.EnemyUserName);
+
     if (!user) return;
     var match = new MatchHistories();
     match.User = user;
@@ -24,6 +25,7 @@ export class MatchHistoriesService {
     match.MatchResult = match.MyResult > match.EnemyResult ? 1 : match.MyResult == match.EnemyResult ? 0 : 2;
     this.matchRepository.save(match);
   }
+  
 
   async getMatch(userName: string) {
     const user = await this.userService.getUserByLogin(userName);

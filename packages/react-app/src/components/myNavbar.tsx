@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Button, Container, Nav, Navbar, NavDropdown, Stack } from "react-bootstrap";
+import React, { useEffect } from "react";
+import { Container, Nav, Navbar, NavDropdown, Stack } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import "./Nav.css";
 import { useAuthUser, useSignOut } from "react-auth-kit";
@@ -22,6 +22,8 @@ export default function MyNavbar(prop: Props) {
 		signOut();
 	};
 
+	
+
 	useEffect(() => {
 		const fetchData = async () => {
 			prop.setPP(await getPP(undefined));
@@ -38,7 +40,7 @@ export default function MyNavbar(prop: Props) {
 				<Navbar.Collapse style={{ justifyContent: 'flex-end' }}>
 					<Stack direction='horizontal' gap={2}>
 						<Nav.Item className='btn btn-outline-primary' as={Link} to='/game'> Game </Nav.Item>
-						<Nav.Item className='btn btn-outline-primary'> Chat </Nav.Item>
+						<Nav.Item className='btn btn-outline-primary' as={Link} to='/chat'> Chat </Nav.Item>
 					</Stack>
 				</Navbar.Collapse>
 				<Navbar.Collapse id="responsive-navbar-nav" className="justify-content-end">

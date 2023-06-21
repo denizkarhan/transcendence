@@ -1,7 +1,7 @@
 import { Controller, Get, Req, Res, UseGuards, Body, Request, Redirect } from '@nestjs/common';
 import { GoogleAuthGuard } from '../utils/Guards';
 import { ApiTags } from '@nestjs/swagger';
-import { Public } from 'src/users/utils/metadata';
+import { Public } from 'src/utils/metadata';
 import { GoogleAuthService } from '../service/google-auth.service';
 import { Response } from 'express';
 

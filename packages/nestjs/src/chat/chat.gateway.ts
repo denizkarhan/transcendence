@@ -38,6 +38,7 @@ export class ChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@SubscribeMessage('createRoom')
 	async createRoom(@MessageBody() room: any, @ConnectedSocket() socket: Socket) {
+		console.log('Create Room ', room);
 		await this.chatService.createRoom({
 			RoomName: room.roomName,
 			Admin: room.userName,
@@ -81,10 +82,11 @@ export class ChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@SubscribeMessage('join')
 	async join(@MessageBody() data: any, @ConnectedSocket() socket: Socket) {
-
 		if (await this.chatService.isExistRoom(data.roomName)) {
+			console.log(data);
 			await this.chatService.joinRoom(data.roomName, data.userName);
 			socket.join(data.roomName);
+			socket.emit('isJoin', true);
 		}
 	}
 }

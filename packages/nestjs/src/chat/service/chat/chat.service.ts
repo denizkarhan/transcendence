@@ -112,7 +112,7 @@ export class ChatService {
 	async getMessage(username: string) {
 
 		const user = await this.userService.getUserByLogin(username);
-		const inGroup = await this.groupChatUsersRepository.find({ where: { users: user }, relations: ['GroupChat.Users.users', 'GroupChat.Messages'] });
+		const inGroup = await this.groupChatUsersRepository.find({ where: { users: user }, relations: ['GroupChat.Messages.User.users', 'GroupChat.Messages'] });
 		if (user) {
 			return inGroup;
 		}

@@ -23,6 +23,7 @@ canvas
 	box-shadow: 2px 2px 120px rgba(255, 255, 255, 0.7); /*gölge efekti*/
 	transform: translate(-50%, -50%);
 	border: 3px solid white;
+	display: none;
 }
 
 #lobi-container {
@@ -57,6 +58,36 @@ canvas
 	border-radius: 12px;
 	margin-bottom: 50px;
 	animation: gradientAnimation 10s linear infinite;
+	display: block;
+}
+
+.clasic-mod {
+	position: absolute;
+	top: 90px;
+	padding: 20px;
+	background: linear-gradient(to right, #7b733ebc, #b9aa23e7, #e9e504);
+	background-size: 200% auto;
+	color: rgb(0, 0, 0);
+	border: none;
+	border-radius: 12px;
+	margin-bottom: 50px;
+	animation: gradientAnimation 10s linear infinite;
+	display: none;
+}
+
+.fast-mod {
+	position: absolute;
+	top: 90px;
+	left: 135px;
+	padding: 20px;
+	background: linear-gradient(to right, #a1252570, #831616d6, #df0606);
+	background-size: 200% auto;
+	color: rgb(255, 255, 255);
+	border: none;
+	border-radius: 12px;
+	margin-bottom: 50px;
+	animation: gradientAnimation 10s linear infinite;
+	display: none;
 }
 
 @keyframes gradientAnimation {
@@ -85,6 +116,8 @@ canvas
 .button {
 	position: fixed;
 	display: inline-block;
+	right: 30px;
+	top: 75px;
 	border-radius: 4px;
 	background-color: rgb(6, 156, 249);
 	border: none;
@@ -98,7 +131,7 @@ canvas
 	margin: 5px;
   }
   
-  .button:before {
+.button:before {
 	content: "you shouldn't press button";
 	position: absolute;
 	justify-content: center;

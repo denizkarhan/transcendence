@@ -6,7 +6,8 @@ const rooms = new Map<string, { count: number, user1: string | null, user2: stri
 const connectedUsers = new Map<string, { username: string, socket: Socket, roomName: string }>();
 let userCount = 0;
 let nextUserId = 1;
-let gameOverFlag = 0;
+let saveMatch = 0;
+
 const G = '\x1b[32m';
 const RB = '\x1b[31;1m';
 const R = '\x1b[0m';
@@ -32,7 +33,7 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
             return false;
         }
 
-        console.log("User", nick + G, "Connected" + R);
+        // console.log("User", nick + G, "Connected" + R);
         userCount += 1;
         const userId = nextUserId++;
         const roomName = "NULL";
@@ -55,7 +56,7 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
         const usersKeys = Array.from(connectedUsers.keys());
         for (const key of usersKeys) {
             if (connectedUsers.has(key) && socket!.id === connectedUsers.get(key)!.socket.id) {
-                console.log(RB + "User " + connectedUsers.get(key)!.username + " Disconnected!" + R);
+                // console.log(RB + "User " + connectedUsers.get(key)!.username + " Disconnected!" + R);
                 const roomName = connectedUsers.get(key)!.roomName;
                 if (rooms.has(roomName) && rooms.get(roomName)!.count === 2) {
                     const pOne = rooms.get(roomName)!.user1;
@@ -145,8 +146,6 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
     async handleScoreUpdate(@MessageBody() scores: any, @ConnectedSocket() socket: Socket) {
         const scoreOne = scores.sOne;
         const scoreTwo = scores.sTwo;
-		if (scoreOne === 0 && scoreTwo === 0)
-			gameOverFlag = 1;
         const room = connectedUsers.get(socket.id)?.roomName;
         if (room) {
             const setupRoom = rooms.get(room);
@@ -162,26 +161,26 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
                 rooms.set(room, setupRoom);
                 connectedUsers.forEach(element => {
                     if (element.roomName === room) {
-                        if ((scoreOne === 3 || scoreTwo === 3) && gameOverFlag > 0) {
+                        if (scoreOne === 3 || scoreTwo === 3) {
                             element.socket.to(element.roomName).emit('gameOver', winner);
-							gameOverFlag = 2;
                         }
                     }
                 });
-				// if (gameOverFlag === 2)
-				// {
-				// 	this.matchService.addMatch({
-				// 		EnemyResult: scoreOne,
-				// 		MyResult: scoreTwo,
-				// 		EnemyUserName: setupRoom.user1,
-				// 	}, setupRoom.user2);
-				// 	this.matchService.addMatch({
-				// 	    EnemyResult: scoreTwo,
-				// 	    MyResult: scoreOne,
-				// 	    EnemyUserName: setupRoom.user2,
-				// 	}, setupRoom.user1);
-				// 	gameOverFlag = 0;
-				// }
+                if ((scoreOne === 3 || scoreTwo === 3) && saveMatch%2 == 0) {
+                    this.matchService.addMatch({
+                        EnemyResult: scoreTwo,
+                        MyResult: scoreOne,
+                        EnemyUserName: setupRoom.user2,
+                    }, setupRoom.user1);
+                    this.matchService.addMatch({
+                        EnemyResult: scoreOne,
+                        MyResult: scoreTwo,
+                        EnemyUserName: setupRoom.user1,
+                    }, setupRoom.user2);
+                    saveMatch += 1;
+                } else {
+                    saveMatch += 1;
+                }
             }
         }
     }
@@ -223,7 +222,7 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
             connectedUsers.set(socket.id, user);
         } else if (rooms.has(roomName.roomName) && rooms.get(roomName.roomName)?.count === 2) {
             // Oda dolu
-            //console.log(RB + "Oda dolu!" + R);
+            console.log(RB + "Oda dolu!" + R);
             return;
         } else if (!rooms.has(roomName.roomName)) {
             user.roomName = roomName.roomName;
@@ -239,6 +238,12 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
                 element.socket.emit('userRegister', [element.username]);
             }
         });
+        if (rooms.get(user.roomName).count === 1) {
+            socket.emit('windowToGame', true);
+        }
+        else {
+            socket.emit('windowToGame', false);
+        }
     }
 }
 

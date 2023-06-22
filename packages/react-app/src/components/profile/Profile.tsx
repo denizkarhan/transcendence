@@ -22,6 +22,11 @@ interface Props {
 	setPP: React.Dispatch<React.SetStateAction<string>>,
 }
 
+export const getProfile = async () => {
+	const response = await api.get('users/profile');
+	return response;
+}
+
 const App: React.FC<Props> = (props: Props) => {
 	let { username } = useParams<string>();
 	const navigate = useNavigate();
@@ -35,7 +40,7 @@ const App: React.FC<Props> = (props: Props) => {
 			setActiveTab(tab);
 		}
 	};
-	username  = (username === undefined) ? login : username;
+	username = (username === undefined) ? login : username;
 
 
 	useEffect(() => {
@@ -46,7 +51,7 @@ const App: React.FC<Props> = (props: Props) => {
 				return;
 			}
 			try {
-				const response = await api.get(`/users/userName/${username}`);
+				const response = await getProfile();
 				setUser({
 					FirstName: response?.data.FirstName, LastName: response?.data.LastName,
 					Email: response?.data.Email, Login: response?.data.Login,
@@ -60,7 +65,7 @@ const App: React.FC<Props> = (props: Props) => {
 	}, [username])
 
 	return (
-		<Container style={{maxWidth:'70%'}}>
+		<Container style={{ maxWidth: '70%' }}>
 			<div className="main-body">
 				<Row>
 					<Col>
@@ -77,7 +82,7 @@ const App: React.FC<Props> = (props: Props) => {
 										<p className="font-size-sm">{user?.Email}</p>
 									</div>
 									<Stack direction="horizontal" className="justify-content-center" gap={2}>
-										<ProfileButton key={username} friendName={username} />
+										<ProfileButton key={username} friendName={username} setUser={setUser} />
 									</Stack>
 								</div>
 							</Card.Body>

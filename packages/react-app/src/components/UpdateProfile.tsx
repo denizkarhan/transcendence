@@ -1,10 +1,11 @@
 import { Container, Form, Modal, Button } from 'react-bootstrap';
 import api from '../api';
 import { useState } from 'react';
-import { useSignIn } from 'react-auth-kit';
+import { useSignIn, useSignOut } from 'react-auth-kit';
 import jwtDecode from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
-
+import { getProfile } from './profile/Profile';
+import { User } from '../interfaces/user';
 
 interface decodedToken {
 	id: number,
@@ -13,9 +14,14 @@ interface decodedToken {
 	iat: number
 };
 
-export default function UpdateProfile() {
+interface Props {
+	setUser: React.Dispatch<React.SetStateAction<User | undefined>>;
+};
+
+export default function UpdateProfile(props: Props) {
 	const [isHovered, setIsHovered] = useState(false);
 	const signin = useSignIn();
+	const signout = useSignOut();
 	const navigate = useNavigate();
 
 	const onSubmit = async (event: any) => {
@@ -29,17 +35,21 @@ export default function UpdateProfile() {
 		});
 		await api.post('users/update', formValues)
 			.then((response: any) => {
-				const user = jwtDecode<decodedToken>(response.data.access_token);
-				signin({
-					token: response.data.access_token,
-					tokenType: "Bearer",
-					expiresIn: 9999999,
-					authState: { username: user.Login }
-				});
-				handleClose();
-				navigate(`/profile/${user.Login}`);
+				if (response.data.access_token){
+					const user = jwtDecode<decodedToken>(response.data.access_token);
+					signout();
+					signin({
+						token: response.data.access_token,
+						tokenType: "Bearer",
+						expiresIn: 9999999,
+						authState: { username: user.Login }
+					});
+					handleClose();
+					navigate(`/profile/${user.Login}`);
+				}
 			})
 			.catch((error) => console.log(error));
+		handleClose();
 	}
 	const handleMouseEnter = () => {
 		setIsHovered(true);
@@ -50,7 +60,19 @@ export default function UpdateProfile() {
 	};
 	const [show, setShow] = useState(false);
 
-	const handleClose = () => setShow(false);
+	const handleClose = async () => {
+		try {
+			const response = await getProfile();
+			props.setUser({
+				FirstName: response?.data.FirstName, LastName: response?.data.LastName,
+				Email: response?.data.Email, Login: response?.data.Login,
+				Status: response?.data.Status
+			})
+			setShow(false);
+		} catch (error: any) {
+			navigate('/404');
+		}
+	};
 	const handleShow = () => setShow(true);
 
 	return (
@@ -58,9 +80,8 @@ export default function UpdateProfile() {
 			style={{ position: 'relative' }}
 			onMouseEnter={handleMouseEnter}
 			onMouseLeave={handleMouseLeave}
-			onClick={handleShow}
 		>
-			<i className="bi bi-gear fs-4" style={{ color: isHovered ? '#E4A11B' : '#332D2D' }}></i>
+			<i className="bi bi-gear fs-4" style={{ color: isHovered ? '#E4A11B' : '#332D2D' }} onClick={handleShow}></i>
 			<Modal
 				show={show}
 				onHide={handleClose}

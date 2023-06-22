@@ -5,10 +5,12 @@ import api from "../../api";
 import { useToast } from "../Toast";
 import { useEffect, useState } from "react";
 import { error } from "console";
+import { User } from "../../interfaces/user";
 
 
 export interface Props {
 	friendName: string | undefined;
+	setUser:React.Dispatch<React.SetStateAction<User | undefined>>;
 }
 
 export default function ProfileButton(props: Props) {
@@ -63,7 +65,7 @@ export default function ProfileButton(props: Props) {
 					</Button>
 				</>
 			) : (
-					<UpdateProfile />
+					<UpdateProfile setUser={props.setUser}/>
 			)}
 		</>
 	);

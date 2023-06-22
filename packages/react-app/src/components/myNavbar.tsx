@@ -48,7 +48,6 @@ export default function MyNavbar(prop: Props) {
 						<img src={prop.pp} className="img-style" />
 						<NavDropdown title={user} id="collasible-nav-dropdown" align={"end"}>
 							<NavDropdown.Item as={Link} to={`/profile/${user}`}> Profile</NavDropdown.Item>
-							<NavDropdown.Item as={Link} to="/settings"> Settings</NavDropdown.Item>
 							<NavDropdown.Item onClick={handleSignOut}>Log Out</NavDropdown.Item>
 						</NavDropdown>
 					</Nav>

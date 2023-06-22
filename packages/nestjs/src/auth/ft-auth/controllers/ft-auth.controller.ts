@@ -8,7 +8,7 @@ import { Request, Response } from 'express';
 @Controller('ft-auth')
 @ApiTags('ft-auth')
 export class FtAuthController {
-	constructor(private authService: FtAuthService){}
+	constructor(private authService: FtAuthService) { }
 
 	@Get('/login')
 	@Public()
@@ -20,9 +20,9 @@ export class FtAuthController {
 	@UseGuards(FtAuthGuard)
 	@Public()
 	@Get('/redirect')
-	async handleRedirect(@Req() request : Request, @Res() response: Response) {
+	async handleRedirect(@Req() request: Request, @Res() response: Response) {
 		const token = (await this.authService.login(request.user));
-		const url = new URL("http://k2m13s05.42kocaeli.com.tr");
+		const url = new URL("http://localhost");
 		url.port = "3000";
 		url.pathname = 'login';
 		if (token?.access_token)

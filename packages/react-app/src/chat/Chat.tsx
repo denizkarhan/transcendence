@@ -11,8 +11,12 @@ import ChatBox from "./ChatBox";
 import CreateChat from "./createChat";
 
 function ChatService() {
+<<<<<<< HEAD
 	const [show, setShow] = useState(false);
 	const URL = "http://k2m13s05.42kocaeli.com.tr:3001/chat";
+=======
+	const URL = "http://localhost:3001/chat";
+>>>>>>> 39b0ad523bd5c2cf4f630c87d7d8efe92af91599
 	const auth = useAuthUser();
 	const socketRef = useRef<any>(null);
 	const newSocket = socketRef.current as Socket;
@@ -56,6 +60,7 @@ function ChatService() {
 	console.log(data);
 
 	return (
+<<<<<<< HEAD
 		<Container className='custom-container'>
 			<Row style={{ height: '80vh' }}>
 				<Col md={3} style={{ background: 'white' }}>
@@ -96,6 +101,42 @@ function ChatService() {
 					</div>
 				</Col>
 			</Row>
+=======
+		// <Container>{data.length < 1 ? null : (
+		// 	<Stack direction="horizontal" gap={4} style={{alignItems:'start'}}>
+		// 		<Stack className="messages-box flex-grow-0 pe-3" gap={3}>
+		// 			{data?.map((chat, index) => {
+		// 				return (
+		// 					<div key={index} onClick={() => setRoom(chat.GroupChat)}>
+		// 						<UserChat chat={chat.GroupChat} user={user} />
+		// 					</div>
+		// 				)
+		// 			})}
+		// 		</Stack>
+		// 		<ChatBox room={room} user={user}/>
+		// 	</Stack>
+		// )}
+		// </Container>
+		<Container fluid style={{ height: '90vh' }}>
+			{/* <Row style={{ height: '100%' }}>
+				<Col md={3}> */}
+			<Stack direction="horizontal" gap={4} style={{ alignItems: 'start' }}>
+				<Stack bsPrefix="messages-box pe-3" gap={3} style={{ flexGrow: '0' }}>
+					{data?.map((chat, index) => {
+						return (
+							<div key={index} onClick={() => setRoom(chat.GroupChat)}>
+								<UserChat chat={chat.GroupChat} user={user} />
+							</div>
+						)
+					})}
+				</Stack>
+				<ChatBox room={room} user={user} />
+			</Stack>
+			{/* </Col>
+				<Col md={9}> */}
+			{/* </Col>
+			</Row> */}
+>>>>>>> 39b0ad523bd5c2cf4f630c87d7d8efe92af91599
 		</Container>
 	);
 }

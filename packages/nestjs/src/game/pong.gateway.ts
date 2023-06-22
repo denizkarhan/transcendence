@@ -2,7 +2,7 @@ import { ConnectedSocket, MessageBody, OnGatewayConnection, OnGatewayDisconnect,
 import { Server, Socket } from 'socket.io';
 import { MatchHistoriesService } from 'src/match-histories/services/match-histories/match-histories.service';
 
-const rooms = new Map<string, { count: number, user1: string | null, user2: string | null, connectionCount: number, scoreOne: number, scoreTwo: number }>(); // (Kişi sayısı, User1 İd, User2 İd, Oyuna bağlananların sayısı, ScoreOne, ScoreTwo)
+const rooms = new Map<string, { count: number, user1: string | null, user2: string | null, connectionCount: number, scoreOne: number, scoreTwo: number, mod: "c" }>(); // (Kişi sayısı, User1 İd, User2 İd, Oyuna bağlananların sayısı, ScoreOne, ScoreTwo)
 const connectedUsers = new Map<string, { username: string, socket: Socket, roomName: string }>();
 let userCount = 0;
 let nextUserId = 1;
@@ -166,7 +166,7 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
                         }
                     }
                 });
-                if ((scoreOne === 3 || scoreTwo === 3) && saveMatch%2 == 0) {
+                if ((scoreOne === 3 || scoreTwo === 3) && saveMatch % 2 == 0) {
                     this.matchService.addMatch({
                         EnemyResult: scoreTwo,
                         MyResult: scoreOne,
@@ -234,16 +234,28 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
         socket.join(user.roomName);
         connectedUsers.forEach(element => {
             element.socket.emit('buttonUpdated', [user.roomName, color]);
-            if (element.roomName === roomName.roomName && rooms.get(user.roomName)?.count === 2) {
+            if (element.roomName === user.roomName && rooms.get(user.roomName)?.count === 2) {
                 element.socket.emit('userRegister', [element.username]);
+                element.socket.emit('windowToGame', {flag: 0, user1: rooms.get(user.roomName).user1, user2: rooms.get(user.roomName).user2})
+            }
+            else if (element.roomName === user.roomName && rooms.get(user.roomName)?.count === 1) {
+                socket.emit('windowToGame', {flag: 1});
             }
         });
-        if (rooms.get(user.roomName).count === 1) {
-            socket.emit('windowToGame', true);
-        }
-        else {
-            socket.emit('windowToGame', false);
-        }
+    }
+
+
+    @SubscribeMessage('gameMod')
+    async gameMod(@MessageBody() modes: any, @ConnectedSocket() socket: Socket) {
+        socket.emit('windowToGame', {flag: 2});
+        let roomName = connectedUsers.get(socket.id).roomName;
+
+        connectedUsers.forEach(element => {
+            if (connectedUsers.get(socket.id).roomName === roomName)
+                if (modes.mod === 'f') {
+                    element.socket.to(roomName).emit('windowToGame', {flag : 2});
+                }
+        });
     }
 }
 

@@ -41,7 +41,7 @@ export class ChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 		console.log('Create Room ', room);
 		await this.chatService.createRoom({
 			RoomName: room.roomName,
-			Admin: room.userName,
+			Admin: room.Admin,
 			IsPublic: room.isPublic,
 			Password: room.password
 		})

@@ -15,6 +15,7 @@ interface decodedToken {
 
 export default function UpdateProfile() {
 	const [isHovered, setIsHovered] = useState(false);
+	const [show, setShow] = useState(false);
 	const signin = useSignIn();
 	const navigate = useNavigate();
 
@@ -29,15 +30,17 @@ export default function UpdateProfile() {
 		});
 		await api.post('users/update', formValues)
 			.then((response: any) => {
-				const user = jwtDecode<decodedToken>(response.data.access_token);
-				signin({
-					token: response.data.access_token,
-					tokenType: "Bearer",
-					expiresIn: 9999999,
-					authState: { username: user.Login }
-				});
-				handleClose();
-				navigate(`/profile/${user.Login}`);
+				if (response.data?.access_token) {
+					const user = jwtDecode<decodedToken>(response.data.access_token);
+					signin({
+						token: response.data.access_token,
+						tokenType: "Bearer",
+						expiresIn: 9999999,
+						authState: { username: user.Login }
+					});
+					handleClose();
+					navigate(`/profile/${user.Login}`);
+				}
 			})
 			.catch((error) => console.log(error));
 	}
@@ -48,7 +51,6 @@ export default function UpdateProfile() {
 	const handleMouseLeave = () => {
 		setIsHovered(false);
 	};
-	const [show, setShow] = useState(false);
 
 	const handleClose = () => setShow(false);
 	const handleShow = () => setShow(true);

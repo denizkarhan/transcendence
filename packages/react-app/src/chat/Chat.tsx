@@ -1,4 +1,4 @@
-import { Button, Card, Col, Container, Image, Row, Stack } from "react-bootstrap";
+import { Button, Card, Col, Container, Form, Image, Row, Stack } from "react-bootstrap";
 import io, { Socket } from 'socket.io-client';
 import { getCookie } from "../api";
 import { useEffect, useRef, useState } from "react";
@@ -8,8 +8,10 @@ import Join from "./join";
 import "./chat.css";
 import UserChat from "./userChat";
 import ChatBox from "./ChatBox";
+import CreateChat from "./createChat";
 
 function ChatService() {
+	const [show, setShow] = useState(false);
 	const URL = "http://k2m13s05.42kocaeli.com.tr:3001/chat";
 	const auth = useAuthUser();
 	const socketRef = useRef<any>(null);
@@ -25,7 +27,9 @@ function ChatService() {
 				token: getCookie("42_auth")
 			},
 		});
+
 		socket.emit('getData', { userName: user });
+
 		socket.on('getData', (data: any) => {
 			setData(data);
 		});
@@ -50,43 +54,49 @@ function ChatService() {
 		newSocket.emit('join', { roomName: 'deneme1', username: user });
 	}
 	console.log(data);
-	return (
-		// <Container>{data.length < 1 ? null : (
-		// 	<Stack direction="horizontal" gap={4} style={{alignItems:'start'}}>
-		// 		<Stack className="messages-box flex-grow-0 pe-3" gap={3}>
-		// 			{data?.map((chat, index) => {
-		// 				return (
-		// 					<div key={index} onClick={() => setRoom(chat.GroupChat)}>
-		// 						<UserChat chat={chat.GroupChat} user={user} />
-		// 					</div>
-		// 				)
-		// 			})}
-		// 		</Stack>
-		// 		<ChatBox room={room} user={user}/>
-		// 	</Stack>
-		// )}
-		// </Container>
-		<Container fluid style={{ height: '90vh' }}>
-			{/* <Row style={{ height: '100%' }}>
-				<Col md={3}> */}
-			<Stack direction="horizontal" gap={4} style={{ alignItems: 'start' }}>
-				<Stack bsPrefix="messages-box pe-3" gap={3} style={{ flexGrow: '0' }}>
-					{data?.map((chat, index) => {
-						return (
-							<div key={index} onClick={() => setRoom(chat.GroupChat)}>
-								<UserChat chat={chat.GroupChat} user={user} />
-							</div>
-						)
-					})}
-				</Stack>
-				<ChatBox room={room} user={user}/>
-			</Stack>
-			{/* </Col>
-				<Col md={9}> */}
-			{/* </Col>
-			</Row> */}
-		</Container>
 
+	return (
+		<Container className='custom-container'>
+			<Row style={{ height: '80vh' }}>
+				<Col md={3} style={{ background: 'white' }}>
+					<Row className="border-bottom padding-sm" style={{ color: 'black', height: '3.5rem' }}>
+						<Stack direction='horizontal' gap={2} style={{
+							display: 'flex',
+							flexDirection: 'row',
+							justifyContent: 'center',
+							height: '3rem'
+						}}>
+							<CreateChat show={show} setShow={setShow} socket={newSocket} user={user}/>
+							<Button bsPrefix='btn btn-outline-primary'><i className="bi bi-plus-lg"></i></Button>
+						</Stack>
+					</Row>
+					<ul className="friend-list">
+						{data?.map((chat, index) => {
+							return (
+								<div key={index} onClick={() => setRoom(chat.GroupChat)}>
+									<UserChat chat={chat.GroupChat} user={user} />
+								</div>
+							)
+						})}
+					</ul>
+				</Col>
+				<Col style={{ background: 'white' }}>
+					<div className="chat-message">
+						<ul className="chat">
+							<ChatBox room={room} user={user} />
+						</ul>
+					</div>
+					<div className="chat-box bg-white">
+						<div className="input-group">
+							<input className="form-control border no-shadow no-rounded" placeholder="Type your message here" />
+							<span className="input-group-btn">
+								<button className="btn btn-success no-rounded" type="button">Send</button>
+							</span>
+						</div>
+					</div>
+				</Col>
+			</Row>
+		</Container>
 	);
 }
 

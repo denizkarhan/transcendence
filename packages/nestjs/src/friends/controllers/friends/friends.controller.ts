@@ -14,14 +14,14 @@ export class FriendsController {
 	constructor(private friendService: FriendsService) { }
 
 	@Get('all')
-	@UseInterceptors(ClassSerializerInterceptor)
+	
 	@UseFilters(ExceptionHandleFilter)
 	async getFriends(@Request() req) {
 		return await this.friendService.getFriends(req.user.Login);
 	}
 
 	@Get('usersFriend/:userName')
-	@UseInterceptors(ClassSerializerInterceptor)
+	
 	async getFriendsByUserName(@Param('userName') userName: string) {
 		const friend = await this.friendService.getFriends(userName);
 		if (!friend) throw new HttpException('Friend Not Found', HttpStatus.NO_CONTENT);
@@ -30,7 +30,7 @@ export class FriendsController {
 	}
 
 	@Get('isFriend/:userName')
-	@UseInterceptors(ClassSerializerInterceptor)
+	
 	async getIsFriend(@Param('userName') userName: string, @Request() req) {
 		const friend = await this.friendService.getIsFriend(req.user.Login, userName);
 		if (!friend) return {message:'OK', status:204};
@@ -38,7 +38,7 @@ export class FriendsController {
 	}
 
 	@Get('followers/:username')
-	@UseInterceptors(ClassSerializerInterceptor)
+	
 	@UseFilters(ExceptionHandleFilter)
 	async getFollowers(@Param('username') username:string, @Req() req) {
 		if (username === undefined)
@@ -47,7 +47,7 @@ export class FriendsController {
 	}
 
 	@Get('byname/:firstname')
-	@UseInterceptors(ClassSerializerInterceptor)
+	
 	async getFriendByName(@Param('firstname') firstname: string, @Request() req) {
 		const friend = await this.friendService.getFriendByName(firstname, req.user.Login);
 		if (!friend) throw new HttpException('Friend Not Found', HttpStatus.NO_CONTENT);

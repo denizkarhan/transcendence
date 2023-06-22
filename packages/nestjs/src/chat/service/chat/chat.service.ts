@@ -25,7 +25,9 @@ export class ChatService {
 	}
 
 	async createRoom(groupChat: GroupChatType) {
+		console.log("groupChat ", groupChat.Admin);
 		const admin = await this.userService.getUserByLogin(groupChat.Admin);
+
 		const room = await this.groupChatRepository.save({
 			IsPublic: groupChat.IsPublic,
 			RoomName: groupChat.RoomName,
@@ -66,7 +68,10 @@ export class ChatService {
 	async sendMessage(roomName: string, userName: string, message: string) {
 		const room = await this.groupChatRepository.findOneBy({ RoomName: roomName });
 		const user = await this.userService.getUserByLogin(userName);
+		console.log(user);
+		console.log(room);
 		const isExist = await this.groupChatUsersRepository.findOneBy({ users: user, GroupChat: room });
+		console.log(isExist);
 		if (!isExist)
 			return { message: 'you cant send messages', status:301};
 		await this.groupChatMessagesRepository.save({ GroupChat: room, Message: message, SendAt: new Date(), User: isExist });
@@ -113,6 +118,7 @@ export class ChatService {
 
 		const user = await this.userService.getUserByLogin(username);
 		const inGroup = await this.groupChatUsersRepository.find({ where: { users: user }, relations: ['GroupChat.Messages.User.users', 'GroupChat.Messages'] });
+		console.log("inGroup ", inGroup);
 		if (user) {
 			return inGroup;
 		}
@@ -125,6 +131,4 @@ export class ChatService {
 			.where('RoomName :RoomName', { RoomName })
 			.execute();
 	}
-
-
 }

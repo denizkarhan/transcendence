@@ -25,7 +25,7 @@ export class UserAchievementsController {
 
     @Get()
     @UseFilters(ExceptionHandleFilter)
-    @UseInterceptors(ClassSerializerInterceptor)   
+       
     async getUserAchievements(@Request() req) {
         const user = await this.userService.findById(req.user.Id);
         if (!user) throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
@@ -34,7 +34,7 @@ export class UserAchievementsController {
 
 	@Get(':username')
     @UseFilters(ExceptionHandleFilter)
-    @UseInterceptors(ClassSerializerInterceptor)   
+       
     async getUserAchievementsByUserName(@Param('username') username : string) {
         const user = await this.userService.getUserByLogin(username);
         return await this.userAchievementsService.getUserAchievements(user);

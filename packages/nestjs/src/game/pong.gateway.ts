@@ -65,9 +65,9 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
                     const scoreTwo = rooms.get(roomName)!.scoreTwo;
 
                     if (pOne === connectedUsers.get(key)!.username) {
-                        rooms.set(roomName, { count: 1, user1: null, user2: pTwo, connectionCount: 0, scoreOne: scoreOne, scoreTwo: scoreTwo });
+                        rooms.set(roomName, { count: 1, user1: null, user2: pTwo, connectionCount: 0, scoreOne: scoreOne, scoreTwo: scoreTwo, mod: 'c' });
                     } else if (pTwo === connectedUsers.get(key)!.username) {
-                        rooms.set(roomName, { count: 1, user1: pOne, user2: null, connectionCount: 0, scoreOne: scoreOne, scoreTwo: scoreTwo });
+                        rooms.set(roomName, { count: 1, user1: pOne, user2: null, connectionCount: 0, scoreOne: scoreOne, scoreTwo: scoreTwo, mod: 'c' });
                     }
                     connectedUsers.forEach(element => {
                         element.socket.emit('buttonUpdated', [roomName, 2]);
@@ -205,7 +205,7 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
         } else if (rooms.has(roomName.roomName) && rooms.get(roomName.roomName)?.count === 0) {
             // Boş oda
             user.roomName = roomName.roomName;
-            rooms.set(roomName.roomName, { count: 1, user1: user.username, user2: null, connectionCount: 0, scoreOne: 0, scoreTwo: 0 });
+            rooms.set(roomName.roomName, { count: 1, user1: user.username, user2: null, connectionCount: 0, scoreOne: 0, scoreTwo: 0, mod: 'c' });
             color = 2;
             connectedUsers.set(socket.id, user);
         } else if (rooms.has(roomName.roomName) && rooms.get(roomName.roomName)?.count === 1) {
@@ -214,9 +214,9 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
             const one = rooms.get(roomName.roomName)?.user1;
             const two = rooms.get(roomName.roomName)?.user2;
             if (one === null) {
-                rooms.set(roomName.roomName, { count: 2, user1: user.username, user2: two, connectionCount: 0, scoreOne: 0, scoreTwo: 0 });
+                rooms.set(roomName.roomName, { count: 2, user1: user.username, user2: two, connectionCount: 0, scoreOne: 0, scoreTwo: 0, mod: 'c' });
             } else if (two === null) {
-                rooms.set(roomName.roomName, { count: 2, user1: one, user2: user.username, connectionCount: 0, scoreOne: 0, scoreTwo: 0 });
+                rooms.set(roomName.roomName, { count: 2, user1: one, user2: user.username, connectionCount: 0, scoreOne: 0, scoreTwo: 0, mod: 'c' });
             }
             color = 0;
             connectedUsers.set(socket.id, user);
@@ -226,7 +226,7 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
             return;
         } else if (!rooms.has(roomName.roomName)) {
             user.roomName = roomName.roomName;
-            rooms.set(roomName.roomName, { count: 1, user1: user.username, user2: null, connectionCount: 1, scoreOne: 0, scoreTwo: 0 });
+            rooms.set(roomName.roomName, { count: 1, user1: user.username, user2: null, connectionCount: 1, scoreOne: 0, scoreTwo: 0, mod: 'c'});
             color = 2;
             connectedUsers.set(socket.id, user);
         }
@@ -247,14 +247,11 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     @SubscribeMessage('gameMod')
     async gameMod(@MessageBody() modes: any, @ConnectedSocket() socket: Socket) {
-        socket.emit('windowToGame', {flag: 2});
         let roomName = connectedUsers.get(socket.id).roomName;
 
         connectedUsers.forEach(element => {
-            if (connectedUsers.get(socket.id).roomName === roomName)
-                if (modes.mod === 'f') {
-                    element.socket.to(roomName).emit('windowToGame', {flag : 2});
-                }
+            if (connectedUsers.get(socket.id).roomName === roomName && modes.mod === 'f')
+                element.socket.to(roomName).emit('windowToGame', {flag : 2});
         });
     }
 }
@@ -265,14 +262,14 @@ function availableRoom(username: string, i: number): string {
         if (rooms.get(rName)!.count < 2) {
             const countUser = rooms.get(rName)!.count;
             if (countUser === 0) {
-                rooms.set(rName, { count: 1, user1: username, user2: null, connectionCount: 0, scoreOne: 0, scoreTwo: 0 });
+                rooms.set(rName, { count: 1, user1: username, user2: null, connectionCount: 0, scoreOne: 0, scoreTwo: 0, mod: 'c' });
             } else if (countUser === 1) {
                 const one = rooms.get(rName)!.user1;
                 const two = rooms.get(rName)!.user2;
                 if (one === null) {
-                    rooms.set(rName, { count: 2, user1: username, user2: two, connectionCount: 0, scoreOne: 0, scoreTwo: 0 });
+                    rooms.set(rName, { count: 2, user1: username, user2: two, connectionCount: 0, scoreOne: 0, scoreTwo: 0, mod: 'c' });
                 } else if (two === null) {
-                    rooms.set(rName, { count: 2, user1: one, user2: username, connectionCount: 0, scoreOne: 0, scoreTwo: 0 });
+                    rooms.set(rName, { count: 2, user1: one, user2: username, connectionCount: 0, scoreOne: 0, scoreTwo: 0, mod: 'c' });
                 }
             }
             return rName;
@@ -280,6 +277,6 @@ function availableRoom(username: string, i: number): string {
     }
 
     const rName = "ROOM" + (rooms.size + 1).toString();
-    rooms.set(rName, { count: 1, user1: username, user2: null, connectionCount: 0, scoreOne: 0, scoreTwo: 0 });
+    rooms.set(rName, { count: 1, user1: username, user2: null, connectionCount: 0, scoreOne: 0, scoreTwo: 0, mod: 'c' });
     return rName;
 }

@@ -21,6 +21,9 @@ export default function QrCode(props: Props) {
     }, []);
     return (
         <Modal show={props.show}>
+            <Modal.Header>
+                Close the popup after scanning the QR Code
+            </Modal.Header>
             <img src={qr}></img>
             <Modal.Footer>
                 <Button variant="secondary" onClick={() => { props.setShow(false) }}>

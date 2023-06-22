@@ -10,6 +10,7 @@ import { ToastProvider } from '../components/Toast'
 import "bootswatch/dist/lumen/bootstrap.min.css";
 import Game from '../game/pong'
 import ChatService from '../chat/Chat'
+import QrCode from '../components/profile/QrCode'
 
 
 interface Props {

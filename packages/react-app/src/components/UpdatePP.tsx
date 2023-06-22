@@ -1,6 +1,5 @@
 import { Card, Container, FloatingLabel, Form, Modal, Button, Image } from 'react-bootstrap';
 import api from '../api';
-import './Settings.css';
 import '../App.css';
 import { getPP } from './Main';
 import { useState } from 'react';

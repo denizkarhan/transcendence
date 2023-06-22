@@ -10,7 +10,7 @@ import UserChat from "./userChat";
 import ChatBox from "./ChatBox";
 
 function ChatService() {
-	const URL = "http://k2m13s05.42kocaeli.com.tr:3001/chat";
+	const URL = "http://localhost:3001/chat";
 	const auth = useAuthUser();
 	const socketRef = useRef<any>(null);
 	const newSocket = socketRef.current as Socket;
@@ -79,7 +79,7 @@ function ChatService() {
 						)
 					})}
 				</Stack>
-				<ChatBox room={room} user={user}/>
+				<ChatBox room={room} user={user} />
 			</Stack>
 			{/* </Col>
 				<Col md={9}> */}

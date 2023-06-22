@@ -1,4 +1,4 @@
-import { Container, Form, Modal, Button } from 'react-bootstrap';
+import { Container, Form, Modal, Button, ToggleButton } from 'react-bootstrap';
 import api from '../api';
 import { useState } from 'react';
 import { useSignIn, useSignOut } from 'react-auth-kit';
@@ -6,6 +6,12 @@ import jwtDecode from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
 import { getProfile } from './profile/Profile';
 import { User } from '../interfaces/user';
+import QrCode from './profile/QrCode';
+
+
+function delay(ms: number) {
+	return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 interface decodedToken {
 	id: number,
@@ -19,6 +25,11 @@ interface Props {
 };
 
 export default function UpdateProfile(props: Props) {
+
+	const [checked, setChecked] = useState(false);
+
+	const [showQR, setShowQR] = useState(false);
+
 	const [isHovered, setIsHovered] = useState(false);
 	const signin = useSignIn();
 	const signout = useSignOut();
@@ -26,6 +37,7 @@ export default function UpdateProfile(props: Props) {
 
 	const onSubmit = async (event: any) => {
 		event.preventDefault();
+
 		const formData = new FormData(event.target);
 		const formValues = Object.fromEntries(formData.entries());
 		Object.keys(formValues).forEach((key) => {
@@ -35,7 +47,7 @@ export default function UpdateProfile(props: Props) {
 		});
 		await api.post('users/update', formValues)
 			.then((response: any) => {
-				if (response.data.access_token){
+				if (response.data.access_token) {
 					const user = jwtDecode<decodedToken>(response.data.access_token);
 					signout();
 					signin({
@@ -49,7 +61,12 @@ export default function UpdateProfile(props: Props) {
 				}
 			})
 			.catch((error) => console.log(error));
-		handleClose();
+		if (checked) {
+			setShowQR(true);
+		}
+		else {
+			handleClose();
+		}
 	}
 	const handleMouseEnter = () => {
 		setIsHovered(true);
@@ -108,6 +125,17 @@ export default function UpdateProfile(props: Props) {
 							New Email:
 							<Form.Control type="text" name="Email" placeholder="Email" />
 						</Form.Label>
+						<ToggleButton
+							className="mb-2"
+							id="toggle-check"
+							type="checkbox"
+							variant="outline-primary"
+							checked={checked}
+							value="1"
+							onChange={(e) => setChecked(e.currentTarget.checked)}
+						>
+							Check to Enable Two Factor Authentication
+						</ToggleButton>
 					</Modal.Body>
 					<Modal.Footer>
 						<Button variant="primary" type="submit">
@@ -119,6 +147,7 @@ export default function UpdateProfile(props: Props) {
 					</Modal.Footer>
 				</Form>
 			</Modal>
-		</Container>
+			{show && <QrCode show={showQR} setShow={setShowQR} />}
+		</Container >
 	);
 }

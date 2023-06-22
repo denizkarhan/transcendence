@@ -25,9 +25,12 @@ export class AuthanticatorController {
 	@Public()
 	async verifyToken(@Param('token') token: string, @Param('username') username: string) {
 		const user = await this.userService.getUserByLogin(username);
+		console.log(user);
+		console.log(token);
 		if (!user.TwoFactorAuth)
 			throw new UnauthorizedException();
 		const result = this.authanticatorService.verifyTwoFactorAuthentication(token, user.TwoFactorSecret);
+		console.log(result);
 		if (result)
 			return await this.authanticatorService.Login(user);
 		throw new UnauthorizedException();

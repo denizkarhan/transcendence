@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CreateAchievementParams } from 'src/achievements/utils/type';
 
 import { Achievements } from 'src/typeorm/entities/achievements';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 
 @Injectable()
 export class AchievementsService {
@@ -21,8 +21,13 @@ export class AchievementsService {
 	async createAchievement(achievementParam: CreateAchievementParams){
 		const newAchievement = this.achievementRepository.create({
 			...achievementParam,
-			CreatedAt : new Date()
 		})
 		this.achievementRepository.save(newAchievement);
+	}
+
+	async defAchievements(data: any) {
+		console.log('TESTING ', data.CategorySeed);
+
+		await this.achievementRepository.insert(data.CategorySeed);
 	}
 }

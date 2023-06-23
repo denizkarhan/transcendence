@@ -3,6 +3,11 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import * as session from 'express-session';
 import * as passport from 'passport';
+import { UserAchievements } from './typeorm/entities/userAchievements';
+import { Achievements } from './typeorm/entities/achievements';
+import { DataSource } from 'typeorm';
+import { SeedService } from './seed/seed.service';
+
 // ,  {cors: {
 // 	origin: 'http://localhost:3000',
 // 	methods: ['GET', 'POST'],
@@ -42,9 +47,12 @@ async function bootstrap() {
 	// 		'http://10.12.13.5:3000',
 	// 	],
 	// 	credentials: true,
-	// });
+	// });	
 	app.use(passport.initialize());
 	app.use(passport.session());
+
+	const seedService = app.get(SeedService);
+	await seedService.seedAchievements();
 	// const http = require('http');
 	// const appIP = '127.0.0.1';
 	// const appPort = 3001;

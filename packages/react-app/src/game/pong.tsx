@@ -3,7 +3,7 @@ import { getCookie } from "../api";
 import { useEffect, useRef, useState } from "react";
 import { Button } from 'react-bootstrap';
 import CountdownButton from './CountdownButton';
-import BackgroundAnimation from './BackgroundAnimation';
+import BackgroundAnimation from '../BackgroundAnimation';
 import './a.css';
 
 let x = 0;

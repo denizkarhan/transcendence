@@ -4,8 +4,7 @@ import "./chat.css"
 import { getCookie } from "../api";
 import { useEffect, useState } from "react";
 import { Chat } from "../interfaces/chat";
-
-
+import BackgroundAnimation from '../BackgroundAnimation';
 
 export default function ChatService() {
     let socket: Socket;
@@ -23,6 +22,7 @@ export default function ChatService() {
     }, [])
     return (
         <Container style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+            <BackgroundAnimation />
             <Row className="clearfix">
                 <Col lg={12}>
                     <Card className="chat-app">
@@ -33,7 +33,7 @@ export default function ChatService() {
                                         {/* <Image src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="avatar" /> */}
                                         <div className="about">
                                             <div className="name">{chat.user.FirstName} {chat.user.LastName}</div>
-                                            <div className="status"> <i className="bi bi-dot" style={{color: (chat.user.Status === 'online' ? '#00FF00' : '#808080') }}></i> left 7 mins ago </div>
+                                            <div className="status"> <i className="bi bi-dot" style={{ color: (chat.user.Status === 'online' ? '#00FF00' : '#808080') }}></i> left 7 mins ago </div>
                                         </div>
                                     </li>
                                 ))}

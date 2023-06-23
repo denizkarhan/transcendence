@@ -12,7 +12,8 @@ import { UsersModule } from 'src/users/users.module';
 @Module({
   imports: [TypeOrmModule.forFeature([UserAchievements, Achievements]), UsersModule],
   controllers: [UserAchievementsController],
-  providers: [UserAchievementsService, AchievementsService]
+  providers: [UserAchievementsService, AchievementsService],
+  exports: [UserAchievementsService]
 })
 export class UserAchievementsModule {
 

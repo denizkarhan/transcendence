@@ -37,15 +37,17 @@ import * as cookieParser from 'cookie-parser';
 import { GameModule } from './game/game.module';
 import { Chat } from './typeorm/entities/chat';
 import { ChatModule } from './chat/chat.module';
+import { SeedModule } from './seed/seed.module';
+import { SeedService } from './seed/seed.service';
 
 @Module({
   imports: [TypeOrmModule.forRoot({
 	type: 'postgres',
-	host: 'postgres',
+	host: 'localhost',
 	port: 5432,
-	username: 'postgres',
-	password: 'example',
-	database: 'postgres',
+	username: 'ftuncer',
+	password: '123',
+	database: 'ftuncer',
 	entities: [User, Friend, Stats, Achievements, UserAchievements, MatchHistories, Blocks, Avatar, Chat],
 	synchronize: true,
   }), 
@@ -55,9 +57,9 @@ import { ChatModule } from './chat/chat.module';
 	secret: jwtConstants.secret,
 	// signOptions: { expiresIn: '15m' },
 }),
-  GameModule, ChatModule,],
+  GameModule, ChatModule, SeedModule,],
   controllers: [AppController],
-  providers: [AppService, SesssionSerialaize, JwtStrategy,
+  providers: [AppService, SeedService ,SesssionSerialaize, JwtStrategy,
 	{
 		provide: APP_GUARD,
 		useClass: JwtAuthGuard,
@@ -71,4 +73,5 @@ export class AppModule implements NestModule {
 		.forRoutes('*');
 	}
   }
+
   

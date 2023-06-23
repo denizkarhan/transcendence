@@ -7,6 +7,7 @@ import { Achievements } from 'src/typeorm/entities/achievements';
 @Module({
 	imports: [TypeOrmModule.forFeature([Achievements])],
   controllers: [AchievementsController],
-  providers: [AchievementsService]
+  providers: [AchievementsService],
+  exports: [AchievementsService]
 })
 export class AchievementsModule {}

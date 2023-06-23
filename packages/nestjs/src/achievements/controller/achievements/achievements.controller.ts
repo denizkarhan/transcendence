@@ -21,9 +21,4 @@ export class AchievementsController {
 	async getAchievementById(@Param('id') id : number){
 		return await this.achievementService.getArchievementById(id);
 	}
-
-	@Post()
-	createAchievement(@Body() createAchievementDto: CreateAchievementDto){
-		this.achievementService.createAchievement(createAchievementDto);
-	}
 }

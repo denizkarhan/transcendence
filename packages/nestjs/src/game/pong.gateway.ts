@@ -2,7 +2,7 @@ import { ConnectedSocket, MessageBody, OnGatewayConnection, OnGatewayDisconnect,
 import { Server, Socket } from 'socket.io';
 import { MatchHistoriesService } from 'src/match-histories/services/match-histories/match-histories.service';
 
-const rooms = new Map<string, { count: number, user1: string | null, user2: string | null, connectionCount: number, scoreOne: number, scoreTwo: number, mod: "c" }>(); // (Kişi sayısı, User1 İd, User2 İd, Oyuna bağlananların sayısı, ScoreOne, ScoreTwo)
+const rooms = new Map<string, { count: number, user1: string | null, user2: string | null, connectionCount: number, scoreOne: number, scoreTwo: number, mod: string }>(); // (Kişi sayısı, User1 İd, User2 İd, Oyuna bağlananların sayısı, ScoreOne, ScoreTwo)
 const connectedUsers = new Map<string, { username: string, socket: Socket, roomName: string }>();
 let userCount = 0;
 let nextUserId = 1;
@@ -63,11 +63,12 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
                     const pTwo = rooms.get(roomName)!.user2;
                     const scoreOne = rooms.get(roomName)!.scoreOne;
                     const scoreTwo = rooms.get(roomName)!.scoreTwo;
+                    const mod = rooms.get(roomName)!.mod;
 
                     if (pOne === connectedUsers.get(key)!.username) {
-                        rooms.set(roomName, { count: 1, user1: null, user2: pTwo, connectionCount: 0, scoreOne: scoreOne, scoreTwo: scoreTwo });
+                        rooms.set(roomName, { count: 1, user1: null, user2: pTwo, connectionCount: 0, scoreOne: scoreOne, scoreTwo: scoreTwo, mod: mod });
                     } else if (pTwo === connectedUsers.get(key)!.username) {
-                        rooms.set(roomName, { count: 1, user1: pOne, user2: null, connectionCount: 0, scoreOne: scoreOne, scoreTwo: scoreTwo });
+                        rooms.set(roomName, { count: 1, user1: pOne, user2: null, connectionCount: 0, scoreOne: scoreOne, scoreTwo: scoreTwo, mod: mod });
                     }
                     connectedUsers.forEach(element => {
                         element.socket.emit('buttonUpdated', [roomName, 2]);
@@ -93,7 +94,7 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
         if (game.flag % 2 === 1)
             return;
         if (connectedUsers.get(socket.id)!.roomName === "NULL") {
-            console.log(RB + "Bir odada değilsiniz, lütfen bir odaya giriş yapınız." + R, socket.id);
+            // console.log(RB + "Bir odada değilsiniz, lütfen bir odaya giriş yapınız." + R, socket.id);
             return;
         }
         const key = game.key;
@@ -104,6 +105,7 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
         const user = connectedUsers.get(socket.id);
         const room = connectedUsers.get(socket.id)!.roomName;
 
+        let mod = rooms.get(room)!.mod;
         let scoreOne = rooms.get(room)!.scoreOne;
         let scoreTwo = rooms.get(room)!.scoreTwo;
         if (rooms.get(room).count === 2) {
@@ -130,7 +132,7 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
                     let val = rooms.get(room);
                     val!.connectionCount += 1;
                     rooms.set(room, val!); // oyuna giren kullanıcı sayısını odada güncelliyorum
-                    element.socket.to(room).emit('startGame', [game.pOne, game.pTwo, game.sOne, game.sTwo, balım]); // Hareketi room(x) odasındakilere gönder
+                    element.socket.to(room).emit('startGame', [game.pOne, game.pTwo, game.sOne, game.sTwo, balım, mod]); // Hareketi room(x) odasındakilere gönder
                 }
                 else if (element.roomName === room) {
                     element.socket.to(room).emit('movePlayer', [playerOne, playerTwo, scoreOne, scoreTwo, balım]);
@@ -138,7 +140,7 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
             });
         }
         else {
-            console.log(RB + "Odada 2 kişi olmalı" + R);
+            // console.log(RB + "Odada 2 kişi olmalı" + R);
         }
     }
 
@@ -162,7 +164,10 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
                 connectedUsers.forEach(element => {
                     if (element.roomName === room) {
                         if (scoreOne === 3 || scoreTwo === 3) {
-                            element.socket.to(element.roomName).emit('gameOver', winner);
+                            setupRoom.scoreOne = 0;
+                            setupRoom.scoreTwo = 0;
+                            rooms.set(room, setupRoom);
+                            element.socket.to(element.roomName).emit('gameOver', {winner: winner, scoreOne: scoreOne, scoreTwo: scoreTwo});
                         }
                     }
                 });
@@ -194,6 +199,15 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
             return; // Zaten bir odası var
         }
 
+        if (rooms.has(roomName.roomName) && (rooms.get(roomName.roomName).user1 === user.username)) {
+            socket.emit('windowToGame', {flag: 1, user1: rooms.get(roomName.roomName).user1, user2: rooms.get(roomName.roomName).user2});
+            return;
+        }
+        else if (rooms.has(roomName.roomName) && (rooms.get(roomName.roomName).user2 === user.username)) {
+            socket.emit('windowToGame', {flag: 0, user1: rooms.get(roomName.roomName).user1, user2: rooms.get(roomName.roomName).user2});
+            return;
+        }
+
         if (roomName.roomName === "HEMEN OYNA") {
             user.roomName = availableRoom(user.username, 0);
             if (rooms.get(user.roomName)?.count === 2) {
@@ -205,7 +219,7 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
         } else if (rooms.has(roomName.roomName) && rooms.get(roomName.roomName)?.count === 0) {
             // Boş oda
             user.roomName = roomName.roomName;
-            rooms.set(roomName.roomName, { count: 1, user1: user.username, user2: null, connectionCount: 0, scoreOne: 0, scoreTwo: 0 });
+            rooms.set(roomName.roomName, { count: 1, user1: user.username, user2: null, connectionCount: 0, scoreOne: 0, scoreTwo: 0, mod: 'c' });
             color = 2;
             connectedUsers.set(socket.id, user);
         } else if (rooms.has(roomName.roomName) && rooms.get(roomName.roomName)?.count === 1) {
@@ -213,20 +227,21 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
             user.roomName = roomName.roomName;
             const one = rooms.get(roomName.roomName)?.user1;
             const two = rooms.get(roomName.roomName)?.user2;
+            const mod = rooms.get(roomName.roomName)?.mod;
             if (one === null) {
-                rooms.set(roomName.roomName, { count: 2, user1: user.username, user2: two, connectionCount: 0, scoreOne: 0, scoreTwo: 0 });
+                rooms.set(roomName.roomName, { count: 2, user1: user.username, user2: two, connectionCount: 0, scoreOne: 0, scoreTwo: 0, mod: mod });
             } else if (two === null) {
-                rooms.set(roomName.roomName, { count: 2, user1: one, user2: user.username, connectionCount: 0, scoreOne: 0, scoreTwo: 0 });
+                rooms.set(roomName.roomName, { count: 2, user1: one, user2: user.username, connectionCount: 0, scoreOne: 0, scoreTwo: 0, mod: mod });
             }
             color = 0;
             connectedUsers.set(socket.id, user);
         } else if (rooms.has(roomName.roomName) && rooms.get(roomName.roomName)?.count === 2) {
             // Oda dolu
-            console.log(RB + "Oda dolu!" + R);
+            // console.log(RB + "Oda dolu!" + R);
             return;
         } else if (!rooms.has(roomName.roomName)) {
             user.roomName = roomName.roomName;
-            rooms.set(roomName.roomName, { count: 1, user1: user.username, user2: null, connectionCount: 1, scoreOne: 0, scoreTwo: 0 });
+            rooms.set(roomName.roomName, { count: 1, user1: user.username, user2: null, connectionCount: 1, scoreOne: 0, scoreTwo: 0, mod: 'c'});
             color = 2;
             connectedUsers.set(socket.id, user);
         }
@@ -236,26 +251,33 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
             element.socket.emit('buttonUpdated', [user.roomName, color]);
             if (element.roomName === user.roomName && rooms.get(user.roomName)?.count === 2) {
                 element.socket.emit('userRegister', [element.username]);
-                element.socket.emit('windowToGame', {flag: 0, user1: rooms.get(user.roomName).user1, user2: rooms.get(user.roomName).user2})
+                // if (rooms.get(user.roomName).user1 === element.username)
+                    // element.socket.emit('windowToGame', {flag: 1, user1: rooms.get(user.roomName).user1, user2: rooms.get(user.roomName).user2})
+                if (rooms.get(user.roomName).user2 === element.username)
+                    element.socket.emit('windowToGame', {flag: 0, user1: rooms.get(user.roomName).user1, user2: rooms.get(user.roomName).user2})
+                if (rooms.get(user.roomName).user1 === element.username)
+                    element.socket.emit('windowToGame', {flag: 3, user1: rooms.get(user.roomName).user1, user2: rooms.get(user.roomName).user2})
             }
             else if (element.roomName === user.roomName && rooms.get(user.roomName)?.count === 1) {
-                socket.emit('windowToGame', {flag: 1});
+                if (rooms.get(user.roomName).user1 === user.username)
+                    socket.emit('windowToGame', {flag: 1, user1: rooms.get(user.roomName).user1, user2: rooms.get(user.roomName).user2});
+                else
+                    socket.emit('windowToGame', {flag: 0, user1: rooms.get(user.roomName).user1, user2: rooms.get(user.roomName).user2});
             }
         });
     }
 
-
     @SubscribeMessage('gameMod')
     async gameMod(@MessageBody() modes: any, @ConnectedSocket() socket: Socket) {
-        socket.emit('windowToGame', {flag: 2});
         let roomName = connectedUsers.get(socket.id).roomName;
+        var setupRoom = rooms.get(roomName);
+        setupRoom.mod = modes.mod;
+        rooms.set(roomName, setupRoom);
 
-        connectedUsers.forEach(element => {
-            if (connectedUsers.get(socket.id).roomName === roomName)
-                if (modes.mod === 'f') {
-                    element.socket.to(roomName).emit('windowToGame', {flag : 2});
-                }
-        });
+        // connectedUsers.forEach(element => {
+        //     if (connectedUsers.get(socket.id).roomName === roomName && modes.mod === 'f')
+        //         element.socket.to(roomName).emit('windowToGame', {flag : 2});
+        // });
     }
 }
 
@@ -265,14 +287,14 @@ function availableRoom(username: string, i: number): string {
         if (rooms.get(rName)!.count < 2) {
             const countUser = rooms.get(rName)!.count;
             if (countUser === 0) {
-                rooms.set(rName, { count: 1, user1: username, user2: null, connectionCount: 0, scoreOne: 0, scoreTwo: 0 });
+                rooms.set(rName, { count: 1, user1: username, user2: null, connectionCount: 0, scoreOne: 0, scoreTwo: 0, mod: 'c' });
             } else if (countUser === 1) {
                 const one = rooms.get(rName)!.user1;
                 const two = rooms.get(rName)!.user2;
                 if (one === null) {
-                    rooms.set(rName, { count: 2, user1: username, user2: two, connectionCount: 0, scoreOne: 0, scoreTwo: 0 });
+                    rooms.set(rName, { count: 2, user1: username, user2: two, connectionCount: 0, scoreOne: 0, scoreTwo: 0, mod: 'c' });
                 } else if (two === null) {
-                    rooms.set(rName, { count: 2, user1: one, user2: username, connectionCount: 0, scoreOne: 0, scoreTwo: 0 });
+                    rooms.set(rName, { count: 2, user1: one, user2: username, connectionCount: 0, scoreOne: 0, scoreTwo: 0, mod: 'c' });
                 }
             }
             return rName;
@@ -280,6 +302,6 @@ function availableRoom(username: string, i: number): string {
     }
 
     const rName = "ROOM" + (rooms.size + 1).toString();
-    rooms.set(rName, { count: 1, user1: username, user2: null, connectionCount: 0, scoreOne: 0, scoreTwo: 0 });
+    rooms.set(rName, { count: 1, user1: username, user2: null, connectionCount: 0, scoreOne: 0, scoreTwo: 0, mod: 'c' });
     return rName;
 }

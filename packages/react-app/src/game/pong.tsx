@@ -1,8 +1,9 @@
 import io, { Socket } from 'socket.io-client';
 import { getCookie } from "../api";
 import { useEffect, useRef, useState } from "react";
-import { Button} from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import CountdownButton from './CountdownButton';
+import BackgroundAnimation from '../BackgroundAnimation';
 import './a.css';
 
 let x = 0;
@@ -43,7 +44,7 @@ const playerOne: Eleman = new Eleman({ // first paddle (playerone)
 	width: playerWidth,
 	height: playerHeight,
 	color: "#fff",
-	gravity: 3,
+	gravity: 4,
 });
 
 const playerTwo: Eleman = new Eleman({ // second paddle (playertwo)
@@ -52,7 +53,7 @@ const playerTwo: Eleman = new Eleman({ // second paddle (playertwo)
 	width: playerWidth,
 	height: playerHeight,
 	color: "#fff",
-	gravity: 3,
+	gravity: 4,
 });
 
 // ball
@@ -70,7 +71,7 @@ function Game() {
 	const [buttonText, setButtonText] = useState('Winx Club');
 
 	const changeText = () => {
-	  setButtonText('Yeni Yazı');
+		setButtonText('Yeni Yazı');
 	};
 
 	const canvasRef = useRef<CanvasWithSocket | null>(null);
@@ -86,7 +87,7 @@ function Game() {
 		const roomButtons: HTMLCollectionOf<HTMLButtonElement> = document.getElementsByClassName("random-room-button") as HTMLCollectionOf<HTMLButtonElement>;
 
 		if (!canvas) {
-			console.log("canvas yok");
+			// console.log("canvas yok");
 			return;
 		}
 		const context = canvas.getContext('2d');
@@ -111,14 +112,14 @@ function Game() {
 		for (let i = 0; i < roomButtons.length; i++) { // Odaya giriş yapma butonu
 			roomButtons[i].addEventListener("click", () => {
 				const buttonText: string = roomButtons[i].innerText;
-				canvas.socket.emit('enterRoom', {roomName: buttonText});
+				canvas.socket.emit('enterRoom', { roomName: buttonText });
 			});
 		}
 
 		const buttonColors: string[] = [
 			"linear-gradient(to right, #964747d6, #bd1b1bca, #640206d7)",
-			"linear-gradient(to right, #6eb76cec, #169a0dd6, #043906)",
-			"linear-gradient(to right, #537dd1, #064ad1d4, #020f66)"
+			"linear-gradient(to right, #537dd1, #064ad1d4, #020f66)",
+			"linear-gradient(to right, #6eb76cec, #169a0dd6, #043906)"
 		];
 
 		canvas.socket.on('userRegister', (data: any) => { // Kullanıcıları kaydediyorum ama kullanmadım daha
@@ -127,15 +128,15 @@ function Game() {
 
 		window.addEventListener("keydown", (e) => {
 			canvas.socket.emit('keydown', {
-			  key: e.key,
-			  sOne: scoreOne,
-			  sTwo: scoreTwo,
-			  pOne: playerOne,
-			  pTwo: playerTwo,
-			  ball: ball,
-			  flag: x++
+				key: e.key,
+				sOne: scoreOne,
+				sTwo: scoreTwo,
+				pOne: playerOne,
+				pTwo: playerTwo,
+				ball: ball,
+				flag: x++
 			});
-		  });
+		});
 
 		// net
 		let net: Eleman = new Eleman({
@@ -243,7 +244,7 @@ function Game() {
 				ball.x = canvas.width / 2;
 				ball.y += ball.gravity;
 			}
-			canvas.socket.emit('scoreUpdate', {sOne: scoreOne, sTwo:scoreTwo}); // Sunucuya score bilgisini gönder
+			canvas.socket.emit('scoreUpdate', { sOne: scoreOne, sTwo: scoreTwo }); // Sunucuya score bilgisini gönder
 			drawElements();
 		}
 
@@ -261,6 +262,14 @@ function Game() {
 
 		// oyunu başlatmak için startGame olayını dinleyin
 		canvas.socket.on('startGame', (data: any) => {
+			if (data[5] === 'f') {
+				ball.color = "#fa44ab";
+				ball.speed = 1.5;
+				ball.gravity = 1.5;
+				modR = 3;
+				playerOne.gravity = 8;
+				playerTwo.gravity = 8;
+			}
 			intervalID = setInterval((data: any) => {
 				if (gameStarter === 0)
 					return;
@@ -283,11 +292,11 @@ function Game() {
 			ball.color = data[4].color;
 		});
 
-		canvas.socket.on('countDown', (data: any) => {			
+		canvas.socket.on('countDown', (data: any) => {
 			handleStartCountdown();
 			setTimeout(() => {
 				gameStarter = 1;
-			  }, 3000);
+			}, 3000);
 		});
 
 		const waitingRoom = () => {
@@ -308,12 +317,19 @@ function Game() {
 		canvas.socket.on('gameOver', (data: any) => {
 			context.font = "30px 'Press Start 2P', cursive";
 			context.fillStyle = "#fff";
-			context.fillText("Oyuncu " + data + " Kazandı!", canvas.width / 2 - 250, (3 * canvas.height) / 4);
+			scoreOne = data!.scoreOne;
+			scoreTwo = data!.scoreTwo;
+			displayScoreOne();
+			displayScoreTwo();
+			context.fillText("Oyuncu " + data!.winner + " Kazandı!", canvas.width / 2 - 250, (3 * canvas.height) / 4);
 			// var button = document.getElementById("buton-div").querySelector("button");
 			var buttonDiv = document.getElementById("buton-div");
 			var button = buttonDiv ? buttonDiv.getElementsByTagName("button")[0] : null;
 			if (button)
+			{
 				button.style.display = "block";
+				button.style.zIndex = "9999";
+			}
 			clearInterval(intervalID);
 
 			scoreOne = 0;
@@ -337,8 +353,8 @@ function Game() {
 				buttonFull.style.position = 'fixed';
 				buttonFull.style.top = '50%';
 				buttonFull.style.right = '40%';
-				buttonFull.style.width = '250px';
-				buttonFull.style.height = '100px';
+				buttonFull.style.width = '350px';
+				buttonFull.style.height = '150px';
 				buttonFull.style.fontSize = '25px';
 			}
 		});
@@ -352,16 +368,8 @@ function Game() {
 		});
 
 		canvas.socket.on('windowToGame', (modes: any) => {
-			if (modes.flag === 2) {
-				modR = 3;
-				ball.color = "#fa44ab";
-				ball.speed = 1.5;
-				ball.gravity = 1.5;
-				playerOne.gravity = 5;
-				playerTwo.gravity = 5;
-				var div = document.getElementById('fastest');
-				div!.style.background = "#fbce0f";
-				
+			if (modes.flag === 3) {
+				setButtonText(modes!.user1 + " VS " + modes!.user2);
 				return;
 			}
 
@@ -372,13 +380,13 @@ function Game() {
 			myCanvas!.style.display = 'block';
 			var mainText = document.getElementById("header");
 			mainText!.style.display = 'block';
-			
+
 			if (modes.flag === 1) { // ilk oyuncu girişi
 				var clasicButton = document.getElementById("clasico");
 				var fastButton = document.getElementById("fastest");
 				clasicButton!.style.display = 'block';
 				fastButton!.style.display = 'block';
-				setButtonText('PLAYER IS EXPECTED...');
+				setButtonText(modes!.user1 + " VS " + modes!.user2);
 			} else if (modes.flag === 0) {
 				setButtonText(modes!.user1 + " VS " + modes!.user2);
 			}
@@ -387,18 +395,11 @@ function Game() {
 
 	const handleRefresh = () => {
 		window.location.reload();
-	  };
+	};
 
 	const clasicMode = () => {
 		const canvas = canvasRef!.current;
-		// canvas!.socket.emit('gameMod', {ballSpeed: 1, ballGravity: 1, backG: "#1bc4f6"});
-		canvas!.socket.emit('gameMod', {mod: 'c'});
-
-		// ball.speed = 1;
-		// ball.gravity = 1;
-		// var div = document.getElementById('clasico');
-		// div!.style.background = "#1bc4f6";
-
+		canvas!.socket.emit('gameMod', { mod: 'c' });
 		var clasicButton = document.getElementById("clasico");
 		var fastButton = document.getElementById("fastest");
 		clasicButton!.style.display = 'none';
@@ -407,48 +408,47 @@ function Game() {
 
 	const fastMode = () => {
 		const canvas = canvasRef!.current;
-		// canvas!.socket.emit('gameMod', {ballSpeed: 1.5, ballGravity: 1.5, backG: "#fa44ab", modR: 3, playerGravity: 5});
-		canvas!.socket.emit('gameMod', {mod: 'f'});
-
-		// modR = 3;
-		// ball.color = "#fa44ab";
-		// ball.speed = 1.5;
-		// ball.gravity = 1.5;
-		// playerOne.gravity = 5;
-		// playerTwo.gravity = 5;
-		// var div = document.getElementById('fastest');
-		// div!.style.background = "#fbce0f";
-
+		canvas!.socket.emit('gameMod', { mod: 'f' });
 		var clasicButton = document.getElementById("clasico");
 		var fastButton = document.getElementById("fastest");
 		clasicButton!.style.display = 'none';
 		fastButton!.style.display = 'none';
-	  };
+	};
 
 	return (
 		<div>
-		<div id='button-div'>
-			<Button id="clasico" className='clasic-mod' onClick={clasicMode}>Clasic Mod</Button>
-			<Button id="fastest" className='fast-mod' onClick={fastMode}>Fast Mod</Button>
-			<Button id="header" className='mainText'>{buttonText}</Button>
-			<Button className='random-room-button'>Hemen Oyna</Button>
-			<Button className='random-room-button'>room1</Button>
-			<Button className='random-room-button'>room2</Button>
-			<Button className='random-room-button'>room3</Button>
-			<Button className='random-room-button'>room4</Button>
-			<Button className='random-room-button'>room5</Button>
-			<Button className='random-room-button'>room6</Button>
-			<div id="refresh" className="button-container">
-				<button className="button" onClick={handleRefresh}>
-					<span>Back to lobby</span>
+			<BackgroundAnimation />
+			<div id='button-div'>
+				<button id="clasico" className='clasic-mod' onClick={clasicMode}>
+				    <span className="clasic-mod-text-one">Clasic Mod</span>
+				    <span className="clasic-mod-text-two">Start!</span>
 				</button>
+				<button id="fastest" className='fast-mod' onClick={fastMode}>
+				    <span className="fast-mod-text-one">Fast Mod</span>
+				    <span className="fast-mod-text-two">Start!</span>
+				</button>
+				
+				<Button id="header" className='mainText'>{buttonText}</Button>
+				<Button className='random-room-button'>Hemen Oyna</Button>
+				<Button className='random-room-button'>room1</Button>
+				<Button className='random-room-button'>room2</Button>
+				<Button className='random-room-button'>room3</Button>
+				<Button className='random-room-button'>room4</Button>
+				<Button className='random-room-button'>room5</Button>
+				<Button className='random-room-button'>room6</Button>
+				
+				
+				<div id="refresh" className="button-container">
+					<button className="button" onClick={handleRefresh}>
+						<span>Back to lobby</span>
+					</button>
+				</div>
+				{startCountdown && <CountdownButton />}
 			</div>
-			{startCountdown && <CountdownButton />}
+			<div id="text-container"></div>
+			<canvas ref={canvasRef} id="pongGame" style={{ backgroundColor: 'black', cursor: 'default', zIndex: '0' }}></canvas>
 		</div>
-		<div id="text-container"></div>
-		<canvas ref={canvasRef} id="pongGame" style={{ backgroundColor: 'black', cursor: 'default', zIndex: '0' }}></canvas>
-		</div>
-  );
+	);
 }
 
 export default Game;

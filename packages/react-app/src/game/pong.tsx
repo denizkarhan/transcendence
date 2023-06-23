@@ -315,48 +315,17 @@ function Game() {
 
 		// Oyun bitti şampiyonu belirle
 		canvas.socket.on('gameOver', (data: any) => {
-			context.font = "30px 'Press Start 2P', cursive";
 			context.fillStyle = "#fff";
+			context.font = "bold 48px Arial";
 			scoreOne = data!.scoreOne;
 			scoreTwo = data!.scoreTwo;
 			displayScoreOne();
 			displayScoreTwo();
-			context.fillText("Oyuncu " + data!.winner + " Kazandı!", canvas.width / 2 - 250, (3 * canvas.height) / 4);
-			// var button = document.getElementById("buton-div").querySelector("button");
-			var buttonDiv = document.getElementById("buton-div");
-			var button = buttonDiv ? buttonDiv.getElementsByTagName("button")[0] : null;
-			if (button)
-			{
-				button.style.display = "block";
-				button.style.zIndex = "9999";
-			}
 			clearInterval(intervalID);
-
-			scoreOne = 0;
-			scoreTwo = 0;
-			playerOne.y = canvasHeight / 2 - playerHeight / 2;
-			playerTwo.y = canvasHeight / 2 - playerHeight / 2;
-			ball.x = canvasWidth / 2;
-			ball.y = canvasHeight / 2;
-			gameStarter = 0;
-			x = 0;
-
-			const buttonContainer = document.querySelector('.button-container') as HTMLElement;
-			if (buttonContainer) {
-				buttonContainer.style.zIndex = '9999';
-				buttonContainer.style.position = 'static';
-			}
-
-			const buttonFull = document.querySelector('.button') as HTMLElement;
-			if (buttonFull) {
-				buttonFull.style.zIndex = '9999';
-				buttonFull.style.position = 'fixed';
-				buttonFull.style.top = '50%';
-				buttonFull.style.right = '40%';
-				buttonFull.style.width = '350px';
-				buttonFull.style.height = '150px';
-				buttonFull.style.fontSize = '25px';
-			}
+			context.fillText("Oyuncu " + data!.winner + " Kazandı!  LOBİYE DÖNDERİLİYORSUNUZ...", canvas.width / 2 - 250, (3 * canvas.height) / 4);
+			setTimeout(() => {
+				handleRefresh();
+			}, 3500);
 		});
 
 		canvas.socket.on('buttonUpdated', (roomAndColor: any) => {
@@ -367,12 +336,11 @@ function Game() {
 			}
 		});
 
-		canvas.socket.on('windowToGame', (modes: any) => {
-			if (modes.flag === 3) {
+		canvas.socket.on('viewVS', (modes: any) => {
 				setButtonText(modes!.user1 + " VS " + modes!.user2);
-				return;
-			}
+		});
 
+		canvas.socket.on('viewMods', (modes: any) => {
 			for (var i = 0; i < roomButtons.length; i++) {
 				roomButtons[i].style.display = "none";
 			}
@@ -386,9 +354,6 @@ function Game() {
 				var fastButton = document.getElementById("fastest");
 				clasicButton!.style.display = 'block';
 				fastButton!.style.display = 'block';
-				setButtonText(modes!.user1 + " VS " + modes!.user2);
-			} else if (modes.flag === 0) {
-				setButtonText(modes!.user1 + " VS " + modes!.user2);
 			}
 		});
 	}, []);
@@ -436,13 +401,6 @@ function Game() {
 				<Button className='random-room-button'>room4</Button>
 				<Button className='random-room-button'>room5</Button>
 				<Button className='random-room-button'>room6</Button>
-				
-				
-				<div id="refresh" className="button-container">
-					<button className="button" onClick={handleRefresh}>
-						<span>Back to lobby</span>
-					</button>
-				</div>
 				{startCountdown && <CountdownButton />}
 			</div>
 			<div id="text-container"></div>

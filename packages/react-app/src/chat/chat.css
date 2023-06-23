@@ -1,256 +1,227 @@
-body{
-    background-color: #f4f7f6;
-    margin-top:20px;
-}
-.card {
-    background: #fff;
-    transition: .5s;
-    border: 0;
-    margin-bottom: 30px;
-    border-radius: .55rem;
-    position: relative;
-    width: 100%;
-    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 10%);
-}
-.chat-app .people-list {
-    width: 280px;
-    position: absolute;
-    left: 0;
-    top: 0;
-    padding: 20px;
-    z-index: 7
+.bg-white {
+	background-color: #fff;
 }
 
-.chat-app .chat {
-    margin-left: 280px;
-    border-left: 1px solid #eaeaea
+.friend-list {
+	list-style: none;
+	margin-left: -40px;
+	overflow: auto;
+	max-height: 31rem;
 }
 
-.people-list {
-    -moz-transition: .5s;
-    -o-transition: .5s;
-    -webkit-transition: .5s;
-    transition: .5s
+.friend-list::-webkit-scrollbar {
+	display: none;
 }
 
-.people-list .chat-list li {
-    padding: 10px 15px;
-    list-style: none;
-    border-radius: 3px
+
+.friend-list li {
+	border-bottom: 1px solid #eee;
 }
 
-.people-list .chat-list li:hover {
-    background: #efefef;
-    cursor: pointer
+.friend-list li a img {
+	float: left;
+	width: 45px;
+	height: 45px;
+	margin-right: 10px;
 }
 
-.people-list .chat-list li.active {
-    background: #efefef
+.friend-list li a {
+	position: relative;
+	display: block;
+	padding: 10px;
+	transition: all .2s ease;
+	-webkit-transition: all .2s ease;
+	-moz-transition: all .2s ease;
+	-ms-transition: all .2s ease;
+	-o-transition: all .2s ease;
 }
 
-.people-list .chat-list li .name {
-    font-size: 15px
+.friend-list li.active a {
+	background-color: #f1f5fc;
 }
 
-.people-list .chat-list img {
-    width: 45px;
-    border-radius: 50%
+.friend-list li a .friend-name,
+.friend-list li a .friend-name:hover {
+	color: #777;
 }
 
-.people-list img {
-    float: left;
-    border-radius: 50%
+.friend-list li a .last-message {
+	width: 65%;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
 }
 
-.people-list .about {
-    float: left;
-    padding-left: 8px
+.friend-list li a .time {
+	position: absolute;
+	top: 10px;
+	right: 8px;
 }
 
-.people-list .status {
-    color: #999;
-    font-size: 13px
+small,
+.small {
+	font-size: 85%;
 }
 
-.chat .chat-header {
-    padding: 15px 20px;
-    border-bottom: 2px solid #f4f7f6
+.friend-list li a .chat-alert {
+	position: absolute;
+	right: 8px;
+	top: 27px;
+	font-size: 10px;
+	padding: 3px 5px;
 }
 
-.chat .chat-header img {
-    float: left;
-    border-radius: 40px;
-    width: 40px
+
+/* .col::-webkit-scrollbar{
+	display: none;
+} */
+
+
+.chat {
+	list-style: none;
+	margin: 0;
+	overflow: auto;
+	max-height: 31rem;
 }
 
-.chat .chat-header .chat-about {
-    float: left;
-    padding-left: 10px
+.chat::-webkit-scrollbar {
+	display: none;
 }
 
-.chat .chat-history {
-    padding: 20px;
-    border-bottom: 2px solid #fff
+
+.chat-message {
+	background: #f9f9f9;
+	height: 87%;
+	max-height: 87%;
+	display: flex;
+	flex-direction: column-reverse;
 }
 
-.chat .chat-history ul {
-    padding: 0
+.chat li img {
+	width: 45px;
+	height: 45px;
+	border-radius: 50em;
+	-moz-border-radius: 50em;
+	-webkit-border-radius: 50em;
 }
 
-.chat .chat-history ul li {
-    list-style: none;
-    margin-bottom: 30px
+img {
+	max-width: 100%;
 }
 
-.chat .chat-history ul li:last-child {
-    margin-bottom: 0px
+.chat-body {
+	padding-bottom: 20px;
 }
 
-.chat .chat-history .message-data {
-    margin-bottom: 15px
+.chat li.left .chat-body {
+	margin-left: 70px;
+	background-color: #fff;
 }
 
-.chat .chat-history .message-data img {
-    border-radius: 40px;
-    width: 40px
+.chat li .chat-body {
+	position: relative;
+	font-size: 11px;
+	padding: 10px;
+	border: 1px solid #f1f5fc;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+	-moz-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+	-webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
 }
 
-.chat .chat-history .message-data-time {
-    color: #434651;
-    padding-left: 6px
+.chat li .chat-body .header {
+	padding-bottom: 5px;
+	border-bottom: 1px solid #f1f5fc;
 }
 
-.chat .chat-history .message {
-    color: #444;
-    padding: 18px 20px;
-    line-height: 26px;
-    font-size: 16px;
-    border-radius: 7px;
-    display: inline-block;
-    position: relative
+.chat li .chat-body p {
+	margin: 0;
 }
 
-.chat .chat-history .message:after {
-    bottom: 100%;
-    left: 7%;
-    border: solid transparent;
-    content: " ";
-    height: 0;
-    width: 0;
-    position: absolute;
-    pointer-events: none;
-    border-bottom-color: #fff;
-    border-width: 10px;
-    margin-left: -10px
+.chat li.left .chat-body:before {
+	position: absolute;
+	top: 10px;
+	left: -8px;
+	display: inline-block;
+	background: #fff;
+	width: 16px;
+	height: 16px;
+	border-top: 1px solid #f1f5fc;
+	border-left: 1px solid #f1f5fc;
+	content: '';
+	transform: rotate(-45deg);
+	-webkit-transform: rotate(-45deg);
+	-moz-transform: rotate(-45deg);
+	-ms-transform: rotate(-45deg);
+	-o-transform: rotate(-45deg);
 }
 
-.chat .chat-history .my-message {
-    background: #efefef
+.chat li.right .chat-body:before {
+	position: absolute;
+	top: 10px;
+	right: -8px;
+	display: inline-block;
+	background: #fff;
+	width: 16px;
+	height: 16px;
+	border-top: 1px solid #f1f5fc;
+	border-right: 1px solid #f1f5fc;
+	content: '';
+	transform: rotate(45deg);
+	-webkit-transform: rotate(45deg);
+	-moz-transform: rotate(45deg);
+	-ms-transform: rotate(45deg);
+	-o-transform: rotate(45deg);
 }
 
-.chat .chat-history .my-message:after {
-    bottom: 100%;
-    left: 30px;
-    border: solid transparent;
-    content: " ";
-    height: 0;
-    width: 0;
-    position: absolute;
-    pointer-events: none;
-    border-bottom-color: #efefef;
-    border-width: 10px;
-    margin-left: -10px
+.chat li {
+	margin: 15px 0;
 }
 
-.chat .chat-history .other-message {
-    background: #e8f1f3;
-    text-align: right
+.chat li.right .chat-body {
+	margin-right: 20px;
+	background-color: #fff;
 }
 
-.chat .chat-history .other-message:after {
-    border-bottom-color: #e8f1f3;
-    left: 93%
+.chat-box {
+
+	padding: 15px;
+	border-top: 1px solid #eee;
+	transition: all .5s ease;
+	-webkit-transition: all .5s ease;
+	-moz-transition: all .5s ease;
+	-ms-transition: all .5s ease;
+	-o-transition: all .5s ease;
 }
 
-.chat .chat-message {
-    padding: 20px
+.pull-right {
+	position: absolute;
+	right: 3%;
 }
 
-.online,
-.offline,
-.me {
-    margin-right: 2px;
-    font-size: 8px;
-    vertical-align: middle
+.pull-left {
+	position: absolute;
+	left: 8%;
 }
 
-.online {
-    color: #86c541
+.primary-font {
+	color: #3c8dbc;
 }
 
-.offline {
-    color: #e47297
+a:hover,
+a:active,
+a:focus {
+	text-decoration: none;
+	outline: 0;
 }
 
-.me {
-    color: #1d8ecd
-}
+.custom-container {
+	display: flex;
+	flex-direction: column;
+	flex-wrap: wrap;
+	align-content: stretch;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
 
-.float-right {
-    float: right
-}
-
-.clearfix:after {
-    visibility: hidden;
-    display: block;
-    font-size: 0;
-    content: " ";
-    clear: both;
-    height: 0
-}
-
-@media only screen and (max-width: 767px) {
-    .chat-app .people-list {
-        height: 465px;
-        width: 100%;
-        overflow-x: auto;
-        background: #fff;
-        left: -400px;
-        display: none
-    }
-    .chat-app .people-list.open {
-        left: 0
-    }
-    .chat-app .chat {
-        margin: 0
-    }
-    .chat-app .chat .chat-header {
-        border-radius: 0.55rem 0.55rem 0 0
-    }
-    .chat-app .chat-history {
-        height: 300px;
-        overflow-x: auto
-    }
-}
-
-@media only screen and (min-width: 768px) and (max-width: 992px) {
-    .chat-app .chat-list {
-        height: 650px;
-        overflow-x: auto
-    }
-    .chat-app .chat-history {
-        height: 600px;
-        overflow-x: auto
-    }
-}
-
-@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
-    .chat-app .chat-list {
-        height: 480px;
-        overflow-x: auto
-    }
-    .chat-app .chat-history {
-        height: calc(100vh - 350px);
-        overflow-x: auto
-    }
 }

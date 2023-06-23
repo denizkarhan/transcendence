@@ -6,7 +6,7 @@ import { LocalAuthService } from './auth/local-auth/local-auth.service';
 // import { JwtAuthGuard } from './auth/local-auth/jwt-auth.guard';
 import { SignInDto } from './users/dtos/SignIn.dto';
 import { ApiTags } from '@nestjs/swagger';
-import { Public } from './users/utils/metadata';
+import { Public } from './utils/metadata';
 import { CreateUserDto } from './users/dtos/CreateUser.dto';
 import { Response } from 'express';
 
@@ -35,7 +35,7 @@ export class AppController {
 
 	@Public()
 	@Post('auth/register')
-	async createUser(@Body() createUserDto: CreateUserDto, @Res() res) {
+	async createUser(@Body() createUserDto: CreateUserDto) {
 		const result = await this.authService.register(createUserDto);
 		if (result)
 			return { msg: 'OK', status: 200 };

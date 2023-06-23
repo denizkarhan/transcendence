@@ -1,10 +1,16 @@
-import { Container, Form, Modal, Button } from 'react-bootstrap';
+import { Container, Form, Modal, Button, ToggleButton } from 'react-bootstrap';
 import api from '../api';
 import { useState } from 'react';
-import { useSignIn } from 'react-auth-kit';
+import { useSignIn, useSignOut } from 'react-auth-kit';
 import jwtDecode from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
+import { User } from '../interfaces/user';
+import QrCode from './profile/QrCode';
 
+
+function delay(ms: number) {
+	return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 interface decodedToken {
 	id: number,
@@ -13,13 +19,25 @@ interface decodedToken {
 	iat: number
 };
 
-export default function UpdateProfile() {
+interface Props {
+	setUser: React.Dispatch<React.SetStateAction<User | undefined>>;
+};
+
+export default function UpdateProfile(props: Props) {
+
+	const [checked, setChecked] = useState(false);
+
+	const [showQR, setShowQR] = useState(false);
+
 	const [isHovered, setIsHovered] = useState(false);
+	const [show, setShow] = useState(false);
 	const signin = useSignIn();
+	const signout = useSignOut();
 	const navigate = useNavigate();
 
 	const onSubmit = async (event: any) => {
 		event.preventDefault();
+
 		const formData = new FormData(event.target);
 		const formValues = Object.fromEntries(formData.entries());
 		Object.keys(formValues).forEach((key) => {
@@ -29,17 +47,26 @@ export default function UpdateProfile() {
 		});
 		await api.post('users/update', formValues)
 			.then((response: any) => {
-				const user = jwtDecode<decodedToken>(response.data.access_token);
-				signin({
-					token: response.data.access_token,
-					tokenType: "Bearer",
-					expiresIn: 9999999,
-					authState: { username: user.Login }
-				});
-				handleClose();
-				navigate(`/profile/${user.Login}`);
+				if (response.data.access_token) {
+					const user = jwtDecode<decodedToken>(response.data.access_token);
+					signout();
+					signin({
+						token: response.data.access_token,
+						tokenType: "Bearer",
+						expiresIn: 9999999,
+						authState: { username: user.Login }
+					});
+					handleClose();
+					navigate(`/profile/${user.Login}`);
+				}
 			})
 			.catch((error) => console.log(error));
+		if (checked) {
+			setShowQR(true);
+		}
+		else {
+			handleClose();
+		}
 	}
 	const handleMouseEnter = () => {
 		setIsHovered(true);
@@ -48,9 +75,9 @@ export default function UpdateProfile() {
 	const handleMouseLeave = () => {
 		setIsHovered(false);
 	};
-	const [show, setShow] = useState(false);
 
 	const handleClose = () => setShow(false);
+
 	const handleShow = () => setShow(true);
 
 	return (
@@ -58,9 +85,8 @@ export default function UpdateProfile() {
 			style={{ position: 'relative' }}
 			onMouseEnter={handleMouseEnter}
 			onMouseLeave={handleMouseLeave}
-			onClick={handleShow}
 		>
-			<i className="bi bi-gear fs-4" style={{ color: isHovered ? '#E4A11B' : '#332D2D' }}></i>
+			<i className="bi bi-gear fs-4" style={{ color: isHovered ? '#E4A11B' : '#332D2D' }} onClick={handleShow}></i>
 			<Modal
 				show={show}
 				onHide={handleClose}
@@ -87,6 +113,17 @@ export default function UpdateProfile() {
 							New Email:
 							<Form.Control type="text" name="Email" placeholder="Email" />
 						</Form.Label>
+						<ToggleButton
+							className="mb-2"
+							id="toggle-check"
+							type="checkbox"
+							variant="outline-primary"
+							checked={checked}
+							value="1"
+							onChange={(e) => setChecked(e.currentTarget.checked)}
+						>
+							Check to Enable Two Factor Authentication
+						</ToggleButton>
 					</Modal.Body>
 					<Modal.Footer>
 						<Button variant="primary" type="submit">
@@ -98,6 +135,7 @@ export default function UpdateProfile() {
 					</Modal.Footer>
 				</Form>
 			</Modal>
-		</Container>
+			{showQR && <QrCode show={showQR} setShow={setShowQR} />}
+		</Container >
 	);
 }

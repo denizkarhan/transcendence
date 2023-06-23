@@ -1,93 +1,113 @@
-import { Card, Col, Container, Image, Row } from "react-bootstrap";
+import { Button, Card, Col, Container, Form, Image, Row, Stack } from "react-bootstrap";
 import io, { Socket } from 'socket.io-client';
-import "./chat.css"
 import { getCookie } from "../api";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Chat } from "../interfaces/chat";
+import { useAuthUser } from "react-auth-kit";
+import "./chat.css";
+import UserChat from "./userChat";
+import ChatBox from "./ChatBox";
+import CreateChat from "./createChat";
+import { useToast } from "../components/Toast";
+import SendMessage from "./SendMessage";
+import JoinRoom from "./join";
 
+function ChatService() {
+	const { showError, showSuccess } = useToast();
+	const [showCreate, setShowCreate] = useState(false);
+	const [showJoin, setShowJoin] = useState(false);
+	const [deneme, setDeneme] = useState<string[]>([])
+	const URL = "http://k2m13s05.42kocaeli.com.tr:3001/chat";
+	const auth = useAuthUser();
+	const socketRef = useRef<any>(null);
+	const newSocket = socketRef.current as Socket;
 
+	const user = auth()?.username ?? "User";
+	const [data, setData] = useState<any[]>([]);
+	const [room, setRoom] = useState<any>(null);
+	useEffect(() => {
+		const socket = io(URL, {
+			auth: {
+				nick: getCookie("42_auth_state"),
+				token: getCookie("42_auth")
+			},
+		});
 
-export default function ChatService() {
-    let socket: Socket;
-    const [data, setData] = useState<Chat[]>([]);
-    useEffect(() => {
-        socket = io("http://k2m13s05.42kocaeli.com.tr:3001/chat", {
-            auth: {
-                nick: getCookie("42_auth_state"),
-                token: getCookie("42_auth")
-            },
-        });
-        socket.on('getMessages', (data: any) => {
-            setData(data);
-        });
-    }, [])
-    return (
-        <Container style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-            <Row className="clearfix">
-                <Col lg={12}>
-                    <Card className="chat-app">
-                        <div id="plist" className="people-list">
-                            <ul className="list-unstyled chat-list mt-2 mb-0">
-                                {data.map((chat, index) => (
-                                    <li key={index} className="clearfix">
-                                        {/* <Image src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="avatar" /> */}
-                                        <div className="about">
-                                            <div className="name">{chat.user.FirstName} {chat.user.LastName}</div>
-                                            <div className="status"> <i className="bi bi-dot" style={{color: (chat.user.Status === 'online' ? '#00FF00' : '#808080') }}></i> left 7 mins ago </div>
-                                        </div>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                        <div className="chat">
-                            <div className="chat-header clearfix">
-                                <div className="row">
-                                    <div className="col-lg-6">
-                                        <a href="javascript:void(0);" data-toggle="modal" data-target="#view_info">
-                                            <Image src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="avatar" />
-                                        </a>
-                                        <div className="chat-about">
-                                            <h6 className="m-b-0">Aiden Chavez</h6>
-                                            <small>Last seen: 2 hours ago</small>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="chat-history">
-                                <ul className="m-b-0">
-                                    <li className="clearfix">
-                                        <div className="message-data text-right">
-                                            <span className="message-data-time">10:10 AM, Today</span>
-                                            <Image src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar" />
-                                        </div>
-                                        <div className="message other-message float-right"> Hi Aiden, how are you? How is the project coming along? </div>
-                                    </li>
-                                    <li className="clearfix">
-                                        <div className="message-data">
-                                            <span className="message-data-time">10:12 AM, Today</span>
-                                        </div>
-                                        <div className="message my-message">Are we meeting today?</div>
-                                    </li>
-                                    <li className="clearfix">
-                                        <div className="message-data">
-                                            <span className="message-data-time">10:15 AM, Today</span>
-                                        </div>
-                                        <div className="message my-message">Project has been already finished and I have results to show you.</div>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div className="chat-message clearfix">
-                                <div className="input-group mb-0">
-                                    <div className="input-group-prepend">
-                                        <span className="input-group-text"><i className="bi bi-send"></i></span>
-                                    </div>
-                                    <input type="text" className="form-control" placeholder="Enter text here..." />
-                                </div>
-                            </div>
-                        </div>
-                    </Card>
-                </Col>
-            </Row>
-        </Container>
-    );
+		socket.emit('getData', { userName: user });
+
+		socket.on('getData', (data: any) => {
+			setData(data);
+		});
+
+		socket.on('createRoom', (data: any) => {
+			setData(prevData => [...prevData, data]);
+		});
+
+		socket.on('ErrorHandle', (data: any) => {
+			showError(data.message);
+		})
+
+		socket.on('isJoin', (data: any) => {
+			console.log(data);
+		})
+
+		socket.on('receiveMessage', (data: any) => {
+			console.log('Alınan mesaj:', data);
+		});
+
+		socketRef.current = socket;
+		return () => {
+			socket.disconnect();
+		};
+	}, [])
+
+	// const createRoom = () => {
+	// 	newSocket.emit('createRoom', { roomName: 'deneme1', Admin: user, IsPublic: false, Password: null });
+	// }
+	const sendMessage = () => {
+		newSocket.emit('sendMessage', { roomName: 'deneme1', username: user, message: 'first message' });
+	}
+	const joinRoom = () => {
+		newSocket.emit('join', { roomName: 'deneme1', username: user });
+	}
+	console.log(data);
+
+	return (
+		<Container className='custom-container'>
+			<Row style={{ height: '80vh' }}>
+				<Col md={4} style={{ background: 'white' }}>
+					<Row className="border-bottom padding-sm" style={{ color: 'black', height: '3.5rem' }}>
+						<Stack direction='horizontal' gap={2} style={{
+							display: 'flex',
+							flexDirection: 'row',
+							justifyContent: 'center',
+							height: '3rem'
+						}}>
+							<CreateChat key='CreateChat' show={showCreate} setShow={setShowCreate} socket={newSocket} user={user} />
+							<JoinRoom key='JoinRoom' show={showJoin} setShow={setShowJoin} socket={newSocket} user={user} />
+						</Stack>
+					</Row>
+					<ul className="friend-list">
+						{data?.map((chat, index) => {
+							return (
+								<div key={index} onClick={() => setRoom(chat)}>
+									<UserChat chat={chat} user={user} />
+								</div>
+							)
+						})}
+					</ul>
+				</Col>
+				<Col md={8} style={{ background: 'white', display: 'flex', flexDirection: 'column' }}>
+					<div className="chat-message" style={{ flex: '1 1 auto' }}>
+						<ul className="chat">
+							<ChatBox key='ChatBox' room={room} user={user} />
+						</ul>
+					</div>
+					<SendMessage key='sendMessage' room={room} socket={newSocket} user={user} deneme={deneme} />
+				</Col>
+			</Row>
+		</Container>
+	);
 }
+
+export default ChatService;

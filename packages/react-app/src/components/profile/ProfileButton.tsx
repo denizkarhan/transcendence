@@ -1,14 +1,16 @@
 import { useAuthUser } from "react-auth-kit";
-import { Button, Stack } from "react-bootstrap";
+import { Button, OverlayTrigger, Tooltip } from "react-bootstrap";
 import UpdateProfile from "../UpdateProfile";
 import api from "../../api";
 import { useToast } from "../Toast";
 import { useEffect, useState } from "react";
 import { error } from "console";
+import { User } from "../../interfaces/user";
 
 
 export interface Props {
 	friendName: string | undefined;
+	setUser: React.Dispatch<React.SetStateAction<User | undefined>>;
 }
 
 export default function ProfileButton(props: Props) {
@@ -22,6 +24,12 @@ export default function ProfileButton(props: Props) {
 		if (response.data.status === 200)
 			setFollow(true);
 	};
+
+	const renderTooltip = (message: string) => (
+		<Tooltip id="hover-tooltip">
+			{message}
+		</Tooltip>
+	);
 
 	useEffect(() => {
 		fetchData();
@@ -50,20 +58,38 @@ export default function ProfileButton(props: Props) {
 			{props.friendName !== login ? (
 				<>
 					{follow ? (
-						<Button onClick={handleUnFollow} bsPrefix="btn btn-outline-danger">
-							<i className="bi bi-person-dash fs-4"></i>
-						</Button>
+						<OverlayTrigger
+							placement="bottom"
+							overlay={renderTooltip('Click to unfollow user')}
+						>
+
+							<Button onClick={handleUnFollow} bsPrefix="btn btn-outline-danger">
+								<i className="bi bi-person-dash fs-4"></i>
+							</Button>
+						</OverlayTrigger>
 					) : (
-						<Button onClick={handleFollow} bsPrefix="btn btn-outline-danger">
-							<i className="bi bi-person-add fs-4"></i>
-						</Button>
+						<OverlayTrigger
+							placement="bottom"
+							overlay={renderTooltip('Click to follow user')}
+						>
+
+							<Button onClick={handleFollow} bsPrefix="btn btn-outline-danger">
+								<i className="bi bi-person-add fs-4"></i>
+							</Button>
+						</OverlayTrigger>
 					)}
-					<Button bsPrefix="btn btn-outline-dark">
-						<i className="bi bi-chat-left fs-4"></i>
-					</Button>
+					<OverlayTrigger
+						placement="bottom"
+						overlay={renderTooltip('Click to message user')}
+					>
+
+						<Button bsPrefix="btn btn-outline-dark">
+							<i className="bi bi-chat-left fs-4"></i>
+						</Button>
+					</OverlayTrigger>
 				</>
 			) : (
-					<UpdateProfile />
+				<UpdateProfile setUser={props.setUser} />
 			)}
 		</>
 	);

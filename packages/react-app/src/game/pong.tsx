@@ -1,8 +1,9 @@
 import io, { Socket } from 'socket.io-client';
 import { getCookie } from "../api";
 import { useEffect, useRef, useState } from "react";
-import { Button} from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import CountdownButton from './CountdownButton';
+import BackgroundAnimation from './BackgroundAnimation';
 import './a.css';
 
 let x = 0;
@@ -70,7 +71,7 @@ function Game() {
 	const [buttonText, setButtonText] = useState('Winx Club');
 
 	const changeText = () => {
-	  setButtonText('Yeni Yazı');
+		setButtonText('Yeni Yazı');
 	};
 
 	const canvasRef = useRef<CanvasWithSocket | null>(null);
@@ -111,7 +112,7 @@ function Game() {
 		for (let i = 0; i < roomButtons.length; i++) { // Odaya giriş yapma butonu
 			roomButtons[i].addEventListener("click", () => {
 				const buttonText: string = roomButtons[i].innerText;
-				canvas.socket.emit('enterRoom', {roomName: buttonText});
+				canvas.socket.emit('enterRoom', { roomName: buttonText });
 			});
 		}
 
@@ -127,15 +128,15 @@ function Game() {
 
 		window.addEventListener("keydown", (e) => {
 			canvas.socket.emit('keydown', {
-			  key: e.key,
-			  sOne: scoreOne,
-			  sTwo: scoreTwo,
-			  pOne: playerOne,
-			  pTwo: playerTwo,
-			  ball: ball,
-			  flag: x++
+				key: e.key,
+				sOne: scoreOne,
+				sTwo: scoreTwo,
+				pOne: playerOne,
+				pTwo: playerTwo,
+				ball: ball,
+				flag: x++
 			});
-		  });
+		});
 
 		// net
 		let net: Eleman = new Eleman({
@@ -243,7 +244,7 @@ function Game() {
 				ball.x = canvas.width / 2;
 				ball.y += ball.gravity;
 			}
-			canvas.socket.emit('scoreUpdate', {sOne: scoreOne, sTwo:scoreTwo}); // Sunucuya score bilgisini gönder
+			canvas.socket.emit('scoreUpdate', { sOne: scoreOne, sTwo: scoreTwo }); // Sunucuya score bilgisini gönder
 			drawElements();
 		}
 
@@ -283,11 +284,11 @@ function Game() {
 			ball.color = data[4].color;
 		});
 
-		canvas.socket.on('countDown', (data: any) => {			
+		canvas.socket.on('countDown', (data: any) => {
 			handleStartCountdown();
 			setTimeout(() => {
 				gameStarter = 1;
-			  }, 3000);
+			}, 3000);
 		});
 
 		const waitingRoom = () => {
@@ -361,7 +362,7 @@ function Game() {
 				playerTwo.gravity = 5;
 				var div = document.getElementById('fastest');
 				div!.style.background = "#fbce0f";
-				
+
 				return;
 			}
 
@@ -372,7 +373,7 @@ function Game() {
 			myCanvas!.style.display = 'block';
 			var mainText = document.getElementById("header");
 			mainText!.style.display = 'block';
-			
+
 			if (modes.flag === 1) { // ilk oyuncu girişi
 				var clasicButton = document.getElementById("clasico");
 				var fastButton = document.getElementById("fastest");
@@ -387,12 +388,12 @@ function Game() {
 
 	const handleRefresh = () => {
 		window.location.reload();
-	  };
+	};
 
 	const clasicMode = () => {
 		const canvas = canvasRef!.current;
 		// canvas!.socket.emit('gameMod', {ballSpeed: 1, ballGravity: 1, backG: "#1bc4f6"});
-		canvas!.socket.emit('gameMod', {mod: 'c'});
+		canvas!.socket.emit('gameMod', { mod: 'c' });
 
 		// ball.speed = 1;
 		// ball.gravity = 1;
@@ -408,7 +409,7 @@ function Game() {
 	const fastMode = () => {
 		const canvas = canvasRef!.current;
 		// canvas!.socket.emit('gameMod', {ballSpeed: 1.5, ballGravity: 1.5, backG: "#fa44ab", modR: 3, playerGravity: 5});
-		canvas!.socket.emit('gameMod', {mod: 'f'});
+		canvas!.socket.emit('gameMod', { mod: 'f' });
 
 		// modR = 3;
 		// ball.color = "#fa44ab";
@@ -423,32 +424,34 @@ function Game() {
 		var fastButton = document.getElementById("fastest");
 		clasicButton!.style.display = 'none';
 		fastButton!.style.display = 'none';
-	  };
+	};
 
 	return (
 		<div>
-		<div id='button-div'>
-			<Button id="clasico" className='clasic-mod' onClick={clasicMode}>Clasic Mod</Button>
-			<Button id="fastest" className='fast-mod' onClick={fastMode}>Fast Mod</Button>
-			<Button id="header" className='mainText'>{buttonText}</Button>
-			<Button className='random-room-button'>Hemen Oyna</Button>
-			<Button className='random-room-button'>room1</Button>
-			<Button className='random-room-button'>room2</Button>
-			<Button className='random-room-button'>room3</Button>
-			<Button className='random-room-button'>room4</Button>
-			<Button className='random-room-button'>room5</Button>
-			<Button className='random-room-button'>room6</Button>
-			<div id="refresh" className="button-container">
-				<button className="button" onClick={handleRefresh}>
-					<span>Back to lobby</span>
-				</button>
+			{/* <button class="sallanan-buton">Tıkla</button> */}
+			<BackgroundAnimation />
+			<div id='button-div'>
+				<Button id="clasico" className='clasic-mod' onClick={clasicMode}>Clasic Mod</Button>
+				<Button id="fastest" className='fast-mod' onClick={fastMode}>Fast Mod</Button>
+				<Button id="header" className='mainText'>{buttonText}</Button>
+				<Button className='random-room-button'>Hemen Oyna</Button>
+				<Button className='random-room-button'>room1</Button>
+				<Button className='random-room-button'>room2</Button>
+				<Button className='random-room-button'>room3</Button>
+				<Button className='random-room-button'>room4</Button>
+				<Button className='random-room-button'>room5</Button>
+				<Button className='random-room-button'>room6</Button>
+				<div id="refresh" className="button-container">
+					<button className="button" onClick={handleRefresh}>
+						<span>Back to lobby</span>
+					</button>
+				</div>
+				{startCountdown && <CountdownButton />}
 			</div>
-			{startCountdown && <CountdownButton />}
+			<div id="text-container"></div>
+			<canvas ref={canvasRef} id="pongGame" style={{ backgroundColor: 'black', cursor: 'default', zIndex: '0' }}></canvas>
 		</div>
-		<div id="text-container"></div>
-		<canvas ref={canvasRef} id="pongGame" style={{ backgroundColor: 'black', cursor: 'default', zIndex: '0' }}></canvas>
-		</div>
-  );
+	);
 }
 
 export default Game;

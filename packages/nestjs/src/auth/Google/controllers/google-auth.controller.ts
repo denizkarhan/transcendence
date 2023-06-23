@@ -1,7 +1,7 @@
 import { Controller, Get, Req, Res, UseGuards, Body, Request, Redirect } from '@nestjs/common';
 import { GoogleAuthGuard } from '../utils/Guards';
 import { ApiTags } from '@nestjs/swagger';
-import { Public } from 'src/users/utils/metadata';
+import { Public } from 'src/utils/metadata';
 import { GoogleAuthService } from '../service/google-auth.service';
 import { Response } from 'express';
 
@@ -23,13 +23,13 @@ export class AuthController {
 	@Get('google/redirect')
 	async handleRedirect(@Request() request, @Res() response: Response) {
 		const token = (await this.authService.login(request.user));
-		const url = new URL("http://k2m13s05.42kocaeli.com.tr");
+		const url = new URL("http://localhost");
 		url.port = "3000";
 		url.pathname = 'login';
 		if (token?.access_token)
-			response.cookie('token', token.access_token);
+			url.searchParams.set('token', token.access_token);
 		else
-			response.cookie('user', token.Login);
+			url.searchParams.set('user', token.Login);
 		response.status(302).redirect(url.href);
 	}
 

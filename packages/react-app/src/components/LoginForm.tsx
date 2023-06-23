@@ -7,6 +7,7 @@ import { useSignIn } from "react-auth-kit";
 import jwtDecode from "jwt-decode";
 import ModalComponent from "./Tfa";
 import { useToast } from "./Toast";
+import { useLocation } from 'react-router-dom';
 
 interface decodedToken {
 	id: number,
@@ -17,7 +18,7 @@ interface decodedToken {
 
 
 const App: React.FC = () => {
-	const {showError, showSuccess} = useToast();
+	const { showError, showSuccess } = useToast();
 	const [showModal, setShowModal] = useState(false);
 	const signin = useSignIn();
 	const navigate = useNavigate();
@@ -27,9 +28,13 @@ const App: React.FC = () => {
 		deleteCookie('user');
 		setShowModal(false);
 	}
+	const location = useLocation();
+
+
 	useEffect(() => {
-		setToken(getCookie('token'));
-		setUser(getCookie('user'));
+		const searchParams = new URLSearchParams(location.search);
+		setToken(searchParams.get('token'));
+		setUser(searchParams.get('user'));
 		if (token) {
 			const user = jwtDecode<decodedToken>(token);
 			signin({

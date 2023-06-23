@@ -35,20 +35,24 @@ import { GoogleStrategy } from './auth/Google/utils/GoogleStrategy';
 import { AuthanticatorModule } from './auth/twofactorauth/authanticator.module';
 import * as cookieParser from 'cookie-parser';
 import { GameModule } from './game/game.module';
-import { Chat } from './typeorm/entities/chat';
 import { ChatModule } from './chat/chat.module';
 import { SeedModule } from './seed/seed.module';
 import { SeedService } from './seed/seed.service';
+import { GroupChat } from './typeorm/entities/groupChat';
+import { GroupChatUsers } from './typeorm/entities/groupChatUsers';
+import { GroupMessages } from './typeorm/entities/GroupMessages';
+// import { PrivateChat } from './typeorm/entities/PrivateChat';
 
 @Module({
   imports: [TypeOrmModule.forRoot({
 	type: 'postgres',
 	host: 'localhost',
 	port: 5432,
-	username: 'ftuncer',
-	password: '123',
-	database: 'ftuncer',
-	entities: [User, Friend, Stats, Achievements, UserAchievements, MatchHistories, Blocks, Avatar, Chat],
+
+	username: 'postgres',
+	password: 'example',
+	database: 'postgres',
+	entities: [User, Friend, Stats, Achievements, UserAchievements, MatchHistories, Blocks, Avatar, GroupChat, GroupChatUsers, GroupMessages],
 	synchronize: true,
   }), 
   UsersModule, StatsModule, MatchHistoriesModule, UserAchievementsModule, FriendsModule, AuthModule, 
@@ -74,4 +78,5 @@ export class AppModule implements NestModule {
 	}
   }
 
+  
   

@@ -13,7 +13,7 @@ export class UsersController {
 	constructor(private userService: UsersService){}
 
 	@Get('profile')
-	@UseInterceptors(ClassSerializerInterceptor)
+	
 	@ApiBearerAuth()
 	async getProfile(@Request() req){
 		const user = await this.userService.getUser(req.user);
@@ -21,7 +21,7 @@ export class UsersController {
 	}
 
 	@Get('all')
-	@UseInterceptors(ClassSerializerInterceptor)
+	
 	@ApiBearerAuth()
 	async getUsers(){
 		return await this.userService.getUsers();
@@ -29,7 +29,7 @@ export class UsersController {
 
 	@Get('userName/:userName')
 	@UseFilters(ExceptionHandleFilter)
-	@UseInterceptors(ClassSerializerInterceptor)
+	
 	@ApiBearerAuth()
 	async getUserByName(@Param('userName') userName: string) {
 		const user = await this.userService.getUserByLogin(userName);
@@ -40,7 +40,7 @@ export class UsersController {
 	@Get('email/:email')
 	@ApiBearerAuth()
 	@UseFilters(ExceptionHandleFilter)
-	@UseInterceptors(ClassSerializerInterceptor)
+	
 	async getUserByEmail(@Param('email') email: string) {
 		const user = await this.userService.getUserByEmail(email);
 		if (!user) throw new HttpException('User Not Found', HttpStatus.NO_CONTENT);
@@ -49,7 +49,7 @@ export class UsersController {
 
 	@Get('id/:id')
 	@UseFilters(ExceptionHandleFilter)
-	@UseInterceptors(ClassSerializerInterceptor)
+	
 	@ApiBearerAuth()
 	async getUserById(@Param('id') id: number) {
 		const user = await this.userService.findById(id);
@@ -70,6 +70,4 @@ export class UsersController {
 			return {msg:"Successfully", status: 200};
 		throw new HttpException('Eksik Birşeyler var hayatında', HttpStatus.FORBIDDEN);
 	}
-
-
 }

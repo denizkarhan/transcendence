@@ -44,7 +44,7 @@ const playerOne: Eleman = new Eleman({ // first paddle (playerone)
 	width: playerWidth,
 	height: playerHeight,
 	color: "#fff",
-	gravity: 3,
+	gravity: 4,
 });
 
 const playerTwo: Eleman = new Eleman({ // second paddle (playertwo)
@@ -53,7 +53,7 @@ const playerTwo: Eleman = new Eleman({ // second paddle (playertwo)
 	width: playerWidth,
 	height: playerHeight,
 	color: "#fff",
-	gravity: 3,
+	gravity: 4,
 });
 
 // ball
@@ -118,8 +118,8 @@ function Game() {
 
 		const buttonColors: string[] = [
 			"linear-gradient(to right, #964747d6, #bd1b1bca, #640206d7)",
-			"linear-gradient(to right, #6eb76cec, #169a0dd6, #043906)",
-			"linear-gradient(to right, #537dd1, #064ad1d4, #020f66)"
+			"linear-gradient(to right, #537dd1, #064ad1d4, #020f66)",
+			"linear-gradient(to right, #6eb76cec, #169a0dd6, #043906)"
 		];
 
 		canvas.socket.on('userRegister', (data: any) => { // Kullanıcıları kaydediyorum ama kullanmadım daha
@@ -262,6 +262,14 @@ function Game() {
 
 		// oyunu başlatmak için startGame olayını dinleyin
 		canvas.socket.on('startGame', (data: any) => {
+			if (data[5] === 'f') {
+				ball.color = "#fa44ab";
+				ball.speed = 1.5;
+				ball.gravity = 1.5;
+				modR = 3;
+				playerOne.gravity = 8;
+				playerTwo.gravity = 8;
+			}
 			intervalID = setInterval((data: any) => {
 				if (gameStarter === 0)
 					return;
@@ -309,12 +317,19 @@ function Game() {
 		canvas.socket.on('gameOver', (data: any) => {
 			context.font = "30px 'Press Start 2P', cursive";
 			context.fillStyle = "#fff";
-			context.fillText("Oyuncu " + data + " Kazandı!", canvas.width / 2 - 250, (3 * canvas.height) / 4);
+			scoreOne = data!.scoreOne;
+			scoreTwo = data!.scoreTwo;
+			displayScoreOne();
+			displayScoreTwo();
+			context.fillText("Oyuncu " + data!.winner + " Kazandı!", canvas.width / 2 - 250, (3 * canvas.height) / 4);
 			// var button = document.getElementById("buton-div").querySelector("button");
 			var buttonDiv = document.getElementById("buton-div");
 			var button = buttonDiv ? buttonDiv.getElementsByTagName("button")[0] : null;
 			if (button)
+			{
 				button.style.display = "block";
+				button.style.zIndex = "9999";
+			}
 			clearInterval(intervalID);
 
 			scoreOne = 0;
@@ -338,8 +353,8 @@ function Game() {
 				buttonFull.style.position = 'fixed';
 				buttonFull.style.top = '50%';
 				buttonFull.style.right = '40%';
-				buttonFull.style.width = '250px';
-				buttonFull.style.height = '100px';
+				buttonFull.style.width = '350px';
+				buttonFull.style.height = '150px';
 				buttonFull.style.fontSize = '25px';
 			}
 		});
@@ -353,16 +368,8 @@ function Game() {
 		});
 
 		canvas.socket.on('windowToGame', (modes: any) => {
-			if (modes.flag === 2) {
-				modR = 3;
-				ball.color = "#fa44ab";
-				ball.speed = 1.5;
-				ball.gravity = 1.5;
-				playerOne.gravity = 5;
-				playerTwo.gravity = 5;
-				var div = document.getElementById('fastest');
-				div!.style.background = "#fbce0f";
-
+			if (modes.flag === 3) {
+				setButtonText(modes!.user1 + " VS " + modes!.user2);
 				return;
 			}
 
@@ -392,14 +399,7 @@ function Game() {
 
 	const clasicMode = () => {
 		const canvas = canvasRef!.current;
-		// canvas!.socket.emit('gameMod', {ballSpeed: 1, ballGravity: 1, backG: "#1bc4f6"});
 		canvas!.socket.emit('gameMod', { mod: 'c' });
-
-		// ball.speed = 1;
-		// ball.gravity = 1;
-		// var div = document.getElementById('clasico');
-		// div!.style.background = "#1bc4f6";
-
 		var clasicButton = document.getElementById("clasico");
 		var fastButton = document.getElementById("fastest");
 		clasicButton!.style.display = 'none';
@@ -408,18 +408,7 @@ function Game() {
 
 	const fastMode = () => {
 		const canvas = canvasRef!.current;
-		// canvas!.socket.emit('gameMod', {ballSpeed: 1.5, ballGravity: 1.5, backG: "#fa44ab", modR: 3, playerGravity: 5});
 		canvas!.socket.emit('gameMod', { mod: 'f' });
-
-		// modR = 3;
-		// ball.color = "#fa44ab";
-		// ball.speed = 1.5;
-		// ball.gravity = 1.5;
-		// playerOne.gravity = 5;
-		// playerTwo.gravity = 5;
-		// var div = document.getElementById('fastest');
-		// div!.style.background = "#fbce0f";
-
 		var clasicButton = document.getElementById("clasico");
 		var fastButton = document.getElementById("fastest");
 		clasicButton!.style.display = 'none';
@@ -430,7 +419,7 @@ function Game() {
 		<div>
 			<BackgroundAnimation />
 			<div id='button-div'>
-				<button id="clasico" className='clasic-mod' onClick={fastMode}>
+				<button id="clasico" className='clasic-mod' onClick={clasicMode}>
 				    <span className="clasic-mod-text-one">Clasic Mod</span>
 				    <span className="clasic-mod-text-two">Start!</span>
 				</button>

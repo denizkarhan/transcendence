@@ -54,7 +54,7 @@ canvas
 	left: 44%;
 	padding: 50px;
 	width: 300px;
-	background: linear-gradient(to right, #4d8d4c96, #16ab0b8e, #0b510d97, #16ab0b8e, #4d8d4c96);
+	background: linear-gradient(to right, #4c568d96, #304fec83, #120b5197, #304fec83, #4c568d96);
 	background-size: 1250% auto;
 	color: white;
 	border: none;
@@ -237,7 +237,7 @@ canvas
 	right: 50px;
 	padding: 12px 24px;
 	font-size: 26px;
-	background-color: #4CAF50;
+	background-color: #236d26;
 	color: white;
 	border: none;
 	border-radius: 25px;
@@ -256,7 +256,7 @@ canvas
 	right: 30px;
 	top: 75px;
 	border-radius: 4px;
-	background-color: rgb(6, 156, 249);
+	background-color: rgba(23, 45, 130, 0.83);
 	border: none;
 	color: #FFFFFF;
 	text-align: center;

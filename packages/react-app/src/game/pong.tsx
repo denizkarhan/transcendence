@@ -87,7 +87,7 @@ function Game() {
 		const roomButtons: HTMLCollectionOf<HTMLButtonElement> = document.getElementsByClassName("random-room-button") as HTMLCollectionOf<HTMLButtonElement>;
 
 		if (!canvas) {
-			console.log("canvas yok");
+			// console.log("canvas yok");
 			return;
 		}
 		const context = canvas.getContext('2d');
@@ -379,7 +379,7 @@ function Game() {
 				var fastButton = document.getElementById("fastest");
 				clasicButton!.style.display = 'block';
 				fastButton!.style.display = 'block';
-				setButtonText('PLAYER IS EXPECTED...');
+				setButtonText(modes!.user1 + " VS " + modes!.user2);
 			} else if (modes.flag === 0) {
 				setButtonText(modes!.user1 + " VS " + modes!.user2);
 			}
@@ -428,11 +428,17 @@ function Game() {
 
 	return (
 		<div>
-			{/* <button class="sallanan-buton">Tıkla</button> */}
 			<BackgroundAnimation />
 			<div id='button-div'>
-				<Button id="clasico" className='clasic-mod' onClick={clasicMode}>Clasic Mod</Button>
-				<Button id="fastest" className='fast-mod' onClick={fastMode}>Fast Mod</Button>
+				<button id="clasico" className='clasic-mod' onClick={fastMode}>
+				    <span className="clasic-mod-text-one">Clasic Mod</span>
+				    <span className="clasic-mod-text-two">Start!</span>
+				</button>
+				<button id="fastest" className='fast-mod' onClick={fastMode}>
+				    <span className="fast-mod-text-one">Fast Mod</span>
+				    <span className="fast-mod-text-two">Start!</span>
+				</button>
+				
 				<Button id="header" className='mainText'>{buttonText}</Button>
 				<Button className='random-room-button'>Hemen Oyna</Button>
 				<Button className='random-room-button'>room1</Button>
@@ -441,6 +447,8 @@ function Game() {
 				<Button className='random-room-button'>room4</Button>
 				<Button className='random-room-button'>room5</Button>
 				<Button className='random-room-button'>room6</Button>
+				
+				
 				<div id="refresh" className="button-container">
 					<button className="button" onClick={handleRefresh}>
 						<span>Back to lobby</span>

@@ -22,6 +22,7 @@
   align-items: center;
   flex-wrap: wrap;
   justify-content: center;
+  z-index: 9999;
 }
 
 .scol {
@@ -29,6 +30,7 @@
   flex-shrink: 0;
   flex-basis: 10%;
   max-width: 41.666667%;
+  z-index: 9999;
 }
 
 .img-style {
@@ -39,5 +41,5 @@
   position: relative;
   height: 32px;
   width: 32px;
-  z-index: 0;
+  z-index: 9999;
 }

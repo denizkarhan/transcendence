@@ -18,7 +18,7 @@ export class ChatGateWay  implements OnGatewayConnection, OnGatewayDisconnect{
     server: Server;
     
     async handleDisconnect(socket: Socket) {
-        console.log(this.nick, " disconnect")
+        // console.log(this.nick, " disconnect")
         socket.disconnect(true);
     }
 
@@ -26,7 +26,7 @@ export class ChatGateWay  implements OnGatewayConnection, OnGatewayDisconnect{
     async handleConnection(socket: Socket) : Promise<boolean>{
         this.nick = socket.handshake.auth.nick.split("%22")[3];
 
-        console.log(this.nick, " connection");
+        // console.log(this.nick, " connection");
         if(!this.nick)
         {
             socket.disconnect(true);
@@ -37,7 +37,7 @@ export class ChatGateWay  implements OnGatewayConnection, OnGatewayDisconnect{
 
     @SubscribeMessage('getMessage')
     async getMessage(@MessageBody() room:any, @ConnectedSocket() socket:Socket){
-        console.log(room);
+        // console.log(room);
     }
 
 }

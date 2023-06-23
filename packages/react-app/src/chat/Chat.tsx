@@ -11,7 +11,7 @@ export default function ChatService() {
     let socket: Socket;
     const [data, setData] = useState<Chat[]>([]);
     useEffect(() => {
-        socket = io("http://k2m13s05.42kocaeli.com.tr:3001/chat", {
+        socket = io("http://localhost:3001/chat", {
             auth: {
                 nick: getCookie("42_auth_state"),
                 token: getCookie("42_auth")

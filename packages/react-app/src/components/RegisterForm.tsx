@@ -41,7 +41,7 @@ const App: React.FC = () => {
                     {
                       required: true,
                       message: "Please input your nickname!",
-                      whitespace: true,
+                      whitespace: false,
                     },
                   ]}
                 >

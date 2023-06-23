@@ -16,6 +16,7 @@ import ProfileButton from './ProfileButton';
 import { isBlock } from '../Main';
 import Block from './Block';
 import "./Profile.css"
+import { Match } from '../../interfaces/match';
 
 interface Props {
 	pp: string,
@@ -32,6 +33,9 @@ const App: React.FC<Props> = (props: Props) => {
 	const navigate = useNavigate();
 	const [user, setUser] = useState<User>();
 	const [activeTab, setActiveTab] = useState<string>('friends');
+	const [wins, setWins] = useState<number>(0);
+	const [games, setGames] = useState<number>(0);
+	const [losses, setLosses] = useState<number>(0);
 	const auth = useAuthUser();
 
 	const login = auth()?.username ?? "User";
@@ -45,6 +49,17 @@ const App: React.FC<Props> = (props: Props) => {
 
 	useEffect(() => {
 		const fetchData = async () => {
+			const resMatch = await api.get(`/match-histories/${username}`);
+			const matches: Match[] = resMatch.data;
+			if (resMatch.data.length !== 0) {
+				matches.map((match) => {
+					if (match.MyResult > match.EnemyResult)
+						setWins(wins + 1);
+					else
+						setLosses(losses + 1);
+					setGames(games + 1);
+				});
+			}
 			const block = await isBlock(username, login);
 			if (block) {
 				navigate('/');
@@ -80,6 +95,7 @@ const App: React.FC<Props> = (props: Props) => {
 										<h4>{user?.FirstName} {user?.LastName}</h4>
 										<p className="mb-1">{user?.Login}</p>
 										<p className="font-size-sm">{user?.Email}</p>
+										<i className="bi bi-trophy"> Wins {wins}</i>
 									</div>
 									<Stack direction="horizontal" className="justify-content-center" gap={2}>
 										<ProfileButton key={username} friendName={username} setUser={setUser} />

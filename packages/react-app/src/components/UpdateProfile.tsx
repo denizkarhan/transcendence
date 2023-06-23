@@ -147,7 +147,7 @@ export default function UpdateProfile(props: Props) {
 					</Modal.Footer>
 				</Form>
 			</Modal>
-			{show && <QrCode show={showQR} setShow={setShowQR} />}
+			{showQR && <QrCode show={showQR} setShow={setShowQR} />}
 		</Container >
 	);
 }

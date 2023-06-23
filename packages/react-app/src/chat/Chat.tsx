@@ -10,14 +10,14 @@ import ChatBox from "./ChatBox";
 import CreateChat from "./createChat";
 import { useToast } from "../components/Toast";
 import SendMessage from "./SendMessage";
-import JoinRoom from "./Join";
+import JoinRoom from "./join";
 
 function ChatService() {
 	const { showError, showSuccess } = useToast();
 	const [showCreate, setShowCreate] = useState(false);
 	const [showJoin, setShowJoin] = useState(false);
 	const [deneme, setDeneme] = useState<string[]>([])
-	const URL = "http://k2m13s05.42kocaeli.com.tr:3001/chat";
+	const URL = "http://localhost:3001/chat";
 	const auth = useAuthUser();
 	const socketRef = useRef<any>(null);
 	const newSocket = socketRef.current as Socket;
@@ -84,7 +84,7 @@ function ChatService() {
 							height: '3rem'
 						}}>
 							<CreateChat key='CreateChat' show={showCreate} setShow={setShowCreate} socket={newSocket} user={user} />
-							<JoinRoom key='JoinRoom' show={showJoin} setShow={setShowJoin} socket={newSocket} user={user}/>
+							<JoinRoom key='JoinRoom' show={showJoin} setShow={setShowJoin} socket={newSocket} user={user} />
 						</Stack>
 					</Row>
 					<ul className="friend-list">

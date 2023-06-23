@@ -200,11 +200,11 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
         }
 
         if (rooms.has(roomName.roomName) && (rooms.get(roomName.roomName).user1 === user.username)) {
-            socket.emit('windowToGame', {flag: 1, user1: rooms.get(roomName.roomName).user1, user2: rooms.get(roomName.roomName).user2});
+            socket.emit('viewMods', {flag: 1, user1: rooms.get(roomName.roomName).user1, user2: rooms.get(roomName.roomName).user2});
             return;
         }
         else if (rooms.has(roomName.roomName) && (rooms.get(roomName.roomName).user2 === user.username)) {
-            socket.emit('windowToGame', {flag: 0, user1: rooms.get(roomName.roomName).user1, user2: rooms.get(roomName.roomName).user2});
+            socket.emit('viewMods', {flag: 0, user1: rooms.get(roomName.roomName).user1, user2: rooms.get(roomName.roomName).user2});
             return;
         }
 
@@ -251,18 +251,17 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
             element.socket.emit('buttonUpdated', [user.roomName, color]);
             if (element.roomName === user.roomName && rooms.get(user.roomName)?.count === 2) {
                 element.socket.emit('userRegister', [element.username]);
-                // if (rooms.get(user.roomName).user1 === element.username)
-                    // element.socket.emit('windowToGame', {flag: 1, user1: rooms.get(user.roomName).user1, user2: rooms.get(user.roomName).user2})
-                if (rooms.get(user.roomName).user2 === element.username)
-                    element.socket.emit('windowToGame', {flag: 0, user1: rooms.get(user.roomName).user1, user2: rooms.get(user.roomName).user2})
                 if (rooms.get(user.roomName).user1 === element.username)
-                    element.socket.emit('windowToGame', {flag: 3, user1: rooms.get(user.roomName).user1, user2: rooms.get(user.roomName).user2})
+                    element.socket.emit('viewMods', {flag: 1, user1: rooms.get(user.roomName).user1, user2: rooms.get(user.roomName).user2})
+                else
+                    element.socket.emit('viewMods', {flag: 0, user1: rooms.get(user.roomName).user1, user2: rooms.get(user.roomName).user2})
+                element.socket.emit('viewVS', {user1: rooms.get(user.roomName).user1, user2: rooms.get(user.roomName).user2})
             }
             else if (element.roomName === user.roomName && rooms.get(user.roomName)?.count === 1) {
                 if (rooms.get(user.roomName).user1 === user.username)
-                    socket.emit('windowToGame', {flag: 1, user1: rooms.get(user.roomName).user1, user2: rooms.get(user.roomName).user2});
+                    socket.emit('viewMods', {flag: 1, user1: rooms.get(user.roomName).user1, user2: rooms.get(user.roomName).user2});
                 else
-                    socket.emit('windowToGame', {flag: 0, user1: rooms.get(user.roomName).user1, user2: rooms.get(user.roomName).user2});
+                    socket.emit('viewMods', {flag: 0, user1: rooms.get(user.roomName).user1, user2: rooms.get(user.roomName).user2});
             }
         });
     }
@@ -276,7 +275,7 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
         // connectedUsers.forEach(element => {
         //     if (connectedUsers.get(socket.id).roomName === roomName && modes.mod === 'f')
-        //         element.socket.to(roomName).emit('windowToGame', {flag : 2});
+        //         element.socket.to(roomName).emit('viewMods', {flag : 2});
         // });
     }
 }

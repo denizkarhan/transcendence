@@ -19,40 +19,41 @@ export class ChatService {
 		private blockService: BlockUserService) { }
 
 
-	async isExistRoom(roomName:string)
-	{
-		return await this.groupChatRepository.exist({where:{RoomName:roomName}});
+	async isExistRoom(roomName: string) {
+		return await this.groupChatRepository.exist({ where: { RoomName: roomName } });
 	}
 
 	async createRoom(groupChat: GroupChatType) {
 		console.log("groupChat ", groupChat.Admin);
 		const admin = await this.userService.getUserByLogin(groupChat.Admin);
-
 		const room = await this.groupChatRepository.save({
 			IsPublic: groupChat.IsPublic,
 			RoomName: groupChat.RoomName,
 			Password: groupChat.Password
 		});
 		const user = await this.groupChatUsersRepository.save({ GroupChat: room, users: admin, isAdmin: true });
-		const messages = await this.groupChatMessagesRepository.create({ Message: 'Created Room', GroupChat: room, SendAt: new Date(), User: user });
+		const messages =  this.groupChatMessagesRepository.create({ Message: 'Created Room', GroupChat: room, SendAt: new Date(), User: user });
 		await this.groupChatMessagesRepository.save(messages);
 		return room;
 	}
 
-	async joinRoom(roomName: string, username: string) {
-		const room = await this.groupChatRepository.findOneBy({ RoomName: roomName });
+	async joinRoom(roomName: string, username: string, password:string) {
+		const room = await this.groupChatRepository.findOneBy({ RoomName: roomName});
+		if (password !== undefined && password !== room.Password)
+			return {status:403, message:'Wrong Password'};
 		const user = await this.userService.getUserByLogin(username);
-		const chatUsers = await this.groupChatUsersRepository.create({
+		const chatUsers = this.groupChatUsersRepository.create({
 			GroupChat: room,
 			users: user,
 		});
 		await this.groupChatUsersRepository.save(chatUsers);
+		return {status:200, message:'OK'};
 	}
 
-	async leaveRoom(roomName:string, username:string){
+	async leaveRoom(roomName: string, username: string) {
 		const room = await this.groupChatRepository.findOneBy({ RoomName: roomName });
 		const user = await this.userService.getUserByLogin(username);
-		await this.groupChatUsersRepository.delete({GroupChat:room, users:user});
+		await this.groupChatUsersRepository.delete({ GroupChat: room, users: user });
 	}
 
 	async changeRoomPassword(roomName: string, password: string, username: string) {
@@ -68,14 +69,16 @@ export class ChatService {
 	async sendMessage(roomName: string, userName: string, message: string) {
 		const room = await this.groupChatRepository.findOneBy({ RoomName: roomName });
 		const user = await this.userService.getUserByLogin(userName);
+		const chatUser = await this.groupChatUsersRepository.findOneBy({users:user});
 		console.log(user);
 		console.log(room);
-		const isExist = await this.groupChatUsersRepository.findOneBy({ users: user, GroupChat: room });
+		const isExist = await this.groupChatUsersRepository.findOneBy({ users: chatUser, GroupChat: room });
 		console.log(isExist);
 		if (!isExist)
-			return { message: 'you cant send messages', status:301};
-		await this.groupChatMessagesRepository.save({ GroupChat: room, Message: message, SendAt: new Date(), User: isExist });
-		return { message: 'Success', status:200 };
+			return null
+		const temp =  await this.groupChatMessagesRepository.save({ GroupChat: room, Message: message, SendAt: new Date(), User: isExist });
+		const { GroupChat, ...rest } = temp;
+		return rest;
 	}
 
 	async privateMessage(roomName: string, sender: string, receiver: string, message: string) {
@@ -96,31 +99,38 @@ export class ChatService {
 		await this.sendMessage(roomName, sender, message);
 	}
 
-	async changeAdmin(roomName:string, admin:string, newAdmin:string){
-		const room = await this.groupChatRepository.findOneBy({RoomName:roomName});
+	async changeAdmin(roomName: string, admin: string, newAdmin: string) {
+		const room = await this.groupChatRepository.findOneBy({ RoomName: roomName });
 		const userAdmin = await this.userService.getUserByLogin(admin);
 		const newAdminUser = await this.userService.getUserByLogin(newAdmin);
-		const roomAdmin = await this.groupChatUsersRepository.findOneBy({users:userAdmin});
-		const roomNewAdmin = await this.groupChatUsersRepository.findOneBy({users:newAdminUser});
-		if (roomAdmin.isAdmin){	
-			await this.groupChatUsersRepository.save({...roomNewAdmin, isAdmin:true});
-			return {msg:'Success', status:200};
+		const roomAdmin = await this.groupChatUsersRepository.findOneBy({ users: userAdmin });
+		const roomNewAdmin = await this.groupChatUsersRepository.findOneBy({ users: newAdminUser });
+		if (roomAdmin.isAdmin) {
+			await this.groupChatUsersRepository.save({ ...roomNewAdmin, isAdmin: true });
+			return { msg: 'Success', status: 200 };
 		}
 		else
-			return {msg:'You are not Admin', status:301};
+			return { msg: 'You are not Admin', status: 301 };
 	}
 
 	// async mutedUser(username:string){
 	// nasıl yapıcam???????
 	// }
 
-	async getMessage(username: string) {
 
+	async getRoom(roomName: string) {
+		return await this.groupChatRepository.findOne({ where: { RoomName:roomName }, relations: ['Messages.User.users', 'Messages', 'Users'] });
+	
+	}
+	async getMessage(username: string) {
 		const user = await this.userService.getUserByLogin(username);
-		const inGroup = await this.groupChatUsersRepository.find({ where: { users: user }, relations: ['GroupChat.Messages.User.users', 'GroupChat.Messages'] });
-		console.log("inGroup ", inGroup);
+		const inGroup = await this.groupChatUsersRepository.find({ where: { users: user }, relations: ['GroupChat.Messages.User.users', 'GroupChat.Messages', 'GroupChat.Users'] });
+		const groupChats = inGroup.map((group) => {
+			return group.GroupChat;
+		});
+		console.log(inGroup);
 		if (user) {
-			return inGroup;
+			return groupChats;
 		}
 		return [];
 	}

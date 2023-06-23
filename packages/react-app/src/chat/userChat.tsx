@@ -9,7 +9,7 @@ interface Props {
 }
 
 const UserChat = (props: Props) => {
-	console.log(props.chat.Messages);
+	
 	return (
 		<li className="active bounceInDown">
 			<a href="#" className="clearfix">

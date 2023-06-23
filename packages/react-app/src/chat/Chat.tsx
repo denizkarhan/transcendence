@@ -4,19 +4,20 @@ import { getCookie } from "../api";
 import { useEffect, useRef, useState } from "react";
 import { Chat } from "../interfaces/chat";
 import { useAuthUser } from "react-auth-kit";
-import Join from "./join";
 import "./chat.css";
 import UserChat from "./userChat";
 import ChatBox from "./ChatBox";
 import CreateChat from "./createChat";
+import { useToast } from "../components/Toast";
+import SendMessage from "./SendMessage";
+import JoinRoom from "./Join";
 
 function ChatService() {
-<<<<<<< HEAD
-	const [show, setShow] = useState(false);
+	const { showError, showSuccess } = useToast();
+	const [showCreate, setShowCreate] = useState(false);
+	const [showJoin, setShowJoin] = useState(false);
+	const [deneme, setDeneme] = useState<string[]>([])
 	const URL = "http://k2m13s05.42kocaeli.com.tr:3001/chat";
-=======
-	const URL = "http://localhost:3001/chat";
->>>>>>> 39b0ad523bd5c2cf4f630c87d7d8efe92af91599
 	const auth = useAuthUser();
 	const socketRef = useRef<any>(null);
 	const newSocket = socketRef.current as Socket;
@@ -38,9 +39,21 @@ function ChatService() {
 			setData(data);
 		});
 
+		socket.on('createRoom', (data: any) => {
+			setData(prevData => [...prevData, data]);
+		});
+
+		socket.on('ErrorHandle', (data: any) => {
+			showError(data.message);
+		})
+
 		socket.on('isJoin', (data: any) => {
 			console.log(data);
 		})
+
+		socket.on('receiveMessage', (data: any) => {
+			console.log('Alınan mesaj:', data);
+		});
 
 		socketRef.current = socket;
 		return () => {
@@ -48,9 +61,9 @@ function ChatService() {
 		};
 	}, [])
 
-	const createRoom = () => {
-		newSocket.emit('createRoom', { roomName: 'deneme1', Admin: user, IsPublic: false, Password: null });
-	}
+	// const createRoom = () => {
+	// 	newSocket.emit('createRoom', { roomName: 'deneme1', Admin: user, IsPublic: false, Password: null });
+	// }
 	const sendMessage = () => {
 		newSocket.emit('sendMessage', { roomName: 'deneme1', username: user, message: 'first message' });
 	}
@@ -60,10 +73,9 @@ function ChatService() {
 	console.log(data);
 
 	return (
-<<<<<<< HEAD
 		<Container className='custom-container'>
 			<Row style={{ height: '80vh' }}>
-				<Col md={3} style={{ background: 'white' }}>
+				<Col md={4} style={{ background: 'white' }}>
 					<Row className="border-bottom padding-sm" style={{ color: 'black', height: '3.5rem' }}>
 						<Stack direction='horizontal' gap={2} style={{
 							display: 'flex',
@@ -71,72 +83,29 @@ function ChatService() {
 							justifyContent: 'center',
 							height: '3rem'
 						}}>
-							<CreateChat show={show} setShow={setShow} socket={newSocket} user={user}/>
-							<Button bsPrefix='btn btn-outline-primary'><i className="bi bi-plus-lg"></i></Button>
+							<CreateChat key='CreateChat' show={showCreate} setShow={setShowCreate} socket={newSocket} user={user} />
+							<JoinRoom key='JoinRoom' show={showJoin} setShow={setShowJoin} socket={newSocket} user={user}/>
 						</Stack>
 					</Row>
 					<ul className="friend-list">
 						{data?.map((chat, index) => {
 							return (
-								<div key={index} onClick={() => setRoom(chat.GroupChat)}>
-									<UserChat chat={chat.GroupChat} user={user} />
+								<div key={index} onClick={() => setRoom(chat)}>
+									<UserChat chat={chat} user={user} />
 								</div>
 							)
 						})}
 					</ul>
 				</Col>
-				<Col style={{ background: 'white' }}>
-					<div className="chat-message">
+				<Col md={8} style={{ background: 'white', display: 'flex', flexDirection: 'column' }}>
+					<div className="chat-message" style={{ flex: '1 1 auto' }}>
 						<ul className="chat">
-							<ChatBox room={room} user={user} />
+							<ChatBox key='ChatBox' room={room} user={user} />
 						</ul>
 					</div>
-					<div className="chat-box bg-white">
-						<div className="input-group">
-							<input className="form-control border no-shadow no-rounded" placeholder="Type your message here" />
-							<span className="input-group-btn">
-								<button className="btn btn-success no-rounded" type="button">Send</button>
-							</span>
-						</div>
-					</div>
+					<SendMessage key='sendMessage' room={room} socket={newSocket} user={user} deneme={deneme} />
 				</Col>
 			</Row>
-=======
-		// <Container>{data.length < 1 ? null : (
-		// 	<Stack direction="horizontal" gap={4} style={{alignItems:'start'}}>
-		// 		<Stack className="messages-box flex-grow-0 pe-3" gap={3}>
-		// 			{data?.map((chat, index) => {
-		// 				return (
-		// 					<div key={index} onClick={() => setRoom(chat.GroupChat)}>
-		// 						<UserChat chat={chat.GroupChat} user={user} />
-		// 					</div>
-		// 				)
-		// 			})}
-		// 		</Stack>
-		// 		<ChatBox room={room} user={user}/>
-		// 	</Stack>
-		// )}
-		// </Container>
-		<Container fluid style={{ height: '90vh' }}>
-			{/* <Row style={{ height: '100%' }}>
-				<Col md={3}> */}
-			<Stack direction="horizontal" gap={4} style={{ alignItems: 'start' }}>
-				<Stack bsPrefix="messages-box pe-3" gap={3} style={{ flexGrow: '0' }}>
-					{data?.map((chat, index) => {
-						return (
-							<div key={index} onClick={() => setRoom(chat.GroupChat)}>
-								<UserChat chat={chat.GroupChat} user={user} />
-							</div>
-						)
-					})}
-				</Stack>
-				<ChatBox room={room} user={user} />
-			</Stack>
-			{/* </Col>
-				<Col md={9}> */}
-			{/* </Col>
-			</Row> */}
->>>>>>> 39b0ad523bd5c2cf4f630c87d7d8efe92af91599
 		</Container>
 	);
 }

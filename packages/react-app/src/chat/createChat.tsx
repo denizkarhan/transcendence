@@ -1,23 +1,16 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import { Socket } from "socket.io-client";
-
-interface Room {
-	RoomName: string;
-	Admin: string;
-	IsPublic: boolean;
-	Password: string;
-}
 
 interface Props {
 	show: boolean;
 	setShow: React.Dispatch<React.SetStateAction<boolean>>;
 	socket: Socket;
-	user:string;
+	user: string;
 }
 
 export default function CreateChat(props: Props) {
-	let room : Room;
+
 	const onSubmit = async (event: any) => {
 		event.preventDefault();
 		const formData = new FormData(event.target);
@@ -27,15 +20,11 @@ export default function CreateChat(props: Props) {
 				delete formValues[key];
 			}
 		});
-		if (formValues?.IsPublic === 'on')
-			room.IsPublic = true;
-		else
-			room.IsPublic = false;
-		room.Admin = props.user;
-		room.Password = formValues.Password.toString();
-		room.RoomName = formValues.RoomName.toString();
-		console.log(room);
+		const IsPublic = formValues.hasOwnProperty('IsPublic') && formValues['IsPublic'].toString() === 'on';
+		props.socket.emit('createRoom', { ...formValues, IsPublic: IsPublic, Admin: props.user });
+		props.setShow(false);
 	}
+
 	return (
 		<>
 			<Button bsPrefix='btn btn-outline-danger' onClick={() => { props.setShow(true) }} ><i className="bi bi-chat-left"></i></Button>
@@ -44,20 +33,21 @@ export default function CreateChat(props: Props) {
 				size="lg"
 				aria-labelledby="contained-modal-title-vcenter"
 				centered
+				onHide={() => { props.setShow(false) }}
 			>
-				<Modal.Header closeButton>
+				<Modal.Header>
 					New Chat
 				</Modal.Header>
 				<Form
 					onSubmit={onSubmit}>
 					<Modal.Body style={{ justifyContent: 'space-around', display: 'flex', flexWrap: 'wrap' }}>
 						<Form.Label>
-							Room Name:
-							<Form.Control type="text" name="RoomName" placeholder="First Name" />
+							Room Name
+							<Form.Control required type="text" name="RoomName" placeholder="Room Name" />
 						</Form.Label>
 						<Form.Label>
 							Password
-							<Form.Control type="password" name="Password" placeholder="Username" />
+							<Form.Control type="password" name="Password" placeholder="Password" />
 						</Form.Label>
 						<Form.Label>
 							<Form.Check // prettier-ignore

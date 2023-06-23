@@ -8,7 +8,7 @@
 body
 {
 	background-color: black;
-	color: white;
+	color: rgb(255, 255, 255);
 }
 
 canvas
@@ -54,7 +54,7 @@ canvas
 	left: 44%;
 	padding: 50px;
 	width: 300px;
-	background: linear-gradient(to right, #4d8d4cd4, #16ab0bd6, #0b510d, #16ab0bd6, #4d8d4cd4);
+	background: linear-gradient(to right, #4d8d4c96, #16ab0b8e, #0b510d97, #16ab0b8e, #4d8d4c96);
 	background-size: 1250% auto;
 	color: white;
 	border: none;
@@ -62,6 +62,51 @@ canvas
 	margin-bottom: 18px;
 	animation: gradientAnimation 10s linear infinite;
 	display: block;
+	border-radius: 10px;
+	border: 1px solid #03045e;
+	position: relative;
+	overflow: hidden;
+	transition: all 0.5s ease-in;
+	z-index: 1;
+}
+
+.random-room-button::before,
+.random-room-button::after {
+ content: '';
+ position: absolute;
+ top: 0;
+ width: 0;
+ height: 100%;
+ transform: skew(15deg);
+ transition: all 0.5s;
+ overflow: hidden;
+ z-index: -1;
+}
+
+.random-room-button::before {
+ left: -10px;
+ background: #1c0a2d;
+}
+
+.random-room-button::after {
+ right: -10px;
+ background: #7b39bd;
+}
+
+.random-room-button:hover::before,
+.random-room-button:hover::after {
+ width: 58%;
+}
+
+.random-room-button:hover span {
+ color: #e0aaff;
+ transition: 0.3s;
+}
+
+.random-room-button span {
+ color: #03045e;
+ font-size: 18px;
+ transition: all 0.3s ease-in;
 }
 
 
@@ -76,7 +121,7 @@ canvas
 	width: 225px;
 	height: 100px;
 	padding: 20px;
-	background: linear-gradient(to right, #cfcdcdae, #706666a0, #1d1919ef, #706666a0, #cfcdcdae);
+	background: linear-gradient(to right, #cfcdcd7e, #7066666c, #1d191991, #7066666c, #cfcdcd7e);
 	background-size: 500% auto;
 	color: white;
 	border: none;
@@ -87,33 +132,100 @@ canvas
 }
 
 .clasic-mod {
-	position: absolute;
-	top: 90px;
-	padding: 20px;
-	background: linear-gradient(to right, #7b733ebc, #b9aa23e7, #e9e504);
-	background-size: 200% auto;
-	color: rgb(0, 0, 0);
+	position: fixed;
+	top: 72%;
+	left: 35%;
+	width: 140px;
+	height: 50px;
+	background: linear-gradient(to top, #00154c, #12376e, #23487f);
+	color: #fff;
+	border-radius: 50px;
 	border: none;
-	border-radius: 12px;
-	margin-bottom: 50px;
-	animation: gradientAnimation 5s linear infinite;
+	outline: none;
+	cursor: pointer;
+	box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+	overflow: hidden;
 	display: none;
-}
+  }
+  
+  .clasic-mod span {
+	font-size: 12px;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	transition: top 0.5s;
+  }
+  
+  .clasic-mod-text-one {
+	position: absolute;
+	width: 100%;
+	top: 50%;
+	left: 0;
+	transform: translateY(-50%);
+  }
+  
+  .clasic-mod-text-two {
+	position: absolute;
+	width: 100%;
+	top: 150%;
+	left: 0;
+	transform: translateY(-50%);
+  }
+  
+  .clasic-mod:hover .clasic-mod-text-one {
+	top: -100%;
+  }
+  
+  .clasic-mod:hover .clasic-mod-text-two {
+	top: 50%;
+  }
 
 .fast-mod {
-	position: absolute;
-	top: 90px;
-	left: 135px;
-	padding: 20px;
-	background: linear-gradient(to right, #a1252570, #831616d6, #df0606);
-	background-size: 200% auto;
-	color: rgb(255, 255, 255);
-	border: none;
-	border-radius: 12px;
-	margin-bottom: 50px;
-	animation: gradientAnimation 5s linear infinite;
-	display: none;
-}
+		position: fixed;
+		top: 72%;
+		left: 53%;
+		width: 140px;
+		height: 50px;
+		background: linear-gradient(to top, #904848, #841414c5, #cd0303c2);
+		color: #fff;
+		border-radius: 50px;
+		border: none;
+		outline: none;
+		cursor: pointer;
+		box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+		overflow: hidden;
+		display: none;
+	  }
+	  
+	  .fast-mod span {
+		font-size: 12px;
+		text-transform: uppercase;
+		letter-spacing: 1px;
+		transition: top 0.5s;
+	  }
+	  
+	  .fast-mod-text-one {
+		position: absolute;
+		width: 100%;
+		top: 50%;
+		left: 0;
+		transform: translateY(-50%);
+	  }
+	  
+	  .fast-mod-text-two {
+		position: absolute;
+		width: 100%;
+		top: 150%;
+		left: 0;
+		transform: translateY(-50%);
+	  }
+	  
+	  .fast-mod:hover .fast-mod-text-one {
+		top: -100%;
+	  }
+	  
+	  .fast-mod:hover .fast-mod-text-two {
+		top: 50%;
+	  }
 
 @keyframes gradientAnimation {
 	0% { background-position: 0% }
@@ -202,16 +314,12 @@ canvas
       color: #000000;
     }
 
-
-
-
 	.background {
 		position: fixed;
 		top: 0;
 		left: 0;
 		width: 100%;
 		height: 100%;
-		z-index: -1;
 	}
 	
 	@keyframes animateBackground {
@@ -243,29 +351,3 @@ canvas
 		color: #fff;
 		font-family: Arial, sans-serif;
 	}
-
-	.sallanan-buton {
-		position: fixed;
-		left: 50%;
-		animation: salla 1s infinite ease-in-out;
-		transform-origin: center;
-	  }
-	  
-	  @keyframes salla {
-		0% {
-		  transform: rotateY(0deg);
-		}
-		25% {
-		  transform: rotateY(-20deg);
-		}
-		50% {
-		  transform: rotateY(20deg);
-		}
-		75% {
-		  transform: rotateY(-20deg);
-		}
-		100% {
-		  transform: rotateY(0deg);
-		}
-	  }
-

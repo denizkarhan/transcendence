@@ -5,39 +5,42 @@ import { format } from 'date-fns';
 import "./chat.css";
 
 interface Props {
-    room: any;
-    user: any;
+	room: any;
+	user: any;
 }
 
 const ChatBox = (props: Props) => {
-    const [message, setMessage] = useState<any[]>([]);
+	const [message, setMessage] = useState<any[]>([]);
 
-    useEffect(() => {
-        if (props.room)
-            setMessage(props.room.Messages);
-    }, [props.room])
-    console.log("ChatBox ", message);
-    console.log("User ", props.user);
+	useEffect(() => {
+		if (props.room)
+			setMessage(props.room.Messages);
+	}, [props.room])
 
-    if (!props.room)
-        return (
-            <p style={{ textAlign: 'center', width: '100%' }}>No Conversation Selected Yet... </p>
-        );
-    return (
-        <Stack gap={4} className="chat-box">
-            <div className="chat-header">
-                <strong> AAAAaaaaaaaaaaaaa</strong>
-            </div>
-            <Stack gap={3} className="messages">
-                {message.map((data: any, index: any) => 
-                <Stack key={index}>
-                    <span>{data.Message}</span>
-                    <span>{format(new Date(data.SendAt), 'dd MMM')}</span>
-                </Stack>
-                )}
-            </Stack>
-        </Stack>
-    );
+	if (!props.room)
+		return (
+			<p style={{ textAlign: 'center', width: '100%', color: 'black' }}>No Conversation Selected Yet... </p>
+		);
+
+	return (
+		<>
+			{message.map((data: any, index: number) => (
+				<div key={index}>
+					<li className={data?.User.users.Login === props.user ? "right clearfix" : "left clearfix"}>
+						<div className="chat-body clearfix">
+							<div className="header">
+								<strong className="primary-font">{data?.User.users.Login}</strong>
+								<small className="pull-right text-muted"><i className="fa fa-clock-o"></i> {format(new Date(data.SendAt), 'dd MMM')}</small>
+							</div>
+							<p style={{ color: 'black' }}>
+								{data.Message}
+							</p>
+						</div>
+					</li>
+				</div>
+			))}
+		</>
+	);
 }
 
 export default ChatBox;

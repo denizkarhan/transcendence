@@ -36,15 +36,19 @@ import { AuthanticatorModule } from './auth/twofactorauth/authanticator.module';
 import * as cookieParser from 'cookie-parser';
 import { GameModule } from './game/game.module';
 import { ChatModule } from './chat/chat.module';
+import { SeedModule } from './seed/seed.module';
+import { SeedService } from './seed/seed.service';
 import { GroupChat } from './typeorm/entities/groupChat';
 import { GroupChatUsers } from './typeorm/entities/groupChatUsers';
 import { GroupMessages } from './typeorm/entities/GroupMessages';
 // import { PrivateChat } from './typeorm/entities/PrivateChat';
+
 @Module({
   imports: [TypeOrmModule.forRoot({
 	type: 'postgres',
-	host: 'postgres',
+	host: 'localhost',
 	port: 5432,
+
 	username: 'postgres',
 	password: 'example',
 	database: 'postgres',
@@ -57,9 +61,9 @@ import { GroupMessages } from './typeorm/entities/GroupMessages';
 	secret: jwtConstants.secret,
 	// signOptions: { expiresIn: '15m' },
 }),
-  GameModule, ChatModule,],
+  GameModule, ChatModule, SeedModule,],
   controllers: [AppController],
-  providers: [AppService, SesssionSerialaize, JwtStrategy,
+  providers: [AppService, SeedService ,SesssionSerialaize, JwtStrategy,
 	{
 		provide: APP_GUARD,
 		useClass: JwtAuthGuard,
@@ -73,5 +77,6 @@ export class AppModule implements NestModule {
 		.forRoutes('*');
 	}
   }
+
   
   

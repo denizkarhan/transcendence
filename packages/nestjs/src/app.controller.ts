@@ -35,7 +35,7 @@ export class AppController {
 
 	@Public()
 	@Post('auth/register')
-	async createUser(@Body() createUserDto: CreateUserDto, @Res() res) {
+	async createUser(@Body() createUserDto: CreateUserDto) {
 		const result = await this.authService.register(createUserDto);
 		if (result)
 			return { msg: 'OK', status: 200 };

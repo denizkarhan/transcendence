@@ -1,7 +1,7 @@
-
 .App {
   background-color: black;
-  color: white;;
+  color: white;
+  ;
 }
 
 .App-logo {
@@ -48,4 +48,8 @@
 
 .ant-picker-input input::placeholder {
   color: #000000;
+}
+
+.black-and-white {
+  filter: grayscale(100%);
 }

@@ -16,18 +16,15 @@ import ProfileButton from './ProfileButton';
 import { isBlock } from '../Main';
 import Block from './Block';
 import "./Profile.css"
+import { Match } from '../../interfaces/match';
 
 interface Props {
 	pp: string,
 	setPP: React.Dispatch<React.SetStateAction<string>>,
 }
 
-export const getProfile = async () => {
-	const response = await api.get('users/profile');
-	return response;
-}
-
 const App: React.FC<Props> = (props: Props) => {
+	const [wins, setWins] = useState<number>(0);
 	let { username } = useParams<string>();
 	const navigate = useNavigate();
 	const [user, setUser] = useState<User>();
@@ -45,13 +42,26 @@ const App: React.FC<Props> = (props: Props) => {
 
 	useEffect(() => {
 		const fetchData = async () => {
+			const resMatch = await api.get(`/match-histories/${username}`);
+			const matches: Match[] = resMatch.data;
+			let winsCount = 0; // Initialize a counter for wins
+
+			if (resMatch.data.length !== 0) {
+				matches.forEach((match) => {
+					if (match.MyResult > match.EnemyResult) {
+						winsCount++; // Increment the counter for each win
+					}
+				});
+			}
+
+			setWins(winsCount);
 			const block = await isBlock(username, login);
 			if (block) {
 				navigate('/');
 				return;
 			}
 			try {
-				const response = await getProfile();
+				const response = await api.get(`/users/userName/${username}`);
 				setUser({
 					FirstName: response?.data.FirstName, LastName: response?.data.LastName,
 					Email: response?.data.Email, Login: response?.data.Login,
@@ -62,7 +72,11 @@ const App: React.FC<Props> = (props: Props) => {
 			}
 		}
 		fetchData();
-	}, [username])
+	}, [username]);
+
+	useEffect(() => {
+		setWins(0);
+	}, [username]);	
 
 	return (
 		<Container style={{ maxWidth: '70%' }}>
@@ -80,6 +94,7 @@ const App: React.FC<Props> = (props: Props) => {
 										<h4>{user?.FirstName} {user?.LastName}</h4>
 										<p className="mb-1">{user?.Login}</p>
 										<p className="font-size-sm">{user?.Email}</p>
+										<i className="bi bi-trophy"> Wins {wins}</i>
 									</div>
 									<Stack direction="horizontal" className="justify-content-center" gap={2}>
 										<ProfileButton key={username} friendName={username} setUser={setUser} />

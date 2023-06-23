@@ -1,8 +1,9 @@
-import React, { useEffect } from "react";
-import { Container, Nav, Navbar, NavDropdown, Stack } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import React, { Fragment, useEffect } from "react";
+import { Container, Nav, Navbar, NavDropdown, Stack, Form } from "react-bootstrap";
+import { Link, useNavigate } from "react-router-dom";
 import "./Nav.css";
 import { useAuthUser, useSignOut } from "react-auth-kit";
+import { useToast } from "./Toast";
 import api from '../api';
 import { getPP } from './Main';
 
@@ -15,6 +16,9 @@ interface Props {
 export default function MyNavbar(prop: Props) {
 	const signOut = useSignOut();
 	const auth = useAuthUser();
+	const { showError, showSuccess } = useToast();
+	const navigate = useNavigate();
+
 
 	const user = auth()?.username ?? "User";
 	const handleSignOut = async () => {
@@ -22,7 +26,18 @@ export default function MyNavbar(prop: Props) {
 		signOut();
 	};
 
-	
+	const onSubmit = async (event: any) => {
+		event.preventDefault();
+		const formData = new FormData(event.target);
+		const formValues = Object.fromEntries(formData.entries());
+		api.get('/users/username/' + formValues.query)
+			.then(response => {
+				if (response.data)
+					navigate('/profile/' + response.data.Login);
+			})
+			.catch(err => { showError('Could not find a user with that name'); console.log(); });
+		showError('Could not find a user with that name');
+	}
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -44,6 +59,12 @@ export default function MyNavbar(prop: Props) {
 					</Stack>
 				</Navbar.Collapse>
 				<Navbar.Collapse id="responsive-navbar-nav" className="justify-content-end">
+					<Form
+						onSubmit={onSubmit}
+					>
+						<Form.Control type="text" name="query" placeholder="Search for a user" />
+					</Form>
+					<i className="bi bi-search"></i>
 					<Nav>
 						<img src={prop.pp} className="img-style" />
 						<NavDropdown title={user} id="collasible-nav-dropdown" align={"end"}>

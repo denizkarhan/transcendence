@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useSignIn, useSignOut } from 'react-auth-kit';
 import jwtDecode from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
-import { getProfile } from './profile/Profile';
 import { User } from '../interfaces/user';
 import QrCode from './profile/QrCode';
 
@@ -31,6 +30,7 @@ export default function UpdateProfile(props: Props) {
 	const [showQR, setShowQR] = useState(false);
 
 	const [isHovered, setIsHovered] = useState(false);
+	const [show, setShow] = useState(false);
 	const signin = useSignIn();
 	const signout = useSignOut();
 	const navigate = useNavigate();
@@ -75,21 +75,9 @@ export default function UpdateProfile(props: Props) {
 	const handleMouseLeave = () => {
 		setIsHovered(false);
 	};
-	const [show, setShow] = useState(false);
 
-	const handleClose = async () => {
-		try {
-			const response = await getProfile();
-			props.setUser({
-				FirstName: response?.data.FirstName, LastName: response?.data.LastName,
-				Email: response?.data.Email, Login: response?.data.Login,
-				Status: response?.data.Status
-			})
-			setShow(false);
-		} catch (error: any) {
-			navigate('/404');
-		}
-	};
+	const handleClose = () => setShow(false);
+
 	const handleShow = () => setShow(true);
 
 	return (
@@ -147,7 +135,7 @@ export default function UpdateProfile(props: Props) {
 					</Modal.Footer>
 				</Form>
 			</Modal>
-			{show && <QrCode show={showQR} setShow={setShowQR} />}
+			{showQR && <QrCode show={showQR} setShow={setShowQR} />}
 		</Container >
 	);
 }

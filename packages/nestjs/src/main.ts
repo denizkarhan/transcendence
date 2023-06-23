@@ -4,7 +4,7 @@ import { AppModule } from './app.module';
 import * as session from 'express-session';
 import * as passport from 'passport';
 // ,  {cors: {
-// 	origin: 'http://k2m13s05.42kocaeli.com.tr:3000',
+// 	origin: 'http://localhost:3000',
 // 	methods: ['GET', 'POST'],
 //   }},
 

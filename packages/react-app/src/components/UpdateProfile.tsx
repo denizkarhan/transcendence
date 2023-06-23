@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useSignIn, useSignOut } from 'react-auth-kit';
 import jwtDecode from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
-import { getProfile } from './profile/Profile';
 import { User } from '../interfaces/user';
 import QrCode from './profile/QrCode';
 
@@ -77,19 +76,8 @@ export default function UpdateProfile(props: Props) {
 		setIsHovered(false);
 	};
 
-	const handleClose = async () => {
-		try {
-			const response = await getProfile();
-			props.setUser({
-				FirstName: response?.data.FirstName, LastName: response?.data.LastName,
-				Email: response?.data.Email, Login: response?.data.Login,
-				Status: response?.data.Status
-			})
-			setShow(false);
-		} catch (error: any) {
-			navigate('/404');
-		}
-	};
+	const handleClose = () => setShow(false);
+
 	const handleShow = () => setShow(true);
 
 	return (

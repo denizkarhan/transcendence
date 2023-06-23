@@ -17,7 +17,7 @@ function ChatService() {
 	const [showCreate, setShowCreate] = useState(false);
 	const [showJoin, setShowJoin] = useState(false);
 	const [deneme, setDeneme] = useState<string[]>([])
-	const URL = "http://localhost:3001/chat";
+	const URL = "http://k2m13s05.42kocaeli.com.tr:3001/chat";
 	const auth = useAuthUser();
 	const socketRef = useRef<any>(null);
 	const newSocket = socketRef.current as Socket;

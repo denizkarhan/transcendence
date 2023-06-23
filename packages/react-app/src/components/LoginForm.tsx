@@ -78,10 +78,10 @@ const App: React.FC = () => {
 	};
 
 	const handleGoogleLogin = async () => {
-		window.location.href = 'http://k2m13s05.42kocaeli.com.tr:3001/auth/google/login';
+		window.location.href = 'http://localhost:3001/auth/google/login';
 	};
 	const handleFTLogin = async () => {
-		window.location.href = 'http://k2m13s05.42kocaeli.com.tr:3001/ft-auth/login';
+		window.location.href = 'http://localhost:3001/ft-auth/login';
 	};
 	return (
 		<div className="App">

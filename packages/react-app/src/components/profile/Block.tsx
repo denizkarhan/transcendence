@@ -3,7 +3,7 @@ import api from "../../api";
 import { isBlock } from "../Main";
 import { useToast } from "../Toast";
 import { useAuthUser } from "react-auth-kit";
-import { Button } from "react-bootstrap";
+import { Button, OverlayTrigger, Tooltip } from "react-bootstrap";
 
 export interface Props {
     userName: string | undefined;
@@ -44,12 +44,29 @@ export default function Block(props: Props) {
             showError(response.data.messages);
     }
 
+    const renderTooltip = (message: string) => (
+        <Tooltip id="hover-tooltip">
+            {message}
+        </Tooltip>
+    );
 
     return (<>{(props.userName !== login) ? ((block) ?
-        <Button onClick={handleUnBlock} bsPrefix="btn btn-outline-warning">
-            <i className="bi bi-person-check-fill fs-4"></i>
-        </Button> : <Button onClick={handleBlock} bsPrefix="btn btn-outline-warning">
-            <i className="bi bi-person-fill-slash fs-4"></i>
-        </Button>
+        <OverlayTrigger
+            placement="top"
+            overlay={renderTooltip('Click to unblock user')}
+        >
+            <Button onClick={handleUnBlock} bsPrefix="btn btn-outline-warning">
+                <i className="bi bi-person-check-fill fs-4"></i>
+            </Button>
+        </OverlayTrigger>
+        :
+        <OverlayTrigger
+            placement="top"
+            overlay={renderTooltip('Click to block user')}
+        >
+            <Button onClick={handleBlock} bsPrefix="btn btn-outline-warning">
+                <i className="bi bi-person-fill-slash fs-4"></i>
+            </Button>
+        </OverlayTrigger>
     ) : null}</>)
 }

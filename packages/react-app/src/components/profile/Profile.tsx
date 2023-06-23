@@ -23,19 +23,12 @@ interface Props {
 	setPP: React.Dispatch<React.SetStateAction<string>>,
 }
 
-export const getProfile = async () => {
-	const response = await api.get('users/profile');
-	return response;
-}
-
 const App: React.FC<Props> = (props: Props) => {
+	const [wins, setWins] = useState<number>(0);
 	let { username } = useParams<string>();
 	const navigate = useNavigate();
 	const [user, setUser] = useState<User>();
 	const [activeTab, setActiveTab] = useState<string>('friends');
-	const [wins, setWins] = useState<number>(0);
-	const [games, setGames] = useState<number>(0);
-	const [losses, setLosses] = useState<number>(0);
 	const auth = useAuthUser();
 
 	const login = auth()?.username ?? "User";
@@ -51,22 +44,24 @@ const App: React.FC<Props> = (props: Props) => {
 		const fetchData = async () => {
 			const resMatch = await api.get(`/match-histories/${username}`);
 			const matches: Match[] = resMatch.data;
+			let winsCount = 0; // Initialize a counter for wins
+
 			if (resMatch.data.length !== 0) {
-				matches.map((match) => {
-					if (match.MyResult > match.EnemyResult)
-						setWins(wins + 1);
-					else
-						setLosses(losses + 1);
-					setGames(games + 1);
+				matches.forEach((match) => {
+					if (match.MyResult > match.EnemyResult) {
+						winsCount++; // Increment the counter for each win
+					}
 				});
 			}
+
+			setWins(winsCount);
 			const block = await isBlock(username, login);
 			if (block) {
 				navigate('/');
 				return;
 			}
 			try {
-				const response = await getProfile();
+				const response = await api.get(`/users/userName/${username}`);
 				setUser({
 					FirstName: response?.data.FirstName, LastName: response?.data.LastName,
 					Email: response?.data.Email, Login: response?.data.Login,
@@ -77,7 +72,11 @@ const App: React.FC<Props> = (props: Props) => {
 			}
 		}
 		fetchData();
-	}, [username])
+	}, [username]);
+
+	useEffect(() => {
+		setWins(0);
+	}, [username]);	
 
 	return (
 		<Container style={{ maxWidth: '70%' }}>

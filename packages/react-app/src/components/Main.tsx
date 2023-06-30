@@ -5,13 +5,14 @@ import MyNavbar from "./myNavbar";
 import { useIsAuthenticated } from 'react-auth-kit';
 import { useState } from 'react';
 import { useEffect } from "react";
+import { ToastProvider } from "./Toast";
 
 const repeatString = (str: string, count: number) => {
   return str.repeat(count);
 };
 
 export async function getPP(username: string | undefined) {
-  if (await getCookie('42_auth_state')) {
+  if (getCookie('42_auth_state')) {
     let response;
     if (username !== undefined)
       response = await api.get(`upload-avatar/get-image/${username}`, { responseType: 'blob' })
@@ -28,7 +29,7 @@ export async function getPP(username: string | undefined) {
   return endPoint + "pps/default.png";
 }
 
-export async function isBlock(username:any, friendName:any){
+export async function isBlock(username: any, friendName: any) {
   const response = await api.get(`/block-user/isBlock/${username}/${friendName}`);
   if (response.data.message === 'Is Block')
     return true;
@@ -44,13 +45,15 @@ export default function Main() {
 
     fetchData();
   }, []);
-  
+
   const isAuthenticated = useIsAuthenticated();
   return (
 
     <div className="App">
-      {isAuthenticated() && <MyNavbar pp={pp} setPP={setPP} />}
-      <RootNavigation pp={pp} setPP={setPP} />
+      <ToastProvider>
+        {isAuthenticated() && <MyNavbar pp={pp} setPP={setPP} />}
+        <RootNavigation pp={pp} setPP={setPP} />
+      </ToastProvider>
     </div>
   );
 }

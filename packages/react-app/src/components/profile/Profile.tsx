@@ -104,17 +104,17 @@ const App: React.FC<Props> = (props: Props) => {
 						</Card>
 					</Col>
 					<Col lg='9'>
-						<Tabs activeKey={activeTab} onSelect={handleTabSelect} className="mb-3" fill>
-							<Tab eventKey="friends" title="Follow">
+						<Tabs activeKey={activeTab} onSelect={handleTabSelect} className="border-0" fill>
+							<Tab eventKey="friends" title="Follow" className="custom-tabs-friends">
 								<Friends key={username} userName={username} />
 							</Tab>
-							<Tab eventKey="follower" title="Follower">
+							<Tab eventKey="follower" title="Follower" className="custom-tabs-follower">
 								<Followers key={username} userName={username} />
 							</Tab>
-							<Tab eventKey="matches" title="Matches">
+							<Tab eventKey="matches" title="Matches" className="custom-tabs-matches">
 								<Matches key={username} userName={username} />
 							</Tab>
-							<Tab eventKey="achievements" title="Achievements">
+							<Tab eventKey="achievements" title="Achievements" className="custom-tabs-achievements">
 								<Achievements key={username} userName={username} />
 							</Tab>
 						</Tabs>

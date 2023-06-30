@@ -27,6 +27,7 @@ canvas
 }
 
 #lobi-container {
+	display: none;
 	padding: 50px;
 	display: flex;
 	flex-direction: column;
@@ -36,6 +37,7 @@ canvas
 }
 
 #lobi-container h1 {
+	display: none;
 	font-size: 20px;
 	margin-bottom: 10px;
 }
@@ -57,14 +59,10 @@ canvas
 	background: linear-gradient(to right, #4c568d96, #304fec83, #120b5197, #304fec83, #4c568d96);
 	background-size: 1250% auto;
 	color: white;
-	border: none;
-	border-radius: 12px;
+	border-radius: 50px;
 	margin-bottom: 18px;
 	animation: gradientAnimation 10s linear infinite;
 	display: block;
-	border-radius: 10px;
-	border: 1px solid #03045e;
-	position: relative;
 	overflow: hidden;
 	transition: all 0.5s ease-in;
 	z-index: 1;
@@ -134,7 +132,7 @@ canvas
 .clasic-mod {
 	position: fixed;
 	top: 72%;
-	left: 35%;
+	left: 45%;
 	width: 140px;
 	height: 50px;
 	background: linear-gradient(to top, #00154c, #12376e, #23487f);

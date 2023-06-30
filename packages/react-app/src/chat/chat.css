@@ -1,4 +1,4 @@
-.bg-white {
+/* .bg-white {
 	background-color: #fff;
 }
 
@@ -72,16 +72,12 @@ small,
 }
 
 
-/* .col::-webkit-scrollbar{
-	display: none;
-} */
-
-
 .chat {
 	list-style: none;
 	margin: 0;
 	overflow: auto;
-	max-height: 31rem;
+	scroll-behavior: smooth;
+	max-height: 67vh;
 }
 
 .chat::-webkit-scrollbar {
@@ -114,7 +110,7 @@ img {
 }
 
 .chat li.left .chat-body {
-	margin-left: 70px;
+	margin-left: 0;
 	background-color: #fff;
 }
 
@@ -200,7 +196,7 @@ img {
 
 .pull-left {
 	position: absolute;
-	left: 8%;
+	left: 3%;
 }
 
 .primary-font {
@@ -221,7 +217,41 @@ a:focus {
 	align-content: stretch;
 	position: fixed;
 	top: 50%;
-	left: 50%;
+	left: 40%;
 	transform: translate(-50%, -50%);
 
+} */
+
+
+.mask-custom {
+	background: black;
+	color: #54B4D3;
+	border-radius: 1rem;
+	border: 2px solid;
+}
+
+.custom-stack {
+	overflow: auto;
+	max-height: 70vh;
+}
+
+.custom-stack::-webkit-scrollbar {
+	display: none;
+}
+
+.custom-card-body {
+	overflow: auto;
+	max-height: 70vh;
+}
+
+.custom-card-body::-webkit-scrollbar {
+	display: none;
+}
+
+.custom-dropdown {
+	display: inline-block;
+}
+
+.custom-dropdown .dropdown-toggle::after {
+	display: none;
 }

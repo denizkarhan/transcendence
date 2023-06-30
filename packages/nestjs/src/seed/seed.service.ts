@@ -8,6 +8,7 @@ export class SeedService {
 
   async seedAchievements() {
     // Read the seed data from the file
+    
     const seedData = require('./achievements.seed');
     console.log(seedData);
     // Insert the achievements into the database

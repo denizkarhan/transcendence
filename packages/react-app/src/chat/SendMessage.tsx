@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Socket } from "socket.io-client";
+import { Room } from "../interfaces/room";
 
 
 interface Props {
     socket: Socket;
     room: any;
     user: string;
-    deneme:string[];
 }
 let i = 0;
 export default function SendMessage(props: Props) {
@@ -17,19 +17,17 @@ export default function SendMessage(props: Props) {
     };
 
     const sendMessage = () => {
-        if (props.room)
-            props.socket.emit('sendMessage', { RoomName: props.room.RoomName, UserName: props.user, Message: message });
+        console.log("aaaaaaaaaaaaa");
+        props.socket.emit('sendMessage', { RoomName: props.room.RoomName, UserName: props.user, Message: message });
         setMessage('');
-        props.deneme.push("a"+(i++).toString());
     }
-    console.log("room -> ", props.room);
-    console.log(props.deneme);
     const handleKeyDown = (event:any) => {
-        if (event.key === 'Enter') {
+        if (event.key === 'Enter' && message) {
             sendMessage();
         }
     };
-
+	if (!props.room)
+		return (null);
     return (
         <div className="chat-box bg-white" style={{ flex: '0 0 auto' }}>
             <div className="input-group">

@@ -28,7 +28,7 @@ export default function Followers(props: Props) {
         fetchData();
     }, []);
     return (
-        <Container>
+        <Container style={{marginTop: '4%'}}>
             <Row>
                 {Array.isArray(followers) ? (followers.map((user, index) => (
                     <Col key={index} lg={4} md={6} sm={12} as={Link} to={`/profile/${user.Login}`} style={{ textDecoration: 'none' }}>

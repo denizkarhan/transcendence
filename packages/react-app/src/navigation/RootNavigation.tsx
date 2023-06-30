@@ -21,7 +21,6 @@ interface Props {
 const RootNavigation = (prop: Props) => {
 	const isAuthenticated = useIsAuthenticated();
 	return (
-		<ToastProvider>
 			<Routes>
 				<Route path="/" element={isAuthenticated() ? <Profile pp={prop.pp} setPP={prop.setPP} /> : <LoginAndRegister />} />
 				<Route path="home" element={isAuthenticated() ? <Profile pp={prop.pp} setPP={prop.setPP} /> : <LoginAndRegister />} />
@@ -33,7 +32,6 @@ const RootNavigation = (prop: Props) => {
 				<Route path='/chat' element={isAuthenticated() ? <ChatService/> : <LoginAndRegister /> }/>
 				<Route path="*" element={ <NotFoundPage /> } />
 			</Routes>
-		</ToastProvider>
 	)
 }
 export default RootNavigation;

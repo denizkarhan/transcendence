@@ -3,9 +3,9 @@ import { Container, Nav, Navbar, NavDropdown, Stack, Form } from "react-bootstra
 import { Link, useNavigate } from "react-router-dom";
 import "./Nav.css";
 import { useAuthUser, useSignOut } from "react-auth-kit";
-import { useToast } from "./Toast";
 import api from '../api';
 import { getPP } from './Main';
+import { useToast } from "./Toast";
 
 
 interface Props {
@@ -30,13 +30,16 @@ export default function MyNavbar(prop: Props) {
 		event.preventDefault();
 		const formData = new FormData(event.target);
 		const formValues = Object.fromEntries(formData.entries());
-		api.get('/users/username/' + formValues.query)
-			.then(response => {
-				if (response.data)
-					navigate('/profile/' + response.data.Login);
-			})
-			.catch(err => { showError('Could not find a user with that name'); console.log(); });
-		showError('Could not find a user with that name');
+		await api.get('/users/username/' + formValues.query)
+		.then((response:any) => {
+			console.log(response);
+			if (response.status === 200)
+				navigate('/profile/' + response.data.Login);
+			else
+				showError('Could not find a user with that name');
+		})
+		.catch((err:any) => { showError('Could not find a user with that name');});
+		// showError('Could not find a user with that name');
 	}
 
 	useEffect(() => {

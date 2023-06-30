@@ -23,7 +23,7 @@ export default function Achievements(props: Props) {
 		fetchData();
 	}, [])
 	return (
-		<Row>
+		<Row style={{marginTop:'4%'}}>
 			{achievements.map((achi) => {
 				const found = userAchievement.find((userAchi => userAchi.Achievement === achi.Achievement)) !== undefined;
 				const grayscale = userAchievement.find((userAchi => userAchi.Achievement === achi.Achievement)) !== undefined ? "" : "black-and-white";

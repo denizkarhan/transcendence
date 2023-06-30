@@ -27,7 +27,7 @@ export class AchievementsService {
 
 	async defAchievements(data: any) {
 		console.log('TESTING ', data.CategorySeed);
-
-		await this.achievementRepository.insert(data.CategorySeed);
+		if (await this.achievementRepository.count() === 0)
+			await this.achievementRepository.insert(data.CategorySeed);
 	}
 }

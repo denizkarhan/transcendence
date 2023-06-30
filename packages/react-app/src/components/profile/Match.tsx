@@ -20,7 +20,7 @@ export default function Matches(props: Props) {
 		fetchData();
 	}, [props.userName])
 
-	return (<div className="match-results-container">
+	return (<div className="match-results-container" style={{marginTop:'4%'}}>
 		{matches.map((match) => (
 			<Alert key={match?.Id} variant={match.MatchResult === 1 ? 'primary' : match.MatchResult === 0 ? 'warning' : 'danger'}>
 				<div className="d-flex justify-content-between align-items-center">

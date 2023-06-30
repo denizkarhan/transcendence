@@ -1,7 +1,7 @@
 import { Container, Form, Modal, Button, ToggleButton } from 'react-bootstrap';
 import api from '../api';
 import { useState } from 'react';
-import { useSignIn, useSignOut } from 'react-auth-kit';
+import { useAuthUser, useSignIn, useSignOut } from 'react-auth-kit';
 import jwtDecode from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
 import { User } from '../interfaces/user';
@@ -24,7 +24,7 @@ interface Props {
 };
 
 export default function UpdateProfile(props: Props) {
-
+	const auth = useAuthUser();
 	const [checked, setChecked] = useState(false);
 
 	const [showQR, setShowQR] = useState(false);
@@ -34,7 +34,7 @@ export default function UpdateProfile(props: Props) {
 	const signin = useSignIn();
 	const signout = useSignOut();
 	const navigate = useNavigate();
-
+	const user = auth()?.username ?? "User";
 	const onSubmit = async (event: any) => {
 		event.preventDefault();
 

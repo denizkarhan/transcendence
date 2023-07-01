@@ -6,7 +6,7 @@
   background: #221F2E;
   }
   .bg .dotWrapper {
-  position: absolute;
+  position: fixed;
   }
   .bg .dotWrapper-1 {
   top: 40%;

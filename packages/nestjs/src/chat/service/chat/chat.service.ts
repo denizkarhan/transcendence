@@ -83,7 +83,7 @@ export class ChatService {
 			return null
 		await this.groupChatMessagesRepository.save({ GroupChat: room, Message: message, SendAt: new Date(), User: isExist });
 		const response = await this.groupChatMessagesRepository.find({ where: { GroupChat: room, User: isExist }, relations: ['User.users']  , order:{Id:'DESC'}});
-		return response.at(response.length - 1);
+		return response.at(0);
 	}
 
 	async privateMessage(roomName: string, sender: string, receiver: string, message: string) {

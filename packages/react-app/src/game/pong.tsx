@@ -9,8 +9,8 @@ import './a.css';
 let x = 0;
 let modR = 1;
 let gameStarter = 0;
-let canvasWidth = 750;
-let canvasHeight = 500;
+let canvasWidth = 650;
+let canvasHeight = 400;
 let playerHeight = 80;
 let playerWidth = 15;
 

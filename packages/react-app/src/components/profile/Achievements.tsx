@@ -28,6 +28,7 @@ export default function Achievements(props: Props) {
 				const found = userAchievement.find((userAchi => userAchi.Achievement === achi.Achievement)) !== undefined;
 				const grayscale = userAchievement.find((userAchi => userAchi.Achievement === achi.Achievement)) !== undefined ? "" : "black-and-white";
 				const imgUrl = "achievements/" + achi.Achievement +  ".jpeg";
+				console.log(imgUrl);
 				return (
 					<Col key={achi.Id} lg={4} md={6} sm={12} className="mb-4">
 						<Alert variant={userAchievement.find((userAchi => userAchi.Achievement === achi.Achievement)) !== undefined ? 'info' : 'dark'}>

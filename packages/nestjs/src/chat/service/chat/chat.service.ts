@@ -65,14 +65,17 @@ export class ChatService {
 		await this.groupChatUsersRepository.delete({ GroupChat: room, users: user });
 	}
 
-	async changeRoomPassword(roomName: string, password: string, username: string) {
-		const room = await this.groupChatRepository.findOneBy({ RoomName: roomName });
-		const isAdmin = await this.userService.getUserByLogin(username);
+	async updateRoom(data:any, userName:string, oldName:string) {
+		const room = await this.groupChatRepository.findOneBy({ RoomName: oldName });
+		console.log(room);
+		const updateRoom = this.groupChatRepository.create({...room, ...data})
+		const isAdmin = await this.userService.getUserByLogin(userName);
 		const roomUser = await this.groupChatUsersRepository.findOneBy({ GroupChat: room, users: isAdmin });
+		console.log(roomUser);
 		if (!roomUser.isAdmin)
-			return { msg: 'You cant do it' };
-		room.Password = password;
-		await this.groupChatRepository.save(room);
+			return { status: 204 };
+		const newRoom = await this.groupChatRepository.save(updateRoom);
+		return { status:200, data:newRoom};
 	}
 
 	async sendMessage(roomName: string, userName: string, message: string) {
@@ -181,9 +184,13 @@ export class ChatService {
 	}
 
 	async deleteRoom(RoomName: string) {
-		await this.groupChatRepository.createQueryBuilder()
-			.delete()
-			.where('RoomName :RoomName', { RoomName })
-			.execute();
+		const room = await this.groupChatRepository.findOneBy({RoomName:RoomName});
+		// const chatMessages = await this.groupChatMessagesRepository.find({where:{GroupChat:room}});
+		// const chatUsers = await this.groupChatUsersRepository.find({where:{GroupChat:room}});
+
+		await this.groupChatMessagesRepository.delete({GroupChat:room});
+		await this.groupChatUsersRepository.delete({GroupChat:room});
+		await this.groupChatRepository.delete({RoomName:RoomName});
+		
 	}
 }

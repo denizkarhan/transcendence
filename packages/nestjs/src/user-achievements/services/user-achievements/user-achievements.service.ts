@@ -17,9 +17,8 @@ export class UserAchievementsService {
             User: user,
             Achievement: achievement,
         });
-        if (await this.userAchievementsRepository.findOneBy({...newUserAchievement}))
-			throw new HttpException('Tekrar Eden Kayıt', HttpStatus.FORBIDDEN);
-        return await this.userAchievementsRepository.save(newUserAchievement);
+        if (!(await this.userAchievementsRepository.exist({where:{Achievement:achievement}})))
+            return await this.userAchievementsRepository.save(newUserAchievement);
     }
 
     async getUserAchievements(user:User) {

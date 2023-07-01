@@ -40,7 +40,6 @@ function ChatService() {
 		socket.emit('getData', { userName: user });
 
 		socket.on('getData', (data: Room[]) => {
-			console.log(data);
 			setRooms(data);
 		});
 
@@ -51,7 +50,6 @@ function ChatService() {
 		})
 
 		socket.on('createRoom', (data: Room) => {
-			console.log(data);
 			setRooms(prevData => {
 				let isDataExists = false;
 				for (let i = 0; i < prevData.length; i++) {
@@ -68,12 +66,33 @@ function ChatService() {
 			setRoom(data);
 		});
 
+		socket.on("updateRoom", (data: any) => {
+			const { OldRoomName, ...newRoom } = data;
+			setRooms(prevData => {
+				const updateRooms = prevData.map(room => {
+					if (room.RoomName === OldRoomName)
+						return newRoom;
+					return room;
+				})
+				return updateRooms;
+			});
+			setRoom(newRoom);
+		})
+
 		socket.on('ErrorHandle', (data: any) => {
 			showError(data.message);
 		})
 
-		socket.on('isJoin', (data: any) => {
-			console.log(data);
+		socket.on("deleteRoom", (data: Room) => {
+			setRooms(prevData => {
+				const [data , ...newData] = prevData;
+				return newData;
+			});
+			setRoom(null);
+		})
+
+		socket.on('ErrorHandle', (data: any) => {
+			showError(data.message);
 		})
 
 		socket.on('receiveMessage', (data: any) => {
@@ -100,6 +119,7 @@ function ChatService() {
 			socket.off('ErrorHandle');
 			socket.off('isJoin');
 			socket.off('receiveMessage');
+			socket.off("deleteRoom");
 			socket.disconnect();
 		};
 	}, [])
@@ -122,24 +142,6 @@ function ChatService() {
 		</Tooltip>
 	);
 
-	const overlay = (
-		<Overlay
-			show={true} // Overlay'in görünür olmasını sağlar
-			placement="top" // Overlay'in pozisyonunu belirler
-			target={document.querySelector('#tabs-container')} // Overlay'in hedefini belirler (Tablar konteynerine göre ayarlanmalıdır)
-		>
-			<Tooltip>
-				{renderTooltip('Tooltip Message')}
-			</Tooltip>
-		</Overlay>
-	);
-
-	const [showCanvas, setShowCanvas] = useState(false);
-
-	const handleToggleCanvas = () => {
-		setShowCanvas(!showCanvas);
-	};
-
 	return (
 
 		<Container fluid className="custom-container" style={{ marginTop: '1%' }}>
@@ -157,13 +159,11 @@ function ChatService() {
 									</OverlayTrigger>
 								}>
 									<Stack direction="horizontal" className="mb-0 custom-stack" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-										{rooms?.map((chat: Room, index) => {
-											return (
-												<div style={{ width: '100%' }} key={index} onClick={() => joinRoom(chat)}>
-													<UserChat chat={chat} user={user} />
-												</div>
-											);
-										})}
+										{rooms.map((chat: Room, index) => (
+											<div style={{ width: '100%' }} key={index} onClick={() => joinRoom(chat)}>
+												<UserChat chat={chat} user={user} />
+											</div>
+										))}
 									</Stack>
 								</Tab>
 								<Tab eventKey="createRoom" title={
@@ -238,7 +238,7 @@ function ChatService() {
 				</Col>
 				<Col md="6" lg="7" xl="8">
 					<Card className="mask-custom" style={{ height: '100%' }}>
-						<ChatBoxHeader user={user} room={room} />
+						<ChatBoxHeader user={user} room={room} socket={newSocket} />
 						<Card.Body className="custom-card-body">
 							<ChatBox key="ChatBox" room={room} user={user} />
 						</Card.Body>

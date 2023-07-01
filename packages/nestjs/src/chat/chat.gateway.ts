@@ -41,13 +41,7 @@ export class ChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@SubscribeMessage('createRoom')
 	async createRoom(@MessageBody() room: any, @ConnectedSocket() socket: Socket) {
-		if (room.RoomName[0] !== '#' )
-		{
-			socket.emit('ErrorHandle', { message: 'room name must start with #' });
-			return;
-		}
-		if (await this.chatService.isExistRoom(room.RoomName))
-		{
+		if (await this.chatService.isExistRoom(room.RoomName)) {
 			socket.emit('ErrorHandle', { message: 'Is Exist Room' });
 			return;
 		}
@@ -62,13 +56,24 @@ export class ChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 		socket.emit('createRoom', newRoomData);
 	}
 
-	@SubscribeMessage('changePassword')
+	@SubscribeMessage('updateRoom')
 	async changePassword(@MessageBody() room: any, @ConnectedSocket() socket: Socket) {
-		await this.chatService.changeRoomPassword(room.roomName, room.password, room.username);
+		console.log(room);
+		if (await this.chatService.isExistRoom(room.RoomName)) {
+			socket.emit('ErrorHandle', { message: 'Is Exist Room' });
+			return;
+		}
+		const response = await this.chatService.updateRoom({ RoomName: room?.RoomName, Password: room?.Password, IsPublic: room?.IsPublic }, room.Admin, room.OldRoomName);
+		if (response.status === 200)
+		{
+			const newRoomData = await this.chatService.getRoom(room.RoomName);
+			socket.emit("updateRoom", {OldRoomName: room.OldRoomName, ...newRoomData} );
+		}
+		else
+		socket.emit('ErrorHandle', { message: 'Some thing is wrong' });
 	}
 
 
-	
 	@SubscribeMessage('sendMessage')
 	async sendMessage(@MessageBody() data: any, @ConnectedSocket() socket: Socket) {
 		// console.log("send ", data);
@@ -113,7 +118,8 @@ export class ChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 				}
 			}
 			socket.join(data.RoomName);
-			socket.emit('isJoin', true);
+			const roomData = await this.chatService.getRoom(data.RoomName);
+			socket.emit('updateRoom', roomData);
 			if (isJoin === false) {
 				const newRoomData = await this.chatService.getRoom(data.RoomName);
 				socket.emit('createRoom', newRoomData);
@@ -130,5 +136,12 @@ export class ChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 		const response = await this.chatService.getPublic();
 
 		socket.emit('getPublic', response);
+	}
+
+	@SubscribeMessage('deleteRoom')
+	async deleteRoom(@MessageBody() data: any, @ConnectedSocket() socket: Socket) {
+		const deleted = await this.chatService.getRoom(data.RoomName);
+		await this.chatService.deleteRoom(data.RoomName);
+		socket.emit('deleteRoom', deleted);
 	}
 }

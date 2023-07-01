@@ -255,3 +255,9 @@ a:focus {
 .custom-dropdown .dropdown-toggle::after {
 	display: none;
 }
+
+
+.modal-content {
+	border: 2px solid #54B4D3;
+	border-radius: 7px;
+  }

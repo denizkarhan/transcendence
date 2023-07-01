@@ -19,6 +19,8 @@ export default function CreateChat(props: Props) {
 			}
 		});
 		const IsPublic = formValues.hasOwnProperty('IsPublic') && formValues['IsPublic'].toString() === 'on';
+		if (formValues["RoomName"].toString().at(0) !== '#')
+			formValues["RoomName"] = "#" + formValues["RoomName"];
 		props.socket.emit('createRoom', { ...formValues, IsPublic: IsPublic, Admin: props.user });
 	}
 

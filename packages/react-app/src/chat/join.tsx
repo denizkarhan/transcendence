@@ -17,6 +17,8 @@ export default function JoinRoom(props: Props) {
 				delete formValues[key];
 			}
 		});
+		if (formValues["RoomName"].toString().at(0) !== '#')
+			formValues["RoomName"] = "#" + formValues["RoomName"];
 		props.socket.emit('join', { ...formValues, UserName: props.user });
 	}
 

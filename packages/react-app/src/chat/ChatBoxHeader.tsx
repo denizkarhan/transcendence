@@ -4,15 +4,16 @@ import { Button, Card, Dropdown, DropdownButton, Offcanvas, Stack } from "react-
 import "./chat.css";
 import ChatSettings from "./chatUtils/chatSettings";
 import { ChatUser } from "../interfaces/chatUser";
+import { Socket } from "socket.io-client";
 
 
 interface Props {
     room: Room | null;
     user: any;
+    socket: Socket;
 }
 
 const ChatBoxHeader = (props: Props) => {
-    const [userModalShow, setUserModalShow] = useState(false);
     const [settingsModalShow, setSettingsModalShow] = useState(false);
     const [chatName, setChatName] = useState<string | undefined>('');
     const [users, setUsers] = useState<ChatUser[]>([]);
@@ -29,15 +30,15 @@ const ChatBoxHeader = (props: Props) => {
     }, [props])
     if (!props.room)
         return null;
+    console.log(props.room?.Users.filter(user => user.users.Login !== props.user));
     return (
         <>
             <Card.Header style={{ borderBottom: '1px solid', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                 {chatName}
                 {props.room?.RoomName[0] === '#' ? (
-                    <DropdownButton bsPrefix="btn btn-outline-primary" className="custom-dropdown" id="dropdown-basic-button" title={<i className="bi bi-three-dots-vertical"></i>}>
-                        <Dropdown.Item onClick={() => setUserModalShow(true)}>Users</Dropdown.Item>
-                        <Dropdown.Item onClick={() => setSettingsModalShow(true)}>Settings</Dropdown.Item>
-                    </DropdownButton>
+                    <Button bsPrefix="btn btn-outline-primary" onClick={() => setSettingsModalShow(true)}>
+                        <i className="bi bi-three-dots-vertical"></i>
+                    </Button>
                 ) : (
                     <DropdownButton bsPrefix="btn btn-outline-primary" className="custom-dropdown" id="dropdown-basic-button" title={<i className="bi bi-three-dots-vertical"></i>}>
                         <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
@@ -46,7 +47,7 @@ const ChatBoxHeader = (props: Props) => {
                     </DropdownButton>
                 )}
             </Card.Header>
-            <ChatSettings show={settingsModalShow} setShowModal={setSettingsModalShow} users={users} />
+            <ChatSettings show={settingsModalShow} setShowModal={setSettingsModalShow} users={users} socket={props.socket} user={props.user} RoomName={props.room.RoomName} />
         </>
     );
 }

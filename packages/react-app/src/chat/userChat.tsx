@@ -2,9 +2,10 @@ import { format } from 'date-fns';
 import "./chat.css";
 import { useEffect, useState } from 'react';
 import { Room } from '../interfaces/room';
+import { Button } from 'react-bootstrap';
 
 interface Props {
-	chat:  Room | null;
+	chat: Room | null;
 	user: any;
 }
 
@@ -29,7 +30,7 @@ const UserChat = (props: Props) => {
 			}}
 		>
 			<a
-				href="#!"
+				style={{cursor:"pointer"}}
 				className="d-flex justify-content-between link-light"
 			>
 				<div className="d-flex flex-row">

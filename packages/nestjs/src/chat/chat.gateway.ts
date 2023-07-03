@@ -66,7 +66,7 @@ export class ChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 		if (response.status === 200) {
 			const newRoomData = await this.chatService.getRoom(room.RoomName);
 			socket.emit("updateRoom", { OldRoomName: room.OldRoomName, ...newRoomData });
-			socket.broadcast.emit("updateRoom", { OldRoomName: room.OldRoomName, ...newRoomData });
+			socket.to(newRoomData.RoomName).emit("updateRoom", { OldRoomName: room.OldRoomName, ...newRoomData });
 		}
 		else
 			socket.emit('ErrorHandle', { message: 'Some thing is wrong' });
@@ -117,6 +117,7 @@ export class ChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 				socket.join(data.RoomName);
 				const roomData = await this.chatService.getRoom(data.RoomName);
 				socket.emit('updateRoom', roomData);
+				socket.to(data.RoomName).emit('updateRoom', roomData);
 			}
 			else{
 
@@ -126,7 +127,6 @@ export class ChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 		}
 
 	}
-
 
 	@SubscribeMessage('getPublic')
 	async getPublic(@ConnectedSocket() socket: Socket) {
@@ -144,5 +144,14 @@ export class ChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 		else
 			socket.to(data.RoomName).emit('deleteRoom', deleted);
 		socket.emit('deleteRoom', deleted);
+	}
+
+	@SubscribeMessage('kick')
+	async kickRoom(@MessageBody() data: any, @ConnectedSocket() socket: Socket) {
+		console.log(data);
+		await this.chatService.kickUser(data.UserName, data.RoomName);
+		const room = await this.chatService.getRoom(data.RoomName);
+		socket.emit("updateRoom", { OldRoomName: room.RoomName, ...room });
+		socket.to(data.RoomName).emit("updateRoom", { OldRoomName: room.RoomName, ...room });
 	}
 }

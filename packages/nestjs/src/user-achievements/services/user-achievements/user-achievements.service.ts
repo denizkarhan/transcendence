@@ -17,7 +17,7 @@ export class UserAchievementsService {
             User: user,
             Achievement: achievement,
         });
-        if (!(await this.userAchievementsRepository.exist({where:{Achievement:achievement}})))
+        if (!(await this.userAchievementsRepository.exist({ where: { Achievement: achievement}})))
             return await this.userAchievementsRepository.save(newUserAchievement);
     }
 
@@ -32,3 +32,4 @@ export class UserAchievementsService {
         })
     }
 }
+

@@ -86,26 +86,28 @@ function ChatService() {
 		});
 
 		socket.on("updateRoom", (data: any) => {
-			const { OldRoomName, ...newRoom } = data;
+			
+			const oldRoom = data.OldRoom;
+			const newRoom = data.NewRoom;
 			setRooms(prevData => {
-				setPublic(prevPublic => {
-					let isDataExists = false;
-					for (let i = 0; i < prevData.length; i++) {
-						if (prevData[i].RoomName === OldRoomName) {
-							isDataExists = true;
-							break;
-						}
-					}
-					if (isDataExists && newRoom.IsPublic)
-						return [...prevPublic, newRoom];
-					else if (isDataExists && !newRoom.IsPublic) {
-						const [data, ...updatePublics] = prevPublic;
-						return updatePublics;
-					}
-					return prevPublic;
-				});
-				const [data, ...newData] = prevData;
-				return [...newData, newRoom];
+				// setPublic(prevPublic => {
+				// 	let isDataExists = false;
+				// 	for (let i = 0; i < prevData.length; i++) {
+				// 		if (prevData[i].RoomName === OldRoomName) {
+				// 			isDataExists = true;
+				// 			break;
+				// 		}
+				// 	}
+				// 	if (isDataExists && newRoom.IsPublic)
+				// 		return [...prevPublic, newRoom];
+				// 	else if (isDataExists && !newRoom.IsPublic) {
+				// 		const [data, ...updatePublics] = prevPublic;
+				// 		return updatePublics;
+				// 	}
+				// 	return prevPublic;
+				// });
+				const newData = prevData.filter(room => room !== oldRoom);
+				return [newRoom, ...newData];
 			});
 			setRoom(newRoom);
 		})

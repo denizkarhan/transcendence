@@ -17,7 +17,7 @@ export class MatchHistoriesService {
     const enemy = await this.userService.getUserByLogin(createMatch.EnemyUserName);
     if (!user) return;
 
-    if (!(await this.matchRepository.find({ where: { User: user} }))) {
+    if ((await this.matchRepository.findAndCount({ where: { User: user, MatchResult: 1} }))[1] === 0) {
       this.userAchievementService.addAchievement(2, user);
     };
 
@@ -31,7 +31,7 @@ export class MatchHistoriesService {
     this.matchRepository.save(match);
 
     if (createMatch.MyResult > createMatch.EnemyResult &&
-      !(await this.matchRepository.find({ where: { User: user, MatchResult: 1 } }))) {
+      (await this.matchRepository.findAndCount({ where: { User: user, MatchResult: 1 } }))[1] === 0) {
       this.userAchievementService.addAchievement(1, user);
     };
 
@@ -39,21 +39,18 @@ export class MatchHistoriesService {
       this.userAchievementService.addAchievement(3, user);
     }
 
-    const arr = await this.matchRepository.find({ where: { User: user } });
-    var i = 0;
-    for (var j in arr) {
-      i++;
-    }
-    if (i >= 25)
+    const arr = (await this.matchRepository.findAndCount({ where: { User: user } }))[1];
+    
+    if (arr >= 25)
       this.userAchievementService.addAchievement(6, user);
-    else if (i >= 10)
+    else if (arr >= 10)
       this.userAchievementService.addAchievement(5, user);
-    else if (i >= 5)
+    else if (arr >= 5)
       this.userAchievementService.addAchievement(4, user);
 
 
 
-	  
+
     // let res;
     // arr.map((index) => {
     //   res += index.MyResult;

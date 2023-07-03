@@ -25,6 +25,14 @@ export class AchievementsService {
 			})
 			this.achievementRepository.save(newAchievement);
 		}
+		/*
+		if (!(await this.achievementRepository.exist({ where: { Achievement: achievementParam.Achievement } }))) {
+            const newAchievement = this.achievementRepository.create({
+                ...achievementParam,
+            })
+            this.achievementRepository.save(newAchievement);
+        }
+		*/
 	}
 
 	async defAchievements(data: any) {

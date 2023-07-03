@@ -286,16 +286,18 @@ function Game() {
 			}, 3000);
 		});
 
-		const waitingRoom = () => {
-			context.font = "28px 'Press Start 2P', cursive";
-			context.fillStyle = "#fff";
-			context.fillText("Oyuncu Bekleniyor!", canvas.width / 2 - 200, canvas.height / 2);
-		}
-
 		// Oyuncu odada tek kaldığında
 		canvas.socket.on('userDisconnected', (data: any) => {
 			if (data) {
-				waitingRoom();
+				context.fillStyle = "#fff";
+				context.font = "bold 14px Arial";
+				const text = "Target disconnect, You are going to lobby...";
+				const textWidth = context.measureText(text).width;
+				context.fillText(text, canvas.width / 2 - textWidth / 2, canvas.height / 2 + 24);
+				gameStarter = 0;
+				setTimeout(() => {
+					handleRefresh();
+				}, 3000);
 			}
 		});
 
@@ -305,7 +307,9 @@ function Game() {
 			context.font = "bold 48px Arial";
 			displayScoreOne();
 			displayScoreTwo();
-			context.fillText("Player " + data!.winner + " Winner!  You are going to lobby...", canvas.width / 2 - 250, (3 * canvas.height) / 4);
+			const text = "Player " + data!.winner + " Winner!  You are going to lobby...";
+			const textWidth = context.measureText(text).width;
+			context.fillText(text, canvas.width / 2 - textWidth / 2, canvas.height / 2 + 24);
 			gameStarter = 0;
 			setTimeout(() => {
 				handleRefresh();

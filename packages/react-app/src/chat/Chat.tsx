@@ -27,8 +27,15 @@ function ChatService() {
 
 	const user = auth()?.username ?? "User";
 	const [rooms, setRooms] = useState<Room[]>([]);
-	const [publicRoom, setPulic] = useState<Room[]>([]);
+	const [publicRoom, setPublic] = useState<Room[]>([]);
 	const [room, setRoom] = useState<Room | null>(null);
+	const [activeTab, setActiveTab] = useState('messages');
+
+	const handleTabSelect = (tab: string | null): void => {
+		if (tab) {
+			setActiveTab(tab);
+		}
+	};
 	useEffect(() => {
 		const socket = io(URL, {
 			auth: {
@@ -45,8 +52,13 @@ function ChatService() {
 
 		socket.emit('getPublic');
 		socket.on('getPublic', (data: Room[]) => {
-			setPulic(data);
+			setPublic(data);
+		})
 
+		socket.on('getPublicAddOne', (data: Room) => {
+			setPublic(prevData => {
+				return [data, ...prevData];
+			});
 		})
 
 		socket.on('createRoom', (data: Room) => {
@@ -61,20 +73,39 @@ function ChatService() {
 				if (isDataExists) {
 					return prevData;
 				}
-				return [...prevData, data];
+				return [data, ...prevData];
 			});
+			if (data.IsPublic)
+			{
+				setPublic(prevPublic => {
+					return [data, ...prevPublic];
+				})
+			}
 			setRoom(data);
+			setActiveTab('messages');
 		});
 
 		socket.on("updateRoom", (data: any) => {
 			const { OldRoomName, ...newRoom } = data;
 			setRooms(prevData => {
-				const updateRooms = prevData.map(room => {
-					if (room.RoomName === OldRoomName)
-						return newRoom;
-					return room;
-				})
-				return updateRooms;
+				setPublic(prevPublic => {
+					let isDataExists = false;
+					for (let i = 0; i < prevData.length; i++) {
+						if (prevData[i].RoomName === OldRoomName) {
+							isDataExists = true;
+							break;
+						}
+					}
+					if (isDataExists && newRoom.IsPublic)
+						return [...prevPublic, newRoom];
+					else if (isDataExists && !newRoom.IsPublic) {
+						const [data, ...updatePublics] = prevPublic;
+						return updatePublics;
+					}
+					return prevPublic;
+				});
+				const [data, ...newData] = prevData;
+				return [...newData, newRoom];
 			});
 			setRoom(newRoom);
 		})
@@ -84,11 +115,18 @@ function ChatService() {
 		})
 
 		socket.on("deleteRoom", (data: Room) => {
+			setRoom(null);
 			setRooms(prevData => {
-				const [data , ...newData] = prevData;
+				const [data, ...newData] = prevData;
 				return newData;
 			});
-			setRoom(null);
+			if (data.IsPublic)
+			{
+				setPublic(prevPublic => {
+					const [data, ...newPublic] = prevPublic;
+					return newPublic;
+				});
+			}
 		})
 
 		socket.on('ErrorHandle', (data: any) => {
@@ -128,13 +166,7 @@ function ChatService() {
 		setRoom({ ...room });
 		newSocket.emit('join', { ...room, UserName: user });
 	}
-	const [activeTab, setActiveTab] = useState('messages');
-
-	const handleTabSelect = (tab: string | null): void => {
-		if (tab) {
-			setActiveTab(tab);
-		}
-	};
+	
 
 	const renderTooltip = (message: string) => (
 		<Tooltip id="hover-tooltip">

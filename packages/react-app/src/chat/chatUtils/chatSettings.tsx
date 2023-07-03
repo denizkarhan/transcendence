@@ -17,9 +17,11 @@ interface Props {
 
 const ChatSettings = (props: Props) => {
     const navigate = useNavigate();
+	const [admin, setAdmin] = useState<string[]>([]);
 
     useEffect(() => {
-
+		const admins = props.users.filter(user => user.isAdmin).map(user => user.users.Login);
+		setAdmin(admins);
     }, [props]);
 
     const handleKeyDown = (event: any) => {
@@ -38,7 +40,7 @@ const ChatSettings = (props: Props) => {
             }
         });
         const IsPublic = formValues.hasOwnProperty('IsPublic') && formValues['IsPublic'].toString() === 'on';
-        if (formValues["RoomName"].toString().at(0) !== '#')
+        if (formValues["RoomName"] && formValues["RoomName"].toString().at(0) !== '#')
             formValues["RoomName"] = "#" + formValues["RoomName"];
         props.socket.emit('updateRoom', { ...formValues, IsPublic: IsPublic, OldRoomName: props.RoomName, Admin: props.user, });
         props.setShowModal(false);
@@ -66,7 +68,8 @@ const ChatSettings = (props: Props) => {
                     <Modal.Title style={{ background: 'black', color: 'white' }} id="contained-modal-title-vcenter">
                         Settings
                     </Modal.Title>
-                    <Button bsPrefix="btn btn-outline-info" onClick={handleDelete}><i className="bi bi-trash"></i></Button>
+					{ admin.includes(props.user) ? <Button bsPrefix="btn btn-outline-info" onClick={handleDelete}><i className="bi bi-trash"></i></Button> : null}
+                    <Button bsPrefix="btn btn-outline-info" onClick={handleDelete}><i className="bi bi-trash"></i></Button>;
                 </Modal.Header>
                 <Modal.Body style={{background:'black', color:'white', height:'400px'}}>
                     <Tabs activeKey={activeTab} onSelect={handleTabSelect} fill style={{ color: 'black', height: '3.5rem' }} className="border-0">
@@ -74,7 +77,7 @@ const ChatSettings = (props: Props) => {
                             <Form onSubmit={onSubmit}>
                                 <Form.Group controlId="RoomName">
                                     <Form.Label>Room Name</Form.Label>
-                                    <Form.Control key='CreateRoom' required type="text" name="RoomName" placeholder="Room Name" />
+                                    <Form.Control key='CreateRoom' type="text" name="RoomName" placeholder="Room Name" />
                                 </Form.Group>
 
                                 <Form.Group controlId="Password">

@@ -1,8 +1,6 @@
 import { ConnectedSocket, MessageBody, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { ChatService } from './service/chat/chat.service';
 import { Server, Socket } from 'socket.io';
-import { Roles } from 'src/utils/metadata';
-import { UUID } from 'typeorm/driver/mongodb/bson.typings';
 
 @WebSocketGateway({
 	cors: {
@@ -53,24 +51,25 @@ export class ChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 		})
 		const newRoomData = await this.chatService.getRoom(room.RoomName);
 		socket.join(room.RoomName);
+		if (newRoomData.IsPublic)
+			socket.broadcast.emit('getPublicAddOne', newRoomData);
 		socket.emit('createRoom', newRoomData);
 	}
 
 	@SubscribeMessage('updateRoom')
 	async changePassword(@MessageBody() room: any, @ConnectedSocket() socket: Socket) {
-		console.log(room);
-		if (await this.chatService.isExistRoom(room.RoomName)) {
+		if (room?.RoomName && await this.chatService.isExistRoom(room.RoomName)) {
 			socket.emit('ErrorHandle', { message: 'Is Exist Room' });
 			return;
 		}
 		const response = await this.chatService.updateRoom({ RoomName: room?.RoomName, Password: room?.Password, IsPublic: room?.IsPublic }, room.Admin, room.OldRoomName);
-		if (response.status === 200)
-		{
+		if (response.status === 200) {
 			const newRoomData = await this.chatService.getRoom(room.RoomName);
-			socket.emit("updateRoom", {OldRoomName: room.OldRoomName, ...newRoomData} );
+			socket.emit("updateRoom", { OldRoomName: room.OldRoomName, ...newRoomData });
+			socket.broadcast.emit("updateRoom", { OldRoomName: room.OldRoomName, ...newRoomData });
 		}
 		else
-		socket.emit('ErrorHandle', { message: 'Some thing is wrong' });
+			socket.emit('ErrorHandle', { message: 'Some thing is wrong' });
 	}
 
 
@@ -95,7 +94,6 @@ export class ChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 		socket.join(room.RoomName);
 		const newRoomData = await this.chatService.getRoom(room.RoomName);
 		socket.emit('createRoom', newRoomData);
-
 	}
 
 	@SubscribeMessage('getData')
@@ -116,13 +114,12 @@ export class ChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 					socket.emit('ErrorHandle', { message: response.message });
 					return;
 				}
+				socket.join(data.RoomName);
+				const roomData = await this.chatService.getRoom(data.RoomName);
+				socket.emit('updateRoom', roomData);
 			}
-			socket.join(data.RoomName);
-			const roomData = await this.chatService.getRoom(data.RoomName);
-			socket.emit('updateRoom', roomData);
-			if (isJoin === false) {
-				const newRoomData = await this.chatService.getRoom(data.RoomName);
-				socket.emit('createRoom', newRoomData);
+			else{
+
 			}
 		} else {
 			socket.emit('ErrorHandle', { message: 'Channel Is Not Found' });
@@ -142,6 +139,10 @@ export class ChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 	async deleteRoom(@MessageBody() data: any, @ConnectedSocket() socket: Socket) {
 		const deleted = await this.chatService.getRoom(data.RoomName);
 		await this.chatService.deleteRoom(data.RoomName);
+		if(deleted.IsPublic)
+			socket.broadcast.emit('deleteRoom', deleted);
+		else
+			socket.to(data.RoomName).emit('deleteRoom', deleted);
 		socket.emit('deleteRoom', deleted);
 	}
 }

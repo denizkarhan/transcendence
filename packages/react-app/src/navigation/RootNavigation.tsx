@@ -28,8 +28,8 @@ const RootNavigation = (prop: Props) => {
 				<Route path="register" element={isAuthenticated() ? <Profile pp={prop.pp} setPP={prop.setPP} /> : <RegisterForm />} />
 				<Route path="loginorregister" element={isAuthenticated() ? <Profile pp={prop.pp} setPP={prop.setPP} /> : <LoginAndRegister />} />
 				<Route path="profile/:username" element={isAuthenticated() ? <Profile pp={prop.pp} setPP={prop.setPP}/> : <LoginAndRegister />} />
-				<Route path='/game' element={isAuthenticated() ? <Game/> : <LoginAndRegister /> }/>
-				<Route path='/chat' element={isAuthenticated() ? <ChatService/> : <LoginAndRegister /> }/>
+				<Route path='game' element={isAuthenticated() ? <Game/> : <LoginAndRegister /> }/>
+				<Route path='chat' element={isAuthenticated() ? <ChatService/> : <LoginAndRegister /> }/>
 				<Route path="*" element={ <NotFoundPage /> } />
 			</Routes>
 	)

@@ -42,6 +42,26 @@ const App: React.FC<Props> = (props: Props) => {
 
 	useEffect(() => {
 		const fetchData = async () => {
+			const block = await isBlock(username, login);
+			if (block) {
+				navigate('/');
+				return;
+			}
+			try {
+				const response = await api.get(`/users/userName/${username}`);
+				if (response.status === 204)
+				{
+					navigate('/404');
+					return;
+				}
+				setUser({
+					FirstName: response?.data.FirstName, LastName: response?.data.LastName,
+					Email: response?.data.Email, Login: response?.data.Login,
+					Status: response?.data.Status
+				})
+			} catch (error: any) {
+				navigate('/404');
+			}
 			const resMatch = await api.get(`/match-histories/${username}`);
 			const matches: Match[] = resMatch.data;
 			let winsCount = 0; // Initialize a counter for wins
@@ -55,28 +75,13 @@ const App: React.FC<Props> = (props: Props) => {
 			}
 
 			setWins(winsCount);
-			const block = await isBlock(username, login);
-			if (block) {
-				navigate('/');
-				return;
-			}
-			try {
-				const response = await api.get(`/users/userName/${username}`);
-				setUser({
-					FirstName: response?.data.FirstName, LastName: response?.data.LastName,
-					Email: response?.data.Email, Login: response?.data.Login,
-					Status: response?.data.Status
-				})
-			} catch (error: any) {
-				navigate('/404');
-			}
 		}
 		fetchData();
 	}, [username]);
 
 	useEffect(() => {
 		setWins(0);
-	}, [username]);	
+	}, [username]);
 
 	return (
 		<Container style={{ maxWidth: '70%' }}>

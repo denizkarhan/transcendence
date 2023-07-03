@@ -8,7 +8,7 @@ interface Props {
 }
 
 export default function CreateChat(props: Props) {
-
+	const [isPasswordEntered, setIsPasswordEntered] = useState(false);
 	const onSubmit = async (event: any) => {
 		event.preventDefault();
 		const formData = new FormData(event.target);
@@ -24,6 +24,16 @@ export default function CreateChat(props: Props) {
 		props.socket.emit('createRoom', { ...formValues, IsPublic: IsPublic, Admin: props.user });
 	}
 
+	const handlePasswordChange = (event: any) => {
+		const enteredPassword = event.target.value;
+
+		if (enteredPassword) {
+			setIsPasswordEntered(true);
+		} else {
+			setIsPasswordEntered(false);
+		}
+	};
+
 	return (
 		<Form onSubmit={onSubmit}>
 			<Form.Group controlId="RoomName">
@@ -33,7 +43,7 @@ export default function CreateChat(props: Props) {
 
 			<Form.Group controlId="Password">
 				<Form.Label>Password</Form.Label>
-				<Form.Control key='CreatePass' type="password" name="Password" placeholder="Password" />
+				<Form.Control key='CreatePass' type="password" name="Password" placeholder="Password" onChange={handlePasswordChange}/>
 			</Form.Group>
 			<Form.Group controlId="IsPublic">
 				<Form.Check
@@ -41,6 +51,7 @@ export default function CreateChat(props: Props) {
 					id="custom-switch"
 					label="Public"
 					name="IsPublic"
+					disabled={isPasswordEntered}
 				/>
 			</Form.Group>
 

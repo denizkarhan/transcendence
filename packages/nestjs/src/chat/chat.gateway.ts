@@ -76,7 +76,11 @@ export class ChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 	@SubscribeMessage('sendMessage')
 	async sendMessage(@MessageBody() data: any, @ConnectedSocket() socket: Socket) {
 		// console.log("send ", data);
-		const response = await this.chatService.sendMessage(data.RoomName, data.UserName, data.Message);
+		let response;
+		if (data.RoomName[0] !== '#')
+			response = await this.chatService.privateMessage(data.RoomName, data.UserName, data.Message);
+		else
+			response = await this.chatService.sendMessage(data.RoomName, data.UserName, data.Message);
 		if (response) {
 			socket.emit('receiveMessage', { Message: response, RoomName: data.RoomName });
 			socket.to(data.RoomName).emit('receiveMessage', { Message: response, RoomName: data.RoomName });
@@ -88,7 +92,10 @@ export class ChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 	@SubscribeMessage('createPrivMessage')
 	async sendPrivMessage(@MessageBody() data: any, @ConnectedSocket() socket: Socket) {
 		const room = await this.chatService.getPrivateRoom(data.Sender, data.Receiver);
-		// console.log(room);
+		if (!room) {
+			socket.emit('ErrorHandle', { message: 'User Not Found' });
+			return;
+		}
 		if (!(await this.chatService.isJoin(room.RoomName, data.Receiver)))
 			await this.chatService.joinRoom(room.RoomName, data.Receiver, null);
 		socket.join(room.RoomName);
@@ -107,6 +114,7 @@ export class ChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 	async join(@MessageBody() data: any, @ConnectedSocket() socket: Socket) {
 		// console.log(data);
 		if (await this.chatService.isExistRoom(data.RoomName)) {
+
 			const isJoin = await this.chatService.isJoin(data.RoomName, data.UserName);
 			if (isJoin === false) {
 				const response = await this.chatService.joinRoom(data.RoomName, data.UserName, data.Password);
@@ -116,11 +124,8 @@ export class ChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 				}
 				socket.join(data.RoomName);
 				const roomData = await this.chatService.getRoom(data.RoomName);
-				socket.emit('updateRoom', roomData);
-				socket.to(data.RoomName).emit('updateRoom', roomData);
-			}
-			else{
-
+				socket.emit('updateRoom', { OldRoomName: roomData.RoomName, ...roomData });
+				socket.to(data.RoomName).emit('updateRoom', { OldRoomName: roomData.RoomName, ...roomData });
 			}
 		} else {
 			socket.emit('ErrorHandle', { message: 'Channel Is Not Found' });
@@ -139,7 +144,7 @@ export class ChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 	async deleteRoom(@MessageBody() data: any, @ConnectedSocket() socket: Socket) {
 		const deleted = await this.chatService.getRoom(data.RoomName);
 		await this.chatService.deleteRoom(data.RoomName);
-		if(deleted.IsPublic)
+		if (deleted.IsPublic)
 			socket.broadcast.emit('deleteRoom', deleted);
 		else
 			socket.to(data.RoomName).emit('deleteRoom', deleted);
@@ -148,10 +153,23 @@ export class ChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@SubscribeMessage('kick')
 	async kickRoom(@MessageBody() data: any, @ConnectedSocket() socket: Socket) {
-		console.log(data);
+
 		await this.chatService.kickUser(data.UserName, data.RoomName);
 		const room = await this.chatService.getRoom(data.RoomName);
-		socket.emit("updateRoom", { OldRoomName: room.RoomName, ...room });
-		socket.to(data.RoomName).emit("updateRoom", { OldRoomName: room.RoomName, ...room });
+		socket.emit("updateRoom", { OldRoomName: room.RoomName, KickUser: data.UserName, ...room });
+		socket.to(data.RoomName).emit("updateRoom", { OldRoomName: room.RoomName, KickUser: data.UserName, ...room });
+	}
+
+	@SubscribeMessage('mute')
+	async mute(@MessageBody() data: any, @ConnectedSocket() socket: Socket) {
+		await this.chatService.mutedUser(data.UserName, data.RoomName);
+		socket.emit('success', { Message: 'User is Muted ' + data.UserName });
+	}
+
+
+	@SubscribeMessage('unmute')
+	async unMute(@MessageBody() data: any, @ConnectedSocket() socket: Socket) {
+		await this.chatService.mutedUser(data.UserName, data.RoomName);
+		socket.emit('success', { Message: 'User is UnMuted ' + data.UserName });
 	}
 }

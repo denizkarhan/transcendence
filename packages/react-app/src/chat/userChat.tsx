@@ -14,8 +14,9 @@ const UserChat = (props: Props) => {
 
 	useEffect(() => {
 		if (props.chat?.RoomName[0] !== '#') {
-			const userName = props.chat?.Users.filter(user => user.users.Login !== props.user)[0].users.Login;
-			setChatName(userName);
+			const userName = props.chat?.Users.filter(user => user.users.Login !== props.user);
+			if (userName?.length)
+				setChatName(userName[0].users.Login);
 		}
 		else
 			setChatName(props.chat?.RoomName);

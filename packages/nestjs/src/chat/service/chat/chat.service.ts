@@ -85,21 +85,22 @@ export class ChatService {
 		const room = await this.groupChatRepository.findOneBy({ RoomName: roomName });
 		const user = await this.userService.getUserByLogin(userName);
 		const isExist = await this.groupChatUsersRepository.findOneBy({ users: user, GroupChat: room });
-		if (!isExist)
+		if (!isExist || isExist.isMuted)
 			return null
 		await this.groupChatMessagesRepository.save({ GroupChat: room, Message: message, SendAt: new Date(), User: isExist });
 		const response = await this.groupChatMessagesRepository.find({ where: { GroupChat: room, User: isExist }, relations: ['User.users'], order: { Id: 'DESC' } });
 		return response.at(0);
 	}
 
-	async privateMessage(roomName: string, sender: string, receiver: string, message: string) {
+	async privateMessage(roomName: string, sender: string, message: string) {
 		const user1 = await this.userService.getUserByLogin(sender);
-		const user2 = await this.userService.getUserByLogin(receiver);
-		if (await this.blockService.isBlock(sender, receiver))
-			return { message: 'You cant send messages' };
-		if (!user1 || !user2)
-			return { message: 'Users not found' };
-		await this.sendMessage(roomName, sender, message);
+		const room = await this.groupChatRepository.findOneBy({RoomName:roomName});
+		const chatUsers = await this.groupChatUsersRepository.find({where:{GroupChat:room}, relations:['users']});
+		const user2 = chatUsers.find(user=> user.users.Login !== user1.Login).users;
+		
+		if (await this.blockService.isBlock(sender, user2.Login))
+			return null
+		return await this.sendMessage(roomName, sender, message);
 	}
 
 
@@ -118,13 +119,26 @@ export class ChatService {
 	}
 
 
-	// async mutedUser(username:string){
-	// nasıl yapıcam???????
-	// }
+	async mutedUser(username:string, roomname:string){
+		const user = await this.userService.getUserByLogin(username);
+		const room = await this.groupChatRepository.findOneBy({RoomName:roomname});
+		const chatUser = await this.groupChatUsersRepository.findOneBy({GroupChat:room, users:user});
+		await this.groupChatUsersRepository.save({...chatUser, isMuted :true});
+	}
+
+	async unMutedUser(username:string, roomname:string){
+		const user = await this.userService.getUserByLogin(username);
+		const room = await this.groupChatRepository.findOneBy({RoomName:roomname});
+		const chatUser = await this.groupChatUsersRepository.findOneBy({GroupChat:room, users:user});
+		await this.groupChatUsersRepository.save({...chatUser, isMuted :false});
+	}
 
 	async getPrivateRoom(sender: string, receiver: string) {
 		const me = await this.userService.getUserByLogin(sender);
 		const rec = await this.userService.getUserByLogin(receiver);
+
+		if (!rec)
+			return null;
 		let groupUser = await this.groupChatUsersRepository.findOneBy({ users: me });
 		const myRoom = await this.groupChatRepository.find({ where: { Users: groupUser }, relations: ['Messages.User.users', 'Messages', 'Users.users'], order: { Id: 'DESC' } });
 

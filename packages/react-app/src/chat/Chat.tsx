@@ -1,6 +1,6 @@
 import { Button, Card, Col, Container, Overlay, OverlayTrigger, Row, Stack, Tab, Tabs, Tooltip } from "react-bootstrap";
 import io, { Socket } from 'socket.io-client';
-import { getCookie } from "../api";
+import api, { getCookie } from "../api";
 import { useEffect, useRef, useState } from "react";
 import { Chat } from "../interfaces/chat";
 import { useAuthUser } from "react-auth-kit";
@@ -15,10 +15,12 @@ import { Room } from "../interfaces/room";
 import { Message } from "../interfaces/message";
 import ChatFriend from "./ChatFriend";
 import ChatBoxHeader from "./ChatBoxHeader";
-
+import { useNavigate, useParams } from "react-router-dom";
 
 
 function ChatService() {
+	const { friendname } = useParams<string>();
+	const navigate = useNavigate();
 	const { showError, showSuccess } = useToast();
 	const URL = "http://k2m13s05.42kocaeli.com.tr:3001/chat";
 	const auth = useAuthUser();
@@ -47,12 +49,17 @@ function ChatService() {
 		socket.emit('getData', { userName: user });
 
 		socket.on('getData', (data: Room[]) => {
+			console.log(data);
 			setRooms(data);
 		});
 
 		socket.emit('getPublic');
 		socket.on('getPublic', (data: Room[]) => {
 			setPublic(data);
+		})
+
+		socket.on('success', (data: any) => {
+			showSuccess(data.Message);
 		})
 
 		socket.on('getPublicAddOne', (data: Room) => {
@@ -75,8 +82,7 @@ function ChatService() {
 				}
 				return [data, ...prevData];
 			});
-			if (data.IsPublic)
-			{
+			if (data.IsPublic) {
 				setPublic(prevPublic => {
 					return [data, ...prevPublic];
 				})
@@ -86,30 +92,38 @@ function ChatService() {
 		});
 
 		socket.on("updateRoom", (data: any) => {
-			
-			const oldRoom = data.OldRoom;
-			const newRoom = data.NewRoom;
+			const { OldRoomName, KickUser, ...newRoom } = data;
 			setRooms(prevData => {
-				// setPublic(prevPublic => {
-				// 	let isDataExists = false;
-				// 	for (let i = 0; i < prevData.length; i++) {
-				// 		if (prevData[i].RoomName === OldRoomName) {
-				// 			isDataExists = true;
-				// 			break;
-				// 		}
-				// 	}
-				// 	if (isDataExists && newRoom.IsPublic)
-				// 		return [...prevPublic, newRoom];
-				// 	else if (isDataExists && !newRoom.IsPublic) {
-				// 		const [data, ...updatePublics] = prevPublic;
-				// 		return updatePublics;
-				// 	}
-				// 	return prevPublic;
-				// });
-				const newData = prevData.filter(room => room !== oldRoom);
-				return [newRoom, ...newData];
+				setPublic(prevPublic => {
+					const isDataExists = prevData.find(room => room.RoomName === OldRoomName) !== undefined ? true : false;
+					const index = prevPublic.findIndex(room => room.RoomName === data.RoomName);
+					if (index !== -1)
+						prevPublic.splice(index, 1);
+					if (isDataExists && newRoom.IsPublic) {
+						return [newRoom, ...prevPublic];
+					}
+					else if (isDataExists && !newRoom.IsPublic) {
+						return prevPublic;
+					}
+					else if (!isDataExists && newRoom.IsPublic)
+						return [newRoom, ...prevPublic];
+					return prevPublic;
+				});
+				console.log(prevData);
+				const index = prevData.findIndex(room => room.RoomName === data.RoomName);
+				if (index !== -1)
+					prevData.splice(index, 1);
+				console.log(prevData);
+				if (KickUser !== undefined && user === KickUser) {
+					return prevData;
+				}
+				else
+					return [newRoom, ...prevData];
 			});
-			setRoom(newRoom);
+			if (KickUser !== undefined && user === KickUser)
+				setRoom(null);
+			else
+				setRoom(newRoom);
 		})
 
 		socket.on('ErrorHandle', (data: any) => {
@@ -119,14 +133,17 @@ function ChatService() {
 		socket.on("deleteRoom", (data: Room) => {
 			setRoom(null);
 			setRooms(prevData => {
-				const [data, ...newData] = prevData;
-				return newData;
+				const index = prevData.findIndex(room => room.RoomName === data.RoomName);
+				if (index !== -1)
+					prevData.splice(index, 1);
+				return prevData;
 			});
-			if (data.IsPublic)
-			{
+			if (data.IsPublic) {
 				setPublic(prevPublic => {
-					const [data, ...newPublic] = prevPublic;
-					return newPublic;
+					const index = prevPublic.findIndex(room => room.RoomName === data.RoomName);
+					if (index !== -1)
+						prevPublic.splice(index, 1);
+					return prevPublic;
 				});
 			}
 		})
@@ -151,8 +168,15 @@ function ChatService() {
 		});
 
 		socketRef.current = socket;
-
+		const fetchData = async () => {
+			if (friendname !== undefined) {
+				socket.emit('createPrivMessage', { Sender: user, Receiver: friendname });
+			}
+			return;
+		}
+		fetchData();
 		return () => {
+			socket.off('success');
 			socket.off('getData');
 			socket.off('getPublic');
 			socket.off('createRoom');
@@ -168,8 +192,8 @@ function ChatService() {
 		setRoom({ ...room });
 		newSocket.emit('join', { ...room, UserName: user });
 	}
-	
 
+	console.log(rooms);
 	const renderTooltip = (message: string) => (
 		<Tooltip id="hover-tooltip">
 			{message}

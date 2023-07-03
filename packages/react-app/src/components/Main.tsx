@@ -30,6 +30,8 @@ export async function getPP(username: string | undefined) {
 }
 
 export async function isBlock(username: any, friendName: any) {
+  if (username === friendName)
+    return false;
   const response = await api.get(`/block-user/isBlock/${username}/${friendName}`);
   if (response.data.message === 'Is Block')
     return true;

@@ -49,11 +49,6 @@ const App: React.FC<Props> = (props: Props) => {
 			}
 			try {
 				const response = await api.get(`/users/userName/${username}`);
-				if (response.status === 204)
-				{
-					navigate('/404');
-					return;
-				}
 				setUser({
 					FirstName: response?.data.FirstName, LastName: response?.data.LastName,
 					Email: response?.data.Email, Login: response?.data.Login,

@@ -11,6 +11,7 @@ import "bootswatch/dist/lumen/bootstrap.min.css";
 import Game from '../game/pong'
 import ChatService from '../chat/Chat'
 import QrCode from '../components/profile/QrCode'
+import { Socket } from 'socket.io-client'
 
 
 interface Props {
@@ -29,7 +30,8 @@ const RootNavigation = (prop: Props) => {
 				<Route path="loginorregister" element={isAuthenticated() ? <Profile pp={prop.pp} setPP={prop.setPP} /> : <LoginAndRegister />} />
 				<Route path="profile/:username" element={isAuthenticated() ? <Profile pp={prop.pp} setPP={prop.setPP}/> : <LoginAndRegister />} />
 				<Route path='game' element={isAuthenticated() ? <Game/> : <LoginAndRegister /> }/>
-				<Route path='chat' element={isAuthenticated() ? <ChatService/> : <LoginAndRegister /> }/>
+				<Route path='chat/:friendname' element={isAuthenticated() ? <ChatService/> : <LoginAndRegister /> }/>
+				<Route path='chat/' element={isAuthenticated() ? <ChatService/> : <LoginAndRegister /> }/>
 				<Route path="*" element={ <NotFoundPage /> } />
 			</Routes>
 	)

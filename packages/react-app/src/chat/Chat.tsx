@@ -22,7 +22,7 @@ function ChatService() {
 	const { friendname } = useParams<string>();
 	const navigate = useNavigate();
 	const { showError, showSuccess } = useToast();
-	const URL = "http://k2m13s05.42kocaeli.com.tr:3001/chat";
+	const URL = "http://10.12.13.1:3001/chat";
 	const auth = useAuthUser();
 	const socketRef = useRef<any>(null);
 	const newSocket = socketRef.current as Socket;

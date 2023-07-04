@@ -6,6 +6,7 @@ import CountdownButton from './CountdownButton';
 import BackgroundAnimation from '../BackgroundAnimation';
 import { useNavigate, useParams } from 'react-router-dom';
 import './a.css';
+import CreateRoom from './CreateRoom';
 
 let modR = 1;
 let gameStarter = 0;
@@ -92,7 +93,7 @@ function Game() {
 		const context = canvas.getContext('2d');
 		if (!context)
 			return;
-		canvas.socket = io("http://k2m13s05.42kocaeli.com.tr:3001/game", {
+		canvas.socket = io("http://10.12.13.1:3001/game", {
 			auth: {
 				nick: getCookie("42_auth_state"),
 				token: getCookie("42_auth")
@@ -397,6 +398,7 @@ function Game() {
 		<div>
 			<BackgroundAnimation />
 			<div id='button-div'>
+				{<CreateRoom />}
 				<button id="clasico" className='clasic-mod' onClick={clasicMode}>
 					<span className="clasic-mod-text-one">Clasic Mod</span>
 					<span className="clasic-mod-text-two">Start!</span>

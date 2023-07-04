@@ -1,0 +1,9 @@
+.cr-room {
+	width: 100%;
+	height: 100vh;
+	display: table;
+	text-align: center;
+  }
+  .cr-room td {
+	vertical-align: middle;
+  }

@@ -98,7 +98,7 @@ export class ChatService {
 		const chatUsers = await this.groupChatUsersRepository.find({where:{GroupChat:room}, relations:['users']});
 		const user2 = chatUsers.find(user=> user.users.Login !== user1.Login).users;
 		
-		if (await this.blockService.isBlock(sender, user2.Login))
+		if (await this.blockService.isBlock(user2.Login, sender))
 			return null
 		return await this.sendMessage(roomName, sender, message);
 	}
@@ -143,7 +143,6 @@ export class ChatService {
 		const myRoom = await this.groupChatRepository.find({ where: { Users: groupUser }, relations: ['Messages.User.users', 'Messages', 'Users.users'], order: { Id: 'DESC' } });
 
 		let targetRoom = null;
-		// console.log("myroom---------------->",myRoom);
 		for (const room of myRoom) {
 			if (room.RoomName === (sender + receiver) || room.RoomName === (receiver + sender)) {
 				targetRoom = room;

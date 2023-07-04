@@ -70,23 +70,44 @@ function ChatService() {
 
 		socket.on('createRoom', (data: Room) => {
 			setRooms(prevData => {
-				let isDataExists = false;
-				for (let i = 0; i < prevData.length; i++) {
-					if (prevData[i].RoomName === data.RoomName) {
-						isDataExists = true;
-						break;
+				setPublic(prevPublic => {
+					const isDataExists = prevData.find(room => room.RoomName === data.RoomName) !== undefined ? true : false;
+					const index = prevPublic.findIndex(room => room.RoomName === data.RoomName);
+					if (index !== -1)
+						prevPublic.splice(index, 1);
+					if (isDataExists && data.IsPublic) {
+						return [data, ...prevPublic];
 					}
-				}
-				if (isDataExists) {
-					return prevData;
-				}
+					else if (isDataExists && !data.IsPublic) {
+						return prevPublic;
+					}
+					else if (!isDataExists && data.IsPublic)
+						return [data, ...prevPublic];
+					return prevPublic;
+				});
+				const index = prevData.findIndex(room => room.RoomName === data.RoomName);
+				if (index !== -1)
+					prevData.splice(index, 1);
 				return [data, ...prevData];
 			});
-			if (data.IsPublic) {
-				setPublic(prevPublic => {
-					return [data, ...prevPublic];
-				})
-			}
+			// setRooms(prevData => {
+			// 	let isDataExists = false;
+			// 	for (let i = 0; i < prevData.length; i++) {
+			// 		if (prevData[i].RoomName === data.RoomName) {
+			// 			isDataExists = true;
+			// 			break;
+			// 		}
+			// 	}
+			// 	if (isDataExists) {
+			// 		return prevData;
+			// 	}
+			// 	return [data, ...prevData];
+			// });
+			// if (data.IsPublic) {
+			// 	setPublic(prevPublic => {
+			// 		return [data, ...prevPublic];
+			// 	})
+			// }
 			setRoom(data);
 			setActiveTab('messages');
 		});
@@ -168,13 +189,10 @@ function ChatService() {
 		});
 
 		socketRef.current = socket;
-		const fetchData = async () => {
-			if (friendname !== undefined) {
-				socket.emit('createPrivMessage', { Sender: user, Receiver: friendname });
-			}
-			return;
+
+		if (friendname !== undefined) {
+			socket.emit('createPrivMessage', { Sender: user, Receiver: friendname });
 		}
-		fetchData();
 		return () => {
 			socket.off('success');
 			socket.off('getData');

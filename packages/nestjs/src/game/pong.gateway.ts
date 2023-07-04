@@ -169,8 +169,8 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
                         MyResult: scoreTwo,
                         EnemyUserName: setupRoom.user1,
                     }, setupRoom.user2);
-					userSocket.get(rooms.get(room).user1).socket.emit('gameOver', {winner: winner});
-                    userSocket.get(rooms.get(room).user2).socket.emit('gameOver', {winner: winner});
+					userSocket.get(rooms.get(room).user1).socket.emit('gameOver', {winner: winner, scoreOne: scoreOne, scoreTwo: scoreTwo});
+                    userSocket.get(rooms.get(room).user2).socket.emit('gameOver', {winner: winner, scoreOne: scoreOne, scoreTwo: scoreTwo});
                 }
 				// else if ((scoreOne === 3 || scoreTwo === 3) && a % 2 != 0)
 				// 	a += 1;

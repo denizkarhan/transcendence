@@ -13,7 +13,7 @@ let canvasWidth = 650;
 let canvasHeight = 400;
 let playerHeight = 80;
 let playerWidth = 15;
-let	playerGravity = 4;
+let playerGravity = 4;
 let a = 0;
 
 interface CanvasWithSocket extends HTMLCanvasElement {
@@ -112,7 +112,9 @@ function Game() {
 				canvas.socket.emit('enterRoom', { roomName: buttonText });
 			});
 		}
-
+		if (myName !== undefined && enemyName !== undefined){
+			canvas.socket.emit('enterRoom', { roomName: myName + enemyName });
+		}
 		const buttonColors: string[] = [
 			"linear-gradient(to right, #964747d6, #bd1b1bca, #640206d7)",
 			"linear-gradient(to right, #537dd1, #064ad1d4, #020f66)",
@@ -124,7 +126,7 @@ function Game() {
 		});
 
 		window.addEventListener("keydown", (e) => {
-			canvas.socket.emit('keydown', e.key + '*' + playerOne.y.toString() + '*' + playerTwo.y.toString() + '*' + playerOne.gravity.toString() + '*' + ball.x.toString() + '*' + ball.y.toString()  + '*' + ball.speed.toString() + '*' + ball.gravity.toString());
+			canvas.socket.emit('keydown', e.key + '*' + playerOne.y.toString() + '*' + playerTwo.y.toString() + '*' + playerOne.gravity.toString() + '*' + ball.x.toString() + '*' + ball.y.toString() + '*' + ball.speed.toString() + '*' + ball.gravity.toString());
 		});
 
 		// net
@@ -284,6 +286,10 @@ function Game() {
 			handleStartCountdown();
 			setTimeout(() => {
 				gameStarter = 1;
+				var fastButton = document.getElementById("fastest");
+				var clasicButton = document.getElementById("clasico");
+				clasicButton!.style.display = 'none';
+				fastButton!.style.display = 'none';
 			}, 3000);
 		});
 
@@ -296,6 +302,7 @@ function Game() {
 				setTimeout(() => {
 					context.fillText("Your opponent has left the game, going to lobby...", canvas.width / 2 - textWidth / 2, canvas.height / 2 + 6);
 				}, 100);
+
 				gameStarter = 0;
 				setTimeout(() => {
 					canvas.socket.disconnect();
@@ -308,6 +315,8 @@ function Game() {
 		canvas.socket.on('gameOver', (data: any) => {
 			context.fillStyle = "#fff";
 			context.font = "bold 48px Arial";
+			scoreOne = data!.scoreOne;
+			scoreTwo = data!.scoreTwo;
 			displayScoreOne();
 			displayScoreTwo();
 			const text = "Player " + data!.winner + " Winner!  You are going to lobby...";
@@ -328,7 +337,7 @@ function Game() {
 		});
 
 		canvas.socket.on('viewVS', (modes: any) => {
-				setButtonText(modes!.user1 + " VS " + modes!.user2);
+			setButtonText(modes!.user1 + " VS " + modes!.user2);
 		});
 
 		canvas.socket.on('setMod', (modes: any) => {
@@ -357,6 +366,7 @@ function Game() {
 				fastButton!.style.display = 'block';
 			}
 		});
+
 
 		if (roomName !== undefined){
 			window.history.replaceState(undefined, '', '/game');
@@ -403,23 +413,22 @@ function Game() {
 			<BackgroundAnimation />
 			<div id='button-div'>
 				<button id="clasico" className='clasic-mod' onClick={clasicMode}>
-				    <span className="clasic-mod-text-one">Clasic Mod</span>
-				    <span className="clasic-mod-text-two">Start!</span>
+					<span className="clasic-mod-text-one">Clasic Mod</span>
+					<span className="clasic-mod-text-two">Start!</span>
 				</button>
 				<button id="fastest" className='fast-mod' onClick={fastMode}>
-				    <span className="fast-mod-text-one">Fast Mod</span>
-				    <span className="fast-mod-text-two">Start!</span>
+					<span className="fast-mod-text-one">Fast Mod</span>
+					<span className="fast-mod-text-two">Start!</span>
 				</button>
-				
-				<Button id="header" className='mainText'>{buttonText}</Button>
-				<Button className='random-room-button'>Hemen Oyna</Button>
-				<Button className='random-room-button'>room1</Button>
-				<Button className='random-room-button'>room2</Button>
-				<Button className='random-room-button'>room3</Button>
-				<Button className='random-room-button'>room4</Button>
-				<Button className='random-room-button'>room5</Button>
-				<Button className='random-room-button'>room6</Button>
-				{startCountdown && <CountdownButton />}
+					<Button id="header" className='mainText'>{buttonText}</Button>
+					<Button className='random-room-button'>Hemen Oyna</Button>
+					<Button className='random-room-button'>room1</Button>
+					<Button className='random-room-button'>room2</Button>
+					<Button className='random-room-button'>room3</Button>
+					<Button className='random-room-button'>room4</Button>
+					<Button className='random-room-button'>room5</Button>
+					<Button className='random-room-button'>room6</Button>
+					{startCountdown && <CountdownButton />}
 			</div>
 			<div id="text-container"></div>
 			<canvas ref={canvasRef} id="pongGame" style={{ backgroundColor: 'black', cursor: 'default', zIndex: '0' }}></canvas>

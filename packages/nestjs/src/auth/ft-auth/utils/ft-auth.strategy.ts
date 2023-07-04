@@ -11,7 +11,7 @@ export class FtStrategy extends PassportStrategy(Strategy) {
 		super({
 			clientID: 'u-s4t2ud-83701d37bd325e3b25b4bb72166987bed8a35469e436c0f7e5b2e8b18f1d745a',
 			clientSecret: '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',
-			callbackURL: 'http://k2m13s05.42kocaeli.com.tr:3001/ft-auth/redirect',
+			callbackURL: 'http://10.12.13.1:3001/ft-auth/redirect',
 			scope: 'public'
 		});
 	}

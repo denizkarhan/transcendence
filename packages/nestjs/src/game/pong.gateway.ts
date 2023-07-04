@@ -5,7 +5,6 @@ import { MatchHistoriesService } from 'src/match-histories/services/match-histor
 const userSocket = new Map<string, {socket: Socket}>();
 const rooms = new Map<string, { count: number, user1: string | null, user2: string | null, connectionCount: number, scoreOne: number, scoreTwo: number }>(); // (Kişi sayısı, User1 İd, User2 İd, Oyuna bağlananların sayısı, ScoreOne, ScoreTwo)
 const connectedUsers = new Map<string, { username: string, socket: Socket, roomName: string }>();
-let userCount = 0;
 let nextUserId = 1;
 
 const G = '\x1b[32m';
@@ -33,7 +32,6 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
             return false;
         }
 
-        userCount += 1;
         const userId = nextUserId++;
         const roomName = "NULL";
         userSocket.set(nick, {socket: socket});
@@ -67,8 +65,11 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
                     if (pOne === connectedUsers.get(key)!.username) {
                         rooms.set(roomName, { count: 1, user1: null, user2: pTwo, connectionCount: 0, scoreOne: scoreOne, scoreTwo: scoreTwo });
+                        userSocket.get(pTwo).socket.emit('userDisconnected', 1);
+
                     } else if (pTwo === connectedUsers.get(key)!.username) {
                         rooms.set(roomName, { count: 1, user1: pOne, user2: null, connectionCount: 0, scoreOne: scoreOne, scoreTwo: scoreTwo });
+                        userSocket.get(pOne).socket.emit('userDisconnected', 1);
                     }
                     connectedUsers.forEach(element => {
                         element.socket.emit('buttonUpdated', [roomName, 2]);
@@ -80,12 +81,9 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
                         element.socket.emit('buttonUpdated', [roomName, 1]);
                     });
                 }
-                userCount -= 1;
                 connectedUsers.delete(key);
                 userSocket.delete(nickName);
                 socket.leave(roomName);
-                if (userCount % 2 === 1)
-                    socket.to(roomName).emit('userDisconnected', 1);
             }
         }
     }

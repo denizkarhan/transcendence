@@ -9,7 +9,7 @@ import { DataSource } from 'typeorm';
 import { SeedService } from './seed/seed.service';
 
 // ,  {cors: {
-// 	origin: 'http://k2m13s05.42kocaeli.com.tr:3000',
+// 	origin: 'http://10.12.13.1:3000',
 // 	methods: ['GET', 'POST'],
 //   }},
 

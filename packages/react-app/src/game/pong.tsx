@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Button } from 'react-bootstrap';
 import CountdownButton from './CountdownButton';
 import BackgroundAnimation from '../BackgroundAnimation';
+import { useNavigate } from 'react-router-dom';
 import './a.css';
 
 let modR = 1;
@@ -69,6 +70,7 @@ const ball: Eleman = new Eleman({
 });
 
 function Game() {
+	const navigate = useNavigate();
 	const [buttonText, setButtonText] = useState('Winx Club');
 
 	const canvasRef = useRef<CanvasWithSocket | null>(null);
@@ -88,7 +90,7 @@ function Game() {
 		const context = canvas.getContext('2d');
 		if (!context)
 			return;
-		canvas.socket = io("http://localhost:3001/game", {
+		canvas.socket = io("http://10.12.13.1:3001/game", {
 			auth: {
 				nick: getCookie("42_auth_state"),
 				token: getCookie("42_auth")
@@ -200,7 +202,6 @@ function Game() {
 			if (ball.y <= 0 || ball.y >= canvas.height - ball.height) {
 				ball.gravity = -ball.gravity;
 			}
-
 			// Topun raketlere çarpması durumunda yönünü değiştir
 			if ((ball.x <= playerOne.x + playerOne.width && ball.y + ball.height >= playerOne.y && ball.y <= playerOne.y + playerOne.height) ||
 				(ball.x + ball.width >= playerTwo.x && ball.y + ball.height >= playerTwo.y && ball.y <= playerTwo.y + playerTwo.height)) { ball.speed = -ball.speed; }
@@ -215,7 +216,7 @@ function Game() {
 					ball.speed = ball.speed * -1;
 				} else {
 					ball.speed = ball.speed * -1;
-					ball.y += ball.gravity;
+					ball.y += ball.gravity * 2;
 				}
 			} else if (ball.x + ball.speed < playerOne.x) {
 				scoreTwo += 1;
@@ -264,7 +265,6 @@ function Game() {
 
 		// diğer oyuncunun hareketini işlemek için movePlayer olayını dinleyin
 		canvas.socket.on('movePlayer', (data: any) => {
-			console.log('merhaba');
 			if (gameStarter === 0)
 				return;
 			a += 1;
@@ -286,16 +286,20 @@ function Game() {
 			}, 3000);
 		});
 
-		const waitingRoom = () => {
-			context.font = "28px 'Press Start 2P', cursive";
-			context.fillStyle = "#fff";
-			context.fillText("Oyuncu Bekleniyor!", canvas.width / 2 - 200, canvas.height / 2);
-		}
-
 		// Oyuncu odada tek kaldığında
 		canvas.socket.on('userDisconnected', (data: any) => {
 			if (data) {
-				waitingRoom();
+				const textWidth = context.measureText("Your opponent has left the game, going to lobby...").width;
+				context.fillStyle = "#fff";
+				context.font = "bold 12px Arial";
+				setTimeout(() => {
+					context.fillText("Your opponent has left the game, going to lobby...", canvas.width / 2 - textWidth / 2, canvas.height / 2 + 6);
+				}, 100);
+				gameStarter = 0;
+				setTimeout(() => {
+					canvas.socket.disconnect();
+					navigate('game');
+				}, 2000);
 			}
 		});
 
@@ -305,7 +309,9 @@ function Game() {
 			context.font = "bold 48px Arial";
 			displayScoreOne();
 			displayScoreTwo();
-			context.fillText("Player " + data!.winner + " Winner!  You are going to lobby...", canvas.width / 2 - 250, (3 * canvas.height) / 4);
+			const text = "Player " + data!.winner + " Winner!  You are going to lobby...";
+			const textWidth = context.measureText(text).width;
+			context.fillText(text, canvas.width / 2 - textWidth / 2, canvas.height / 2 + 24);
 			gameStarter = 0;
 			setTimeout(() => {
 				handleRefresh();

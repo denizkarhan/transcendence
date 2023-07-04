@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../api";
 import { useToast } from "../../components/Toast";
+import { useToastInvite } from "./inviteGame";
 
 interface Props {
 	users: ChatUser[];
@@ -18,6 +19,7 @@ interface Props {
 
 
 const ChatSettings = (props: Props) => {
+	const toast = useToastInvite();
 	const navigate = useNavigate();
 	const { showError, showSuccess } = useToast();
 	const [admin, setAdmin] = useState<string[]>([]);
@@ -34,6 +36,10 @@ const ChatSettings = (props: Props) => {
 			props.setShowModal(false);
 		}
 	};
+
+	const handleInvite = () => {
+		toast.invite({ message: 'Hello', sender: 'John' });
+	}
 
 	const handlePasswordChange = (event:any) => {
 		const password = event.target.value;
@@ -70,7 +76,7 @@ const ChatSettings = (props: Props) => {
 		else
 			showError(response.data.messages);
 		if (admin.find(username => username === props.user) !== undefined)
-			props.socket.emit('kick', { UserName: user.users.Login, RoomName: props.RoomName });
+			props.socket.emit("deleteRoom", { RoomName: props.RoomName });
 	}
 
 	const handleKick = (username: string) => {
@@ -132,6 +138,7 @@ const ChatSettings = (props: Props) => {
 											(muted ? <Button onClick={() => handleUnMute(user)} bsPrefix="btn btn-outline-info"><i className="bi bi-volume-down"></i></Button>
 												: <Button onClick={() => handleMute(user)} bsPrefix="btn btn-outline-info"><i className="bi bi-volume-mute"></i></Button>)
 											: null}{/*mute user */}
+										{user.users.Login !== props.user ? <Button onClick={handleInvite} bsPrefix="btn btn-outline-info" ><i className="bi bi-joystick"></i></Button> : null }
 									</Stack>
 								</div>
 							))}

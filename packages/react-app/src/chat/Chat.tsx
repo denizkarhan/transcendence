@@ -90,54 +90,33 @@ function ChatService() {
 					prevData.splice(index, 1);
 				return [data, ...prevData];
 			});
-			// setRooms(prevData => {
-			// 	let isDataExists = false;
-			// 	for (let i = 0; i < prevData.length; i++) {
-			// 		if (prevData[i].RoomName === data.RoomName) {
-			// 			isDataExists = true;
-			// 			break;
-			// 		}
-			// 	}
-			// 	if (isDataExists) {
-			// 		return prevData;
-			// 	}
-			// 	return [data, ...prevData];
-			// });
-			// if (data.IsPublic) {
-			// 	setPublic(prevPublic => {
-			// 		return [data, ...prevPublic];
-			// 	})
-			// }
 			setRoom(data);
 			setActiveTab('messages');
 		});
 
+		socket.on("updatePublic", (data: any) => {
+			const { OldRoomName, ...newRoom } = data;
+			setPublic(prevPublic => {
+				const index = prevPublic.findIndex(room => room.RoomName === data.RoomName);
+				if (index !== -1)
+					prevPublic.splice(index, 1);
+				if (newRoom.IsPublic)
+					return [newRoom, ...prevPublic];
+				else if (!newRoom.IsPublic) {
+					return prevPublic;
+				}
+				return prevPublic;
+			});
+		})
+
 		socket.on("updateRoom", (data: any) => {
 			const { OldRoomName, KickUser, ...newRoom } = data;
 			setRooms(prevData => {
-				setPublic(prevPublic => {
-					const isDataExists = prevData.find(room => room.RoomName === OldRoomName) !== undefined ? true : false;
-					const index = prevPublic.findIndex(room => room.RoomName === data.RoomName);
-					if (index !== -1)
-						prevPublic.splice(index, 1);
-					if (isDataExists && newRoom.IsPublic) {
-						return [newRoom, ...prevPublic];
-					}
-					else if (isDataExists && !newRoom.IsPublic) {
-						return prevPublic;
-					}
-					else if (!isDataExists && newRoom.IsPublic)
-						return [newRoom, ...prevPublic];
-					return prevPublic;
-				});
-				console.log(prevData);
-				const index = prevData.findIndex(room => room.RoomName === data.RoomName);
+				const index = prevData.findIndex(room => room.RoomName === OldRoomName);
 				if (index !== -1)
 					prevData.splice(index, 1);
-				console.log(prevData);
-				if (KickUser !== undefined && user === KickUser) {
+				if (KickUser !== undefined && user === KickUser)
 					return prevData;
-				}
 				else
 					return [newRoom, ...prevData];
 			});
@@ -172,9 +151,15 @@ function ChatService() {
 		socket.on('ErrorHandle', (data: any) => {
 			showError(data.message);
 		})
-
+		
 		socket.on('receiveMessage', (data: any) => {
 			setRooms(prevRooms => {
+				const index = prevRooms.findIndex(room => room.RoomName === data.RoomName);
+				if (index === -1)
+				{
+					socket.emit('getData', { userName: user });
+					return prevRooms;
+				}
 				const updatedRooms = prevRooms.map(room => {
 					if (room.RoomName === data.RoomName) {
 						data.RoomName = null;

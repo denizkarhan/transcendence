@@ -100,7 +100,8 @@ export class ChatService {
 		
 		if (await this.blockService.isBlock(user2.Login, sender))
 			return null
-		return await this.sendMessage(roomName, sender, message);
+		const response = await this.sendMessage(roomName, sender, message);
+		return {send:response, receiver:user2};
 	}
 
 

@@ -67,7 +67,7 @@ const App: React.FC = () => {
 					authState: { username: user.Login }
 				});
 				showSuccess("Successful");
-				navigate("/home");
+				navigate("/");
 			})
 			.catch((error: any) => {
 				showError(error.response?.data.message)

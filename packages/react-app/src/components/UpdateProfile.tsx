@@ -85,8 +85,9 @@ export default function UpdateProfile(props: Props) {
 			style={{ position: 'relative' }}
 			onMouseEnter={handleMouseEnter}
 			onMouseLeave={handleMouseLeave}
+			onClick={handleShow}
 		>
-			<i className="bi bi-gear fs-4" style={{ color: isHovered ? '#E4A11B' : '#332D2D' }} onClick={handleShow}></i>
+			<i className="bi bi-gear fs-4" style={{ color: isHovered ? '#E4A11B' : '#332D2D' }} ></i>
 			<Modal
 				show={show}
 				onHide={handleClose}

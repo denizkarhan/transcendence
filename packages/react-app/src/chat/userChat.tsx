@@ -44,7 +44,6 @@ const UserChat = (props: Props) => {
 				</div>
 				<div className="pt-1">
 					<p className="small mb-1 text-white">{format(new Date(props.chat!.Messages[props.chat!.Messages.length - 1].SendAt), 'dd MMM')}</p>
-					<span className="badge bg-danger float-end">1</span>
 				</div>
 			</a>
 		</li>

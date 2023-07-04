@@ -47,7 +47,6 @@ export default function ChatFriend(props: Props) {
 						}}
 					>
 						<a
-							href="#!"
 							className="d-flex justify-content-between link-light"
 						>
 							<div className="d-flex flex-row">

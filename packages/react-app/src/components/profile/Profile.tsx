@@ -103,7 +103,7 @@ const App: React.FC<Props> = (props: Props) => {
 							</Card.Body>
 						</Card>
 					</Col>
-					<Col lg='9'>
+					<Col lg='9' style={{marginTop:'5%', width:'100%'}}>
 						<Tabs activeKey={activeTab} onSelect={handleTabSelect} className="border-0" fill>
 							<Tab eventKey="friends" title="Follow" className="custom-tabs-friends">
 								<Friends key={username} userName={username} />

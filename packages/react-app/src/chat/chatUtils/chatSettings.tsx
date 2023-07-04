@@ -1,10 +1,11 @@
-import { Button, Form, ListGroup, Modal, Stack, Tab, Tabs } from "react-bootstrap";
+import { Button, Form, Modal, Stack, Tab, Tabs } from "react-bootstrap";
 import { ChatUser } from "../../interfaces/chatUser";
 import { Socket } from "socket.io-client";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../api";
 import { useToast } from "../../components/Toast";
+import { v4 as uuidv4 } from 'uuid';
 
 interface Props {
 	users: ChatUser[];
@@ -70,7 +71,7 @@ const ChatSettings = (props: Props) => {
 		else
 			showError(response.data.messages);
 		if (admin.find(username => username === props.user) !== undefined)
-			props.socket.emit('kick', { UserName: user.users.Login, RoomName: props.RoomName });
+			props.socket.emit("deleteRoom", { RoomName: props.RoomName });
 	}
 
 	const handleKick = (username: string) => {
@@ -90,6 +91,10 @@ const ChatSettings = (props: Props) => {
 			props.socket.emit('unmute', { UserName: user.users.Login, RoomName: props.RoomName });
 			setMuted(false);
 		}
+	}
+
+	const handleInvite = (invited:string) =>{
+		props.socket.emit('inviteGame', {RoomName:uuidv4(), Invited:invited, UserName:props.user});
 	}
 
 	const [activeTab, setActiveTab] = useState('Users');
@@ -132,6 +137,7 @@ const ChatSettings = (props: Props) => {
 											(muted ? <Button onClick={() => handleUnMute(user)} bsPrefix="btn btn-outline-info"><i className="bi bi-volume-down"></i></Button>
 												: <Button onClick={() => handleMute(user)} bsPrefix="btn btn-outline-info"><i className="bi bi-volume-mute"></i></Button>)
 											: null}{/*mute user */}
+										{user.users.Login !== props.user ? <Button onClick={()=>handleInvite(user.users.Login)} bsPrefix="btn btn-outline-info" ><i className="bi bi-joystick"></i></Button> : null }
 									</Stack>
 								</div>
 							))}

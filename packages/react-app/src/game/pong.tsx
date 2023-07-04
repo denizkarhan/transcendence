@@ -70,8 +70,7 @@ const ball: Eleman = new Eleman({
 });
 
 function Game() {
-	const {myName} = useParams<string>();
-	const {enemyName} = useParams<string>();
+	const { roomName } = useParams<string>();
 	const navigate = useNavigate();
 	const [buttonText, setButtonText] = useState('Winx Club');
 
@@ -307,7 +306,7 @@ function Game() {
 				gameStarter = 0;
 				setTimeout(() => {
 					canvas.socket.disconnect();
-					navigate('/game');
+					handleRefresh();
 				}, 2000);
 			}
 		});
@@ -368,7 +367,23 @@ function Game() {
 			}
 		});
 
-		return () => {
+
+		if (roomName !== undefined){
+			window.history.replaceState(undefined, '', '/game');
+			canvas.socket.emit('enterRoom',{roomName : roomName});
+		}
+
+		return() => {
+			canvas.socket.off('buttonUpdated');
+			canvas.socket.off('viewVS');
+			canvas.socket.off('setMod');
+			canvas.socket.off('gameOver');
+			canvas.socket.off('countDown');
+			canvas.socket.off('userDisconnected');
+			canvas.socket.off('movePlayer');
+			canvas.socket.off('startGame');
+			canvas.socket.off('userRegister');
+			canvas.socket.off('viewMods');
 			canvas.socket.disconnect();
 		}
 	}, []);

@@ -66,7 +66,6 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
                     if (pOne === connectedUsers.get(key)!.username) {
                         rooms.set(roomName, { count: 1, user1: null, user2: pTwo, connectionCount: 0, scoreOne: scoreOne, scoreTwo: scoreTwo });
                         userSocket.get(pTwo).socket.emit('userDisconnected', 1);
-
                     } else if (pTwo === connectedUsers.get(key)!.username) {
                         rooms.set(roomName, { count: 1, user1: pOne, user2: null, connectionCount: 0, scoreOne: scoreOne, scoreTwo: scoreTwo });
                         userSocket.get(pOne).socket.emit('userDisconnected', 1);

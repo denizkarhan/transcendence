@@ -66,10 +66,12 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
                     if (pOne === connectedUsers.get(key)!.username) {
                         rooms.set(roomName, { count: 1, user1: null, user2: pTwo, connectionCount: 0, scoreOne: scoreOne, scoreTwo: scoreTwo });
-                        userSocket.get(pTwo).socket.emit('userDisconnected', 1);
+                        if (userSocket.has(pTwo))
+                            userSocket.get(pTwo).socket.emit('userDisconnected', 1);
                     } else if (pTwo === connectedUsers.get(key)!.username) {
                         rooms.set(roomName, { count: 1, user1: pOne, user2: null, connectionCount: 0, scoreOne: scoreOne, scoreTwo: scoreTwo });
-                        userSocket.get(pOne).socket.emit('userDisconnected', 1);
+                        if (userSocket.has(pOne))
+                            userSocket.get(pOne).socket.emit('userDisconnected', 1);
                     }
                     connectedUsers.forEach(element => {
                         element.socket.emit('buttonUpdated', [roomName, 2]);
@@ -180,7 +182,9 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
     async handleRoom(@MessageBody() roomName: any, @ConnectedSocket() socket: Socket) {
         const user = connectedUsers.get(socket.id);
         let color = 1;
-
+        const roomKeys = Array.from(rooms.keys());
+        console.log("--------->",roomName);
+        console.log(rooms.get(roomName.roomName)?.count);
         if (user?.roomName !== "NULL") {
             return; // Zaten bir odası var
         }
@@ -205,12 +209,14 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
             connectedUsers.set(socket.id, user);
         } else if (rooms.has(roomName.roomName) && rooms.get(roomName.roomName)?.count === 0) {
             // Boş oda
+            console.log("oda boş");
             user.roomName = roomName.roomName;
             rooms.set(roomName.roomName, { count: 1, user1: user.username, user2: null, connectionCount: 0, scoreOne: 0, scoreTwo: 0 });
             color = 2;
             connectedUsers.set(socket.id, user);
         } else if (rooms.has(roomName.roomName) && rooms.get(roomName.roomName)?.count === 1) {
             // Odada 1 kişi var
+            console.log("odada 1 kişi var");
             user.roomName = roomName.roomName;
             const one = rooms.get(roomName.roomName)?.user1;
             const two = rooms.get(roomName.roomName)?.user2;
@@ -226,6 +232,7 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
             // console.log(RB + "Oda dolu!" + R);
             return;
         } else if (!rooms.has(roomName.roomName)) {
+            console.log("odası yok henüz");
             user.roomName = roomName.roomName;
             rooms.set(roomName.roomName, { count: 1, user1: user.username, user2: null, connectionCount: 1, scoreOne: 0, scoreTwo: 0});
             color = 2;

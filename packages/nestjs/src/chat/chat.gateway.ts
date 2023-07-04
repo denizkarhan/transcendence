@@ -2,7 +2,7 @@ import { ConnectedSocket, MessageBody, OnGatewayConnection, OnGatewayDisconnect,
 import { ChatService } from './service/chat/chat.service';
 import { Server, Socket } from 'socket.io';
 
-let sockets = {};
+let sockets = new Map<string, {socket:Socket}>();
 
 @WebSocketGateway({
 	cors: {
@@ -26,21 +26,22 @@ export class ChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 			socket.leave(room.GroupChat.RoomName);
 		});
 		socket.disconnect(true);
+		// sockets.delete(this.nick);
 	}
 
  
 	async handleConnection(socket: Socket): Promise<boolean> {
 		this.nick = socket.handshake.auth.nick.split("%22")[3];
-		const userRooms = await this.chatService.getRooms(this.nick);
-		sockets[this.nick] = socket;
-		userRooms.forEach(room => {
-			socket.join(room.GroupChat.RoomName);
-		});
-		console.log(this.nick, " connection");
 		if (!this.nick) {
 			socket.disconnect(true);
 			return false;
 		}
+		const userRooms = await this.chatService.getRooms(this.nick);
+		sockets.set(this.nick, {socket});
+		userRooms.forEach(room => {
+			socket.join(room.GroupChat.RoomName);
+		});
+		console.log(this.nick, " connection");
 		return true;
 	}
 
@@ -87,10 +88,12 @@ export class ChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 		let response;
 		if (data.RoomName[0] !== '#')
 		{
+			console.log(sockets);
 			response = await this.chatService.privateMessage(data.RoomName, data.UserName, data.Message);
 			if (response)
 			{
-				sockets[response?.receiver.Login].emit('receiveMessage', { Message: response?.send, RoomName: data.RoomName });
+				if (sockets.has(response?.receiver.Login))
+					sockets.get(response?.receiver.Login).socket.emit('receiveMessage', { Message: response?.send, RoomName: data.RoomName });
 				socket.emit('receiveMessage', { Message: response.send, RoomName: data.RoomName });
 				return;
 			}
@@ -116,7 +119,6 @@ export class ChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 			await this.chatService.joinRoom(room.RoomName, data.Receiver, null);
 		socket.join(room.RoomName);
 		const newRoomData = await this.chatService.getRoom(room.RoomName);
-		console.log(sockets);
 		socket.emit('createRoom', newRoomData);
 	}
 
@@ -193,6 +195,19 @@ export class ChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@SubscribeMessage('inviteGame')
 	async inviteGame(@MessageBody() data: any, @ConnectedSocket() socket: Socket) {
+		console.log(data);
+		if (sockets.has(data.Invited))
+			sockets.get(data.Invited).socket.emit('invite', data);
+		else
+			socket.volatile.emit('ErrorHandle', { message: 'Some thing is wrong' });
+	}
+
+	@SubscribeMessage('acceptInvite')
+	async acceptInvite(@MessageBody() data: any, @ConnectedSocket() socket: Socket) {
+		if (sockets.has(data.UserName))
+			sockets.get(data.UserName).socket.emit('acceptInvite', {RoomName:data.RoomName});
+		else
+			socket.volatile.emit('ErrorHandle', { message: 'Some thing is wrong' });
 		// await this.chatService.mutedUser(data.UserName, data.RoomName);
 		// socket.emit('success', { Message: 'User is UnMuted ' + data.UserName });
 	}

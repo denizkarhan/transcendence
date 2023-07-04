@@ -3,10 +3,11 @@ import api, { getCookie } from '../api';
 import "../App.css";
 import MyNavbar from "./myNavbar";
 import { useIsAuthenticated } from 'react-auth-kit';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useEffect } from "react";
 import { ToastProvider } from "./Toast";
 import { InviteToast } from "../chat/chatUtils/inviteGame";
+import { Socket, io } from "socket.io-client";
 
 const repeatString = (str: string, count: number) => {
 	return str.repeat(count);
@@ -39,8 +40,10 @@ export async function isBlock(username: any, friendName: any) {
 	return false;
 }
 
+
 export default function Main() {
 	const [pp, setPP] = useState('');
+	
 	useEffect(() => {
 		const fetchData = async () => {
 			setPP(await getPP(undefined));
@@ -48,7 +51,6 @@ export default function Main() {
 
 		fetchData();
 	}, []);
-
 	const isAuthenticated = useIsAuthenticated();
 	return (
 

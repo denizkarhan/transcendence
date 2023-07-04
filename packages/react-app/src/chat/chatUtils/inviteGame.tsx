@@ -1,14 +1,15 @@
-import React, { createContext, useContext, useState } from 'react'
-import { Toast, Button } from 'react-bootstrap'
+import React, { createContext, useContext, useRef, useState } from 'react'
+import { Toast, Button, Stack } from 'react-bootstrap'
 import ToastContainer from 'react-bootstrap/ToastContainer';
-import "./invite.css";
+import { useNavigate } from 'react-router-dom';
+import { Socket } from 'socket.io-client';
 
 interface ToastProviderProps {
 	children: React.ReactNode;
 }
 
 interface ToastContextType {
-	invite: (data: any) => void;
+	invite: (data: any, socket: Socket) => void;
 }
 
 export const ToastContext = createContext<ToastContextType>({
@@ -16,52 +17,54 @@ export const ToastContext = createContext<ToastContextType>({
 });
 
 export const InviteToast: React.FC<ToastProviderProps> = ({ children }) => {
+	const navigate = useNavigate();
 	const [showToast, setToast] = useState(false);
+	const [accept, setAccept] = useState<boolean>(false);
+	const [inviteUser, setInviteUser] = useState<{ Invited: string, RoomName: string, UserName: string }>();
+	const socketRef = useRef<any>(null);
+	const newSocket = socketRef.current as Socket;
 
-	const invite = (data: any) => {
-		// Davet işlemini gerçekleştir
+	const invite = (data: any, socket: Socket) => {
 		console.log('Invite:', data);
+		setInviteUser(data);
+		socketRef.current = socket;
 		setToast(true);
-		const successToast = document.createElement('div');
-		successToast.classList.add('my-success-toast');
-		successToast.innerText = "successMessage";
-
-		document.body.appendChild(successToast);
 
 		setTimeout(() => {
-			document.body.removeChild(successToast);
+			setToast(false);
 		}, 3000);
 	};
+	// /9912349a-1c85-44ae-a79a-7337ab3a946d
+	// /9912349a-1c85-44ae-a79a-7337ab3a946d
+	const handleAccept = () => {
+		if (showToast)
+			setToast(false);
+		newSocket.emit('acceptInvite', { ...inviteUser });
+		navigate(`game/${inviteUser?.RoomName}`);
+		return;
+	}
 
 	return (
 		<ToastContext.Provider value={{ invite }}>
 			{children}
-			{/* <div
-				aria-live="polite"
-				aria-atomic="true"
-				className="bg-dark position-relative"
-				style={{ minHeight: '240px' }}
-			>
+			<div id="invite-container">
 				<ToastContainer
 					className="p-3"
-					position='top-end'
-					style={{ zIndex: 1 }}
-
+					position="middle-end"
+					style={{ zIndex: 1, }}
 				>
-					<Toast
-						onClose={() => setToast(false)}
-						autohide
-						show={showToast}
-						delay={2200}
-					>
-						<Toast.Header>
-							<strong className="mr-auto">React Toast</strong>
-							<small>50 mins ago</small>
+					<Toast show={showToast} style={{background:'black', borderRadius: '1rem', border: '2px solid', borderColor:'#54B4D3'}}>
+						<Toast.Header closeButton={false} style={{background:'black', color:'white'}}>
+							<strong className="me-auto">Game Invite</strong>
 						</Toast.Header>
-						<Toast.Body>Lorem ipsum dolor sit adipiscing elit.</Toast.Body>
+						<Toast.Body style={{background:'black'}}>{inviteUser?.UserName} invites you to the game</Toast.Body>
+						<Stack gap={2} direction='horizontal' style={{display:'flex', justifyContent:'center'}}>
+							<Button onClick={handleAccept} bsPrefix='btn btn-outline-success' >Accept</Button>
+							<Button onClick={() => setToast(false)} bsPrefix='btn btn-outline-danger' >Decline</Button>
+						</Stack>
 					</Toast>
 				</ToastContainer>
-			</div> */}
+			</div>
 		</ToastContext.Provider>
 	)
 }

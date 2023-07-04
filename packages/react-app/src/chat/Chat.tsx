@@ -16,11 +16,12 @@ import { Message } from "../interfaces/message";
 import ChatFriend from "./ChatFriend";
 import ChatBoxHeader from "./ChatBoxHeader";
 import { useNavigate, useParams } from "react-router-dom";
+import { useToastInvite } from "./chatUtils/inviteGame";
 
 
 function ChatService() {
-	const { friendname } = useParams<string>();
 	const navigate = useNavigate();
+	const { friendname } = useParams<string>();
 	const { showError, showSuccess } = useToast();
 	const URL = "http://k2m13s05.42kocaeli.com.tr:3001/chat";
 	const auth = useAuthUser();
@@ -38,6 +39,7 @@ function ChatService() {
 			setActiveTab(tab);
 		}
 	};
+	
 	useEffect(() => {
 		const socket = io(URL, {
 			auth: {
@@ -178,7 +180,16 @@ function ChatService() {
 		if (friendname !== undefined) {
 			socket.emit('createPrivMessage', { Sender: user, Receiver: friendname });
 		}
+
+		socket.on('invite', (data:any)=>{
+			handleInvite(data, socket);
+		})
+
+		socket.on('acceptInvite', (data:any)=>{
+			navigate(`/game/${data.RoomName}`);
+		})
 		return () => {
+			socket.off('invite');
 			socket.off('success');
 			socket.off('getData');
 			socket.off('getPublic');
@@ -202,6 +213,12 @@ function ChatService() {
 			{message}
 		</Tooltip>
 	);
+
+
+	const toast = useToastInvite();
+	const handleInvite = (data:any, socket:Socket) => {
+		toast.invite(data, socket);
+	}
 
 	return (
 

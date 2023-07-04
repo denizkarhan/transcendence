@@ -18,6 +18,7 @@
     "bootswatch": "^5.2.3",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
+    "crypto-browserify": "^3.12.0",
     "date-fns": "^2.30.0",
     "dotenv": "^16.1.4",
     "jwt-decode": "^3.1.2",
@@ -68,6 +69,7 @@
     ]
   },
   "devDependencies": {
+    "@types/uuid": "^9.0.2",
     "@types/validator": "^13.7.17"
   }
 }

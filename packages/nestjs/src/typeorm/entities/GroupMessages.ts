@@ -16,7 +16,7 @@ export class GroupMessages{
 	GroupChat: GroupChat;
 
 	@ManyToOne(()=>GroupChatUsers, (GroupChatUsers)=>GroupChatUsers.users)
-	User: User;
+	User: GroupChatUsers;
 
 	@Column()
 	Message:string;

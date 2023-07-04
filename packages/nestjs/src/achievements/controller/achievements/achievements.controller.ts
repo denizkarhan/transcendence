@@ -22,3 +22,5 @@ export class AchievementsController {
 		return await this.achievementService.getArchievementById(id);
 	}
 }
+
+

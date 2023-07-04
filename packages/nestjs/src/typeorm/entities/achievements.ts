@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Factory } from "nestjs-seeder"
+import { UserAchievements } from "./userAchievements";
 
 @Entity({name:"achivements"})
 export class Achievements{
@@ -8,4 +9,7 @@ export class Achievements{
 
 	@Column({unique:true})
 	Achievement:string;
+
+	@OneToMany(()=> UserAchievements, (userAchi)=> userAchi.Achievement)
+	userAchievement: UserAchievements;
 }

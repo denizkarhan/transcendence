@@ -48,6 +48,8 @@ export class BlockUserService {
     async isBlock(userName: string, blockUserName: string) {
         const user = await this.userService.getUserByLogin(userName);
         const blockUser = await this.userService.getUserByLogin(blockUserName);
+        console.log(userName);
+        console.log(blockUserName);
         return await this.blocksRepository.exist({ where: { blockingUser: user, blockedUser: blockUser } });
     }
 }

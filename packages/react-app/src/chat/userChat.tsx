@@ -2,9 +2,10 @@ import { format } from 'date-fns';
 import "./chat.css";
 import { useEffect, useState } from 'react';
 import { Room } from '../interfaces/room';
+import { Button } from 'react-bootstrap';
 
 interface Props {
-	chat:  Room | null;
+	chat: Room | null;
 	user: any;
 }
 
@@ -13,8 +14,9 @@ const UserChat = (props: Props) => {
 
 	useEffect(() => {
 		if (props.chat?.RoomName[0] !== '#') {
-			const userName = props.chat?.Users.filter(user => user.users.Login !== props.user)[0].users.Login;
-			setChatName(userName);
+			const userName = props.chat?.Users.filter(user => user.users.Login !== props.user);
+			if (userName?.length)
+				setChatName(userName[0].users.Login);
 		}
 		else
 			setChatName(props.chat?.RoomName);
@@ -29,7 +31,7 @@ const UserChat = (props: Props) => {
 			}}
 		>
 			<a
-				href="#!"
+				style={{cursor:"pointer"}}
 				className="d-flex justify-content-between link-light"
 			>
 				<div className="d-flex flex-row">

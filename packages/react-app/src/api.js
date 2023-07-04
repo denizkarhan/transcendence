@@ -21,7 +21,7 @@ export function deleteCookie(name) {
 
 // console.log(process.env.BACK_END_URI);
 const api = axios.create({
-	baseURL: "http://10.12.13.1:3001",
+	baseURL: "http://k2m13s05.42kocaeli.com.tr:3001",
 	headers: {
 		'Authorization': 'Bearer ' + getCookie('42_auth'),
 	}

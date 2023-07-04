@@ -1,8 +1,6 @@
 import { ConnectedSocket, MessageBody, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { ChatService } from './service/chat/chat.service';
 import { Server, Socket } from 'socket.io';
-import { Roles } from 'src/utils/metadata';
-import { UUID } from 'typeorm/driver/mongodb/bson.typings';
 
 @WebSocketGateway({
 	cors: {
@@ -41,13 +39,7 @@ export class ChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@SubscribeMessage('createRoom')
 	async createRoom(@MessageBody() room: any, @ConnectedSocket() socket: Socket) {
-		if (room.RoomName[0] !== '#' )
-		{
-			socket.emit('ErrorHandle', { message: 'room name must start with #' });
-			return;
-		}
-		if (await this.chatService.isExistRoom(room.RoomName))
-		{
+		if (await this.chatService.isExistRoom(room.RoomName)) {
 			socket.emit('ErrorHandle', { message: 'Is Exist Room' });
 			return;
 		}
@@ -59,20 +51,36 @@ export class ChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 		})
 		const newRoomData = await this.chatService.getRoom(room.RoomName);
 		socket.join(room.RoomName);
+		if (newRoomData.IsPublic)
+			socket.broadcast.emit('getPublicAddOne', newRoomData);
 		socket.emit('createRoom', newRoomData);
 	}
 
-	@SubscribeMessage('changePassword')
+	@SubscribeMessage('updateRoom')
 	async changePassword(@MessageBody() room: any, @ConnectedSocket() socket: Socket) {
-		await this.chatService.changeRoomPassword(room.roomName, room.password, room.username);
+		if (room?.RoomName && await this.chatService.isExistRoom(room.RoomName)) {
+			socket.emit('ErrorHandle', { message: 'Is Exist Room' });
+			return;
+		}
+		const response = await this.chatService.updateRoom({ RoomName: room?.RoomName, Password: room?.Password, IsPublic: room?.IsPublic }, room.Admin, room.OldRoomName);
+		if (response.status === 200) {
+			const newRoomData = await this.chatService.getRoom(room.RoomName);
+			socket.emit("updateRoom", { OldRoomName: room.OldRoomName, ...newRoomData });
+			socket.to(newRoomData.RoomName).emit("updateRoom", { OldRoomName: room.OldRoomName, ...newRoomData });
+		}
+		else
+			socket.emit('ErrorHandle', { message: 'Some thing is wrong' });
 	}
 
 
-	
 	@SubscribeMessage('sendMessage')
 	async sendMessage(@MessageBody() data: any, @ConnectedSocket() socket: Socket) {
 		// console.log("send ", data);
-		const response = await this.chatService.sendMessage(data.RoomName, data.UserName, data.Message);
+		let response;
+		if (data.RoomName[0] !== '#')
+			response = await this.chatService.privateMessage(data.RoomName, data.UserName, data.Message);
+		else
+			response = await this.chatService.sendMessage(data.RoomName, data.UserName, data.Message);
 		if (response) {
 			socket.emit('receiveMessage', { Message: response, RoomName: data.RoomName });
 			socket.to(data.RoomName).emit('receiveMessage', { Message: response, RoomName: data.RoomName });
@@ -84,13 +92,15 @@ export class ChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 	@SubscribeMessage('createPrivMessage')
 	async sendPrivMessage(@MessageBody() data: any, @ConnectedSocket() socket: Socket) {
 		const room = await this.chatService.getPrivateRoom(data.Sender, data.Receiver);
-		// console.log(room);
+		if (!room) {
+			socket.emit('ErrorHandle', { message: 'User Not Found' });
+			return;
+		}
 		if (!(await this.chatService.isJoin(room.RoomName, data.Receiver)))
 			await this.chatService.joinRoom(room.RoomName, data.Receiver, null);
 		socket.join(room.RoomName);
 		const newRoomData = await this.chatService.getRoom(room.RoomName);
 		socket.emit('createRoom', newRoomData);
-
 	}
 
 	@SubscribeMessage('getData')
@@ -104,6 +114,7 @@ export class ChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 	async join(@MessageBody() data: any, @ConnectedSocket() socket: Socket) {
 		// console.log(data);
 		if (await this.chatService.isExistRoom(data.RoomName)) {
+
 			const isJoin = await this.chatService.isJoin(data.RoomName, data.UserName);
 			if (isJoin === false) {
 				const response = await this.chatService.joinRoom(data.RoomName, data.UserName, data.Password);
@@ -111,12 +122,10 @@ export class ChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 					socket.emit('ErrorHandle', { message: response.message });
 					return;
 				}
-			}
-			socket.join(data.RoomName);
-			socket.emit('isJoin', true);
-			if (isJoin === false) {
-				const newRoomData = await this.chatService.getRoom(data.RoomName);
-				socket.emit('createRoom', newRoomData);
+				socket.join(data.RoomName);
+				const roomData = await this.chatService.getRoom(data.RoomName);
+				socket.emit('updateRoom', { OldRoomName: roomData.RoomName, ...roomData });
+				socket.to(data.RoomName).emit('updateRoom', { OldRoomName: roomData.RoomName, ...roomData });
 			}
 		} else {
 			socket.emit('ErrorHandle', { message: 'Channel Is Not Found' });
@@ -124,11 +133,43 @@ export class ChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 
 	}
 
-
 	@SubscribeMessage('getPublic')
 	async getPublic(@ConnectedSocket() socket: Socket) {
 		const response = await this.chatService.getPublic();
 
 		socket.emit('getPublic', response);
+	}
+
+	@SubscribeMessage('deleteRoom')
+	async deleteRoom(@MessageBody() data: any, @ConnectedSocket() socket: Socket) {
+		const deleted = await this.chatService.getRoom(data.RoomName);
+		await this.chatService.deleteRoom(data.RoomName);
+		if (deleted.IsPublic)
+			socket.broadcast.emit('deleteRoom', deleted);
+		else
+			socket.to(data.RoomName).emit('deleteRoom', deleted);
+		socket.emit('deleteRoom', deleted);
+	}
+
+	@SubscribeMessage('kick')
+	async kickRoom(@MessageBody() data: any, @ConnectedSocket() socket: Socket) {
+
+		await this.chatService.kickUser(data.UserName, data.RoomName);
+		const room = await this.chatService.getRoom(data.RoomName);
+		socket.emit("updateRoom", { OldRoomName: room.RoomName, KickUser: data.UserName, ...room });
+		socket.to(data.RoomName).emit("updateRoom", { OldRoomName: room.RoomName, KickUser: data.UserName, ...room });
+	}
+
+	@SubscribeMessage('mute')
+	async mute(@MessageBody() data: any, @ConnectedSocket() socket: Socket) {
+		await this.chatService.mutedUser(data.UserName, data.RoomName);
+		socket.emit('success', { Message: 'User is Muted ' + data.UserName });
+	}
+
+
+	@SubscribeMessage('unmute')
+	async unMute(@MessageBody() data: any, @ConnectedSocket() socket: Socket) {
+		await this.chatService.mutedUser(data.UserName, data.RoomName);
+		socket.emit('success', { Message: 'User is UnMuted ' + data.UserName });
 	}
 }

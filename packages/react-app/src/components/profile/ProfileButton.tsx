@@ -6,6 +6,7 @@ import { useToast } from "../Toast";
 import { useEffect, useState } from "react";
 import { error } from "console";
 import { User } from "../../interfaces/user";
+import { useNavigate } from "react-router-dom";
 
 
 export interface Props {
@@ -18,6 +19,7 @@ export default function ProfileButton(props: Props) {
 	const auth = useAuthUser();
 	const login = auth()?.username ?? "User";
 	const [follow, setFollow] = useState<boolean>(false);
+	const navigate = useNavigate();
 
 	const fetchData = async () => {
 		const response = await api.get(`/friends/isFriend/${props.friendName}`);
@@ -83,7 +85,7 @@ export default function ProfileButton(props: Props) {
 						overlay={renderTooltip('Click to message user')}
 					>
 
-						<Button bsPrefix="btn btn-outline-dark">
+						<Button onClick={() => navigate(`/chat/${props.friendName}`)} bsPrefix="btn btn-outline-dark">
 							<i className="bi bi-chat-left fs-4"></i>
 						</Button>
 					</OverlayTrigger>

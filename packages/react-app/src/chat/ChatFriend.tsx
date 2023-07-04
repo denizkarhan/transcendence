@@ -51,13 +51,6 @@ export default function ChatFriend(props: Props) {
 							className="d-flex justify-content-between link-light"
 						>
 							<div className="d-flex flex-row">
-								{/* <img
-									src={pp[index]}
-									alt="avatar"
-									className="rounded-circle me-3"
-									width={60}
-									height={60}
-								/> */}
 								<span
 									style={{
 										backgroundImage: `url(${pp.at(index)})`,

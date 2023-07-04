@@ -6,6 +6,7 @@ const userSocket = new Map<string, {socket: Socket}>();
 const rooms = new Map<string, { count: number, user1: string | null, user2: string | null, connectionCount: number, scoreOne: number, scoreTwo: number }>(); // (Kişi sayısı, User1 İd, User2 İd, Oyuna bağlananların sayısı, ScoreOne, ScoreTwo)
 const connectedUsers = new Map<string, { username: string, socket: Socket, roomName: string }>();
 let nextUserId = 1;
+let a = 0;
 
 const G = '\x1b[32m';
 const RB = '\x1b[31;1m';
@@ -154,10 +155,8 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
                 
                 let winner = scoreOne === 3 ? setupRoom.user1 : scoreTwo === 3 ? setupRoom.user2 : null;
 
-                if (scoreOne === 3 || scoreTwo === 3) {
-                    userSocket.get(rooms.get(room).user1).socket.emit('gameOver', {winner: winner});
-                    userSocket.get(rooms.get(room).user2).socket.emit('gameOver', {winner: winner});
-
+                if ((scoreOne === 3 || scoreTwo === 3) && a++ % 2 == 0) {
+                    
                     this.matchService.addMatch({
                         EnemyResult: scoreTwo,
                         MyResult: scoreOne,
@@ -168,7 +167,11 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
                         MyResult: scoreTwo,
                         EnemyUserName: setupRoom.user1,
                     }, setupRoom.user2);
+					userSocket.get(rooms.get(room).user1).socket.emit('gameOver', {winner: winner});
+                    userSocket.get(rooms.get(room).user2).socket.emit('gameOver', {winner: winner});
                 }
+				// else if ((scoreOne === 3 || scoreTwo === 3) && a % 2 != 0)
+				// 	a += 1;
             }
         }
     }

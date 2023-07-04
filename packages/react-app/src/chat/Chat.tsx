@@ -1,6 +1,6 @@
 import { Button, Card, Col, Container, Overlay, OverlayTrigger, Row, Stack, Tab, Tabs, Tooltip } from "react-bootstrap";
 import io, { Socket } from 'socket.io-client';
-import { getCookie } from "../api";
+import api, { getCookie } from "../api";
 import { useEffect, useRef, useState } from "react";
 import { Chat } from "../interfaces/chat";
 import { useAuthUser } from "react-auth-kit";
@@ -15,20 +15,29 @@ import { Room } from "../interfaces/room";
 import { Message } from "../interfaces/message";
 import ChatFriend from "./ChatFriend";
 import ChatBoxHeader from "./ChatBoxHeader";
-
+import { useNavigate, useParams } from "react-router-dom";
 
 
 function ChatService() {
+	const { friendname } = useParams<string>();
+	const navigate = useNavigate();
 	const { showError, showSuccess } = useToast();
-	const URL = "http://10.12.13.1:3001/chat";
+	const URL = "http://k2m13s05.42kocaeli.com.tr:3001/chat";
 	const auth = useAuthUser();
 	const socketRef = useRef<any>(null);
 	const newSocket = socketRef.current as Socket;
 
 	const user = auth()?.username ?? "User";
 	const [rooms, setRooms] = useState<Room[]>([]);
-	const [publicRoom, setPulic] = useState<Room[]>([]);
+	const [publicRoom, setPublic] = useState<Room[]>([]);
 	const [room, setRoom] = useState<Room | null>(null);
+	const [activeTab, setActiveTab] = useState('messages');
+
+	const handleTabSelect = (tab: string | null): void => {
+		if (tab) {
+			setActiveTab(tab);
+		}
+	};
 	useEffect(() => {
 		const socket = io(URL, {
 			auth: {
@@ -46,34 +55,122 @@ function ChatService() {
 
 		socket.emit('getPublic');
 		socket.on('getPublic', (data: Room[]) => {
-			setPulic(data);
+			setPublic(data);
+		})
 
+		socket.on('success', (data: any) => {
+			showSuccess(data.Message);
+		})
+
+		socket.on('getPublicAddOne', (data: Room) => {
+			setPublic(prevData => {
+				return [data, ...prevData];
+			});
 		})
 
 		socket.on('createRoom', (data: Room) => {
-			console.log(data);
 			setRooms(prevData => {
-				let isDataExists = false;
-				for (let i = 0; i < prevData.length; i++) {
-					if (prevData[i].RoomName === data.RoomName) {
-						isDataExists = true;
-						break;
+				setPublic(prevPublic => {
+					const isDataExists = prevData.find(room => room.RoomName === data.RoomName) !== undefined ? true : false;
+					const index = prevPublic.findIndex(room => room.RoomName === data.RoomName);
+					if (index !== -1)
+						prevPublic.splice(index, 1);
+					if (isDataExists && data.IsPublic) {
+						return [data, ...prevPublic];
 					}
-				}
-				if (isDataExists) {
+					else if (isDataExists && !data.IsPublic) {
+						return prevPublic;
+					}
+					else if (!isDataExists && data.IsPublic)
+						return [data, ...prevPublic];
+					return prevPublic;
+				});
+				const index = prevData.findIndex(room => room.RoomName === data.RoomName);
+				if (index !== -1)
+					prevData.splice(index, 1);
+				return [data, ...prevData];
+			});
+			// setRooms(prevData => {
+			// 	let isDataExists = false;
+			// 	for (let i = 0; i < prevData.length; i++) {
+			// 		if (prevData[i].RoomName === data.RoomName) {
+			// 			isDataExists = true;
+			// 			break;
+			// 		}
+			// 	}
+			// 	if (isDataExists) {
+			// 		return prevData;
+			// 	}
+			// 	return [data, ...prevData];
+			// });
+			// if (data.IsPublic) {
+			// 	setPublic(prevPublic => {
+			// 		return [data, ...prevPublic];
+			// 	})
+			// }
+			setRoom(data);
+			setActiveTab('messages');
+		});
+
+		socket.on("updateRoom", (data: any) => {
+			const { OldRoomName, KickUser, ...newRoom } = data;
+			setRooms(prevData => {
+				setPublic(prevPublic => {
+					const isDataExists = prevData.find(room => room.RoomName === OldRoomName) !== undefined ? true : false;
+					const index = prevPublic.findIndex(room => room.RoomName === data.RoomName);
+					if (index !== -1)
+						prevPublic.splice(index, 1);
+					if (isDataExists && newRoom.IsPublic) {
+						return [newRoom, ...prevPublic];
+					}
+					else if (isDataExists && !newRoom.IsPublic) {
+						return prevPublic;
+					}
+					else if (!isDataExists && newRoom.IsPublic)
+						return [newRoom, ...prevPublic];
+					return prevPublic;
+				});
+				console.log(prevData);
+				const index = prevData.findIndex(room => room.RoomName === data.RoomName);
+				if (index !== -1)
+					prevData.splice(index, 1);
+				console.log(prevData);
+				if (KickUser !== undefined && user === KickUser) {
 					return prevData;
 				}
-				return [...prevData, data];
+				else
+					return [newRoom, ...prevData];
 			});
-			setRoom(data);
-		});
+			if (KickUser !== undefined && user === KickUser)
+				setRoom(null);
+			else
+				setRoom(newRoom);
+		})
 
 		socket.on('ErrorHandle', (data: any) => {
 			showError(data.message);
 		})
 
-		socket.on('isJoin', (data: any) => {
-			console.log(data);
+		socket.on("deleteRoom", (data: Room) => {
+			setRoom(null);
+			setRooms(prevData => {
+				const index = prevData.findIndex(room => room.RoomName === data.RoomName);
+				if (index !== -1)
+					prevData.splice(index, 1);
+				return prevData;
+			});
+			if (data.IsPublic) {
+				setPublic(prevPublic => {
+					const index = prevPublic.findIndex(room => room.RoomName === data.RoomName);
+					if (index !== -1)
+						prevPublic.splice(index, 1);
+					return prevPublic;
+				});
+			}
+		})
+
+		socket.on('ErrorHandle', (data: any) => {
+			showError(data.message);
 		})
 
 		socket.on('receiveMessage', (data: any) => {
@@ -93,13 +190,18 @@ function ChatService() {
 
 		socketRef.current = socket;
 
+		if (friendname !== undefined) {
+			socket.emit('createPrivMessage', { Sender: user, Receiver: friendname });
+		}
 		return () => {
+			socket.off('success');
 			socket.off('getData');
 			socket.off('getPublic');
 			socket.off('createRoom');
 			socket.off('ErrorHandle');
 			socket.off('isJoin');
 			socket.off('receiveMessage');
+			socket.off("deleteRoom");
 			socket.disconnect();
 		};
 	}, [])
@@ -108,37 +210,13 @@ function ChatService() {
 		setRoom({ ...room });
 		newSocket.emit('join', { ...room, UserName: user });
 	}
-	const [activeTab, setActiveTab] = useState('messages');
 
-	const handleTabSelect = (tab: string | null): void => {
-		if (tab) {
-			setActiveTab(tab);
-		}
-	};
-
+	console.log(rooms);
 	const renderTooltip = (message: string) => (
 		<Tooltip id="hover-tooltip">
 			{message}
 		</Tooltip>
 	);
-
-	const overlay = (
-		<Overlay
-			show={true} // Overlay'in görünür olmasını sağlar
-			placement="top" // Overlay'in pozisyonunu belirler
-			target={document.querySelector('#tabs-container')} // Overlay'in hedefini belirler (Tablar konteynerine göre ayarlanmalıdır)
-		>
-			<Tooltip>
-				{renderTooltip('Tooltip Message')}
-			</Tooltip>
-		</Overlay>
-	);
-
-	const [showCanvas, setShowCanvas] = useState(false);
-
-	const handleToggleCanvas = () => {
-		setShowCanvas(!showCanvas);
-	};
 
 	return (
 
@@ -157,13 +235,11 @@ function ChatService() {
 									</OverlayTrigger>
 								}>
 									<Stack direction="horizontal" className="mb-0 custom-stack" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-										{rooms?.map((chat: Room, index) => {
-											return (
-												<div style={{ width: '100%' }} key={index} onClick={() => joinRoom(chat)}>
-													<UserChat chat={chat} user={user} />
-												</div>
-											);
-										})}
+										{rooms.map((chat: Room, index) => (
+											<div style={{ width: '100%' }} key={index} onClick={() => joinRoom(chat)}>
+												<UserChat chat={chat} user={user} />
+											</div>
+										))}
 									</Stack>
 								</Tab>
 								<Tab eventKey="createRoom" title={
@@ -238,7 +314,7 @@ function ChatService() {
 				</Col>
 				<Col md="6" lg="7" xl="8">
 					<Card className="mask-custom" style={{ height: '100%' }}>
-						<ChatBoxHeader user={user} room={room} />
+						<ChatBoxHeader user={user} room={room} socket={newSocket} />
 						<Card.Body className="custom-card-body">
 							<ChatBox key="ChatBox" room={room} user={user} />
 						</Card.Body>

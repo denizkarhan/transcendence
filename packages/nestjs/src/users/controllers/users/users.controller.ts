@@ -29,11 +29,10 @@ export class UsersController {
 
 	@Get('userName/:userName')
 	@UseFilters(ExceptionHandleFilter)
-	
 	@ApiBearerAuth()
 	async getUserByName(@Param('userName') userName: string) {
 		const user = await this.userService.getUserByLogin(userName);
-		if (!user) throw new HttpException('User Not Found', HttpStatus.NO_CONTENT);
+		if (!user) throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
 		return new SerializedUser(user);
 	}
 

@@ -42,19 +42,6 @@ const App: React.FC<Props> = (props: Props) => {
 
 	useEffect(() => {
 		const fetchData = async () => {
-			const resMatch = await api.get(`/match-histories/${username}`);
-			const matches: Match[] = resMatch.data;
-			let winsCount = 0; // Initialize a counter for wins
-
-			if (resMatch.data.length !== 0) {
-				matches.forEach((match) => {
-					if (match.MyResult > match.EnemyResult) {
-						winsCount++; // Increment the counter for each win
-					}
-				});
-			}
-
-			setWins(winsCount);
 			const block = await isBlock(username, login);
 			if (block) {
 				navigate('/');
@@ -70,13 +57,26 @@ const App: React.FC<Props> = (props: Props) => {
 			} catch (error: any) {
 				navigate('/404');
 			}
+			const resMatch = await api.get(`/match-histories/${username}`);
+			const matches: Match[] = resMatch.data;
+			let winsCount = 0; // Initialize a counter for wins
+
+			if (resMatch.data.length !== 0) {
+				matches.forEach((match) => {
+					if (match.MyResult > match.EnemyResult) {
+						winsCount++; // Increment the counter for each win
+					}
+				});
+			}
+
+			setWins(winsCount);
 		}
 		fetchData();
 	}, [username]);
 
 	useEffect(() => {
 		setWins(0);
-	}, [username]);	
+	}, [username]);
 
 	return (
 		<Container style={{ maxWidth: '70%' }}>

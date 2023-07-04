@@ -27,7 +27,7 @@ export default function Achievements(props: Props) {
 			{achievements.map((achi) => {
 				const found = userAchievement.find((userAchi => userAchi.Achievement === achi.Achievement)) !== undefined;
 				const grayscale = userAchievement.find((userAchi => userAchi.Achievement === achi.Achievement)) !== undefined ? "" : "black-and-white";
-				const imgUrl = "achievements/" + achi.Achievement +  ".jpeg";
+				const imgUrl = "http://k2m13s05.42kocaeli.com.tr:3000/achievements/" + achi.Achievement +  ".jpeg";
 				return (
 					<Col key={achi.Id} lg={4} md={6} sm={12} className="mb-4">
 						<Alert variant={userAchievement.find((userAchi => userAchi.Achievement === achi.Achievement)) !== undefined ? 'info' : 'dark'}>
@@ -41,4 +41,5 @@ export default function Achievements(props: Props) {
 			})}
 		</Row>
 	);
+
 }

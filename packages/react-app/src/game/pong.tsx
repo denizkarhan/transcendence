@@ -293,11 +293,11 @@ function Game() {
 		// Oyuncu odada tek kaldığında
 		canvas.socket.on('userDisconnected', (data: any) => {
 			if (data) {
-				const textWidth = context.measureText("Your opponent has left the game, going to lobby...").width;
 				context.fillStyle = "#fff";
-				context.font = "bold 12px Arial";
+				context.font = "bold 14px Arial";
+				const textWidth = context.measureText("Your opponent has left the game, going to lobby...").width;
 				setTimeout(() => {
-					context.fillText("Your opponent has left the game, going to lobby...", canvas.width / 2 - textWidth / 2, canvas.height / 2 + 6);
+					context.fillText("Your opponent has left the game, going to lobby...", canvas.width / 2 - textWidth / 2, canvas.height / 2 + 7);
 				}, 100);
 
 				gameStarter = 0;
@@ -311,14 +311,15 @@ function Game() {
 		// Oyun bitti şampiyonu belirle
 		canvas.socket.on('gameOver', (data: any) => {
 			context.fillStyle = "#fff";
-			context.font = "bold 48px Arial";
+			context.font = "bold 54px Arial";
 			scoreOne = data!.scoreOne;
 			scoreTwo = data!.scoreTwo;
+			context.clearRect(0, 0, canvas.width, canvas.height);
 			displayScoreOne();
 			displayScoreTwo();
 			const text = "Player " + data!.winner + " Winner!  You are going to lobby...";
 			const textWidth = context.measureText(text).width;
-			context.fillText(text, canvas.width / 2 - textWidth / 2, canvas.height / 2 + 24);
+			context.fillText(text, canvas.width / 2 - textWidth / 2, canvas.height / 2 + 27);
 			gameStarter = 0;
 			setTimeout(() => {
 				handleRefresh();

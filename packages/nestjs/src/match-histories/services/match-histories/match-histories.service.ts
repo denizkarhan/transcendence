@@ -40,6 +40,7 @@ export class MatchHistoriesService {
     }
 
     const arr = (await this.matchRepository.findAndCount({ where: { User: user } }))[1];
+    const arr2 = (await this.matchRepository.findAndCount({ where: { User: enemy } }))[1];
     
     if (arr >= 25)
       this.userAchievementService.addAchievement(6, user);
@@ -48,19 +49,13 @@ export class MatchHistoriesService {
     else if (arr >= 5)
       this.userAchievementService.addAchievement(4, user);
 
-
-
-
-    // let res;
-    // arr.map((index) => {
-    //   res += index.MyResult;
-    // });
-    // if (res >= 25)
-    //   this.userAchievementService.addAchievement(6, user);
-    // else if (res => 10)
-    //   this.userAchievementService.addAchievement(5, user);
-    // else if (res => 5)
-    //   this.userAchievementService.addAchievement(4, user);
+    
+      if (arr2 >= 25)
+        this.userAchievementService.addAchievement(6, enemy);
+      else if (arr2 >= 10)
+        this.userAchievementService.addAchievement(5, enemy);
+      else if (arr2 >= 5)
+        this.userAchievementService.addAchievement(4, enemy);
   }
 
 

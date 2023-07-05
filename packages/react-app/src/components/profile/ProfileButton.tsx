@@ -4,7 +4,6 @@ import UpdateProfile from "../UpdateProfile";
 import api from "../../api";
 import { useToast } from "../Toast";
 import { useEffect, useState } from "react";
-import { error } from "console";
 import { User } from "../../interfaces/user";
 import { useNavigate } from "react-router-dom";
 

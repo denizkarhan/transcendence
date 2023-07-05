@@ -1,11 +1,11 @@
-import { Button, Form, Modal, Stack, Tab, Tabs } from "react-bootstrap";
+import { Button, Form, Modal, Stack, Tab, Tabs, OverlayTrigger, Tooltip } from "react-bootstrap";
 import { ChatUser } from "../../interfaces/chatUser";
 import { Socket } from "socket.io-client";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../api";
 import { useToast } from "../../components/Toast";
-import { v4 as uuidv4 } from 'uuid';
+// import { v4 as uuidv4 } from 'uuid';
 
 interface Props {
 	users: ChatUser[];
@@ -16,14 +16,18 @@ interface Props {
 	RoomName: string;
 }
 
-
-
 const ChatSettings = (props: Props) => {
 	const navigate = useNavigate();
 	const { showError, showSuccess } = useToast();
 	const [admin, setAdmin] = useState<string[]>([]);
 	const [muted, setMuted] = useState<boolean>(false);
 	const [isPasswordEntered, setIsPasswordEntered] = useState(false);
+
+	const renderTooltip = (message: string) => (
+		<Tooltip id="hover-tooltip">
+			{message}
+		</Tooltip>
+	);
 
 	useEffect(() => {
 		const admins = props.users.filter(user => user.isAdmin).map(user => user.users.Login);
@@ -36,11 +40,11 @@ const ChatSettings = (props: Props) => {
 		}
 	};
 
-	const handlePasswordChange = (event:any) => {
+	const handlePasswordChange = (event: any) => {
 		const password = event.target.value;
 		setIsPasswordEntered(password !== ''); // Şifre alanı doluysa true, boş ise false
-	  };
-	
+	};
+
 	const onSubmit = async (event: any) => {
 		event.preventDefault();
 		const formData = new FormData(event.target);
@@ -93,8 +97,8 @@ const ChatSettings = (props: Props) => {
 		}
 	}
 
-	const handleInvite = (invited:string) =>{
-		props.socket.emit('inviteGame', {RoomName:uuidv4(), Invited:invited, UserName:props.user});
+	const handleInvite = (invited: string) => {
+		props.socket.emit('inviteGame', { RoomName: "uuidv4()", Invited: invited, UserName: props.user });
 	}
 
 	const [activeTab, setActiveTab] = useState('Users');
@@ -131,13 +135,52 @@ const ChatSettings = (props: Props) => {
 								}}>
 									<span onClick={() => navigate(`/profile/${user.users.Login}`)} style={{ width: '100%' }}>{user.users.Login}</span>
 									<Stack key={user.users.Login} direction="horizontal" gap={2}>
-										{user.users.Login !== props.user ? <Button onClick={() => handleBlockUser(user)} bsPrefix="btn btn-outline-info"><i className="bi bi-slash-circle"></i></Button> : null}{/*block user */}
-										{admin.find(username => username === props.user) !== undefined && user.users.Login !== props.user ? <Button onClick={() => handleKick(user.users.Login)} bsPrefix="btn btn-outline-info"><i className="bi bi-box-arrow-right"></i></Button> : null}{/*kick user */}
+										{user.users.Login !== props.user ?
+											<OverlayTrigger
+												placement="bottom"
+												overlay={renderTooltip('Click to Block User')}>
+												<Button onClick={() => handleBlockUser(user)} bsPrefix="btn btn-outline-info">
+													<i className="bi bi-slash-circle"></i>
+												</Button>
+											</OverlayTrigger>
+											: null}{/*block user */}
 										{admin.find(username => username === props.user) !== undefined && user.users.Login !== props.user ?
-											(muted ? <Button onClick={() => handleUnMute(user)} bsPrefix="btn btn-outline-info"><i className="bi bi-volume-down"></i></Button>
-												: <Button onClick={() => handleMute(user)} bsPrefix="btn btn-outline-info"><i className="bi bi-volume-mute"></i></Button>)
+											<OverlayTrigger
+												placement="bottom"
+												overlay={renderTooltip('Click to Kick User')}>
+												<Button onClick={() => handleKick(user.users.Login)} bsPrefix="btn btn-outline-info">
+													<i className="bi bi-box-arrow-right" />
+												</Button>
+											</OverlayTrigger>
+											: null}{/*kick user */}
+										{admin.find(username => username === props.user) !== undefined && user.users.Login !== props.user ?
+											(muted ?
+												<OverlayTrigger
+													placement="bottom"
+													overlay={renderTooltip('Click to Unmute the User')}>
+													<Button onClick={() => handleUnMute(user)} bsPrefix="btn btn-outline-info">
+														<i className="bi bi-volume-down" />
+													</Button>
+												</OverlayTrigger>
+												:
+												<OverlayTrigger
+													placement="bottom"
+													overlay={renderTooltip('Click to Mute the User')}>
+													<Button onClick={() => handleMute(user)} bsPrefix="btn btn-outline-info">
+														<i className="bi bi-volume-mute" />
+													</Button>
+												</OverlayTrigger>
+											)
 											: null}{/*mute user */}
-										{user.users.Login !== props.user ? <Button onClick={()=>handleInvite(user.users.Login)} bsPrefix="btn btn-outline-info" ><i className="bi bi-joystick"></i></Button> : null }
+										{user.users.Login !== props.user ?
+											<OverlayTrigger
+												placement="bottom"
+												overlay={renderTooltip('Click to Invite the User to a game')}>
+												<Button onClick={() => handleInvite(user.users.Login)} bsPrefix="btn btn-outline-info" >
+													<i className="bi bi-joystick" />
+												</Button>
+											</OverlayTrigger>
+											: null}
 									</Stack>
 								</div>
 							))}
@@ -152,7 +195,7 @@ const ChatSettings = (props: Props) => {
 
 									<Form.Group controlId="Password">
 										<Form.Label>Password</Form.Label>
-										<Form.Control key='CreatePass' type="password" name="Password" placeholder="Password"  onChange={handlePasswordChange}/>
+										<Form.Control key='CreatePass' type="password" name="Password" placeholder="Password" onChange={handlePasswordChange} />
 									</Form.Group>
 									<Form.Group controlId="IsPublic">
 										<Form.Check
@@ -175,5 +218,4 @@ const ChatSettings = (props: Props) => {
 		</div>
 	);
 }
-
 export default ChatSettings;

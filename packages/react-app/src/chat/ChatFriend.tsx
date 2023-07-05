@@ -32,6 +32,7 @@ export default function ChatFriend(props: Props) {
 	}, [])
 
 	const setUser = (sendFriend: string) => {
+		console.log(sendFriend);
 		props.socket.emit('createPrivMessage', { Sender: props.user, Receiver: sendFriend })
 	}
 

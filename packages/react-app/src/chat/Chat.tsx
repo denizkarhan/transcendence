@@ -40,6 +40,7 @@ function ChatService() {
 		}
 	};
 	
+
 	useEffect(() => {
 		const socket = io(URL, {
 			auth: {

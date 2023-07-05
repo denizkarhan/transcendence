@@ -112,9 +112,6 @@ function Game() {
 				canvas.socket.emit('enterRoom', { roomName: buttonText });
 			});
 		}
-		if (myName !== undefined && enemyName !== undefined){
-			canvas.socket.emit('enterRoom', { roomName: myName + enemyName });
-		}
 		const buttonColors: string[] = [
 			"linear-gradient(to right, #964747d6, #bd1b1bca, #640206d7)",
 			"linear-gradient(to right, #537dd1, #064ad1d4, #020f66)",

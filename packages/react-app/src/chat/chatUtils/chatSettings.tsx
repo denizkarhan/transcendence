@@ -36,11 +36,11 @@ const ChatSettings = (props: Props) => {
 		}
 	};
 
-	const handlePasswordChange = (event:any) => {
+	const handlePasswordChange = (event: any) => {
 		const password = event.target.value;
 		setIsPasswordEntered(password !== ''); // Şifre alanı doluysa true, boş ise false
-	  };
-	
+	};
+
 	const onSubmit = async (event: any) => {
 		event.preventDefault();
 		const formData = new FormData(event.target);
@@ -93,8 +93,8 @@ const ChatSettings = (props: Props) => {
 		}
 	}
 
-	const handleInvite = (invited:string) =>{
-		props.socket.emit('inviteGame', {RoomName:uuidv4(), Invited:invited, UserName:props.user});
+	const handleInvite = (invited: string) => {
+		props.socket.emit('inviteGame', { RoomName: uuidv4(), Invited: invited, UserName: props.user });
 	}
 
 	const [activeTab, setActiveTab] = useState('Users');
@@ -105,14 +105,21 @@ const ChatSettings = (props: Props) => {
 		}
 	};
 
+	const handleLeave = () => {
+		props.socket.emit('leave', {RoomName:props.RoomName, UserName:props.user});
+	}
+
 	return (
 		<div className="modal-content">
-			<Modal show={props.show} size="lg" aria-labelledby="contained-modal-title-vcenter" centered onEscapeKeyDown={handleKeyDown} style={{ border: '2px solid', borderColor: '#54B4D3' }}>
+			<Modal show={props.show} size="lg" aria-labelledby="contained-modal-title-vcenter" centered onEscapeKeyDown={handleKeyDown}>
 				<Modal.Header style={{ background: 'black', color: 'white', borderColor: '#54B4D3' }} onClick={() => props.setShowModal(false)}>
 					<Modal.Title style={{ background: 'black', color: 'white' }} id="contained-modal-title-vcenter">
 						Settings
 					</Modal.Title>
-					{admin.includes(props.user) ? <Button bsPrefix="btn btn-outline-info" onClick={handleDelete}><i className="bi bi-trash"></i></Button> : null}
+					<Stack direction='horizontal' gap={2}>
+						{admin.includes(props.user) ? <Button bsPrefix="btn btn-outline-info" onClick={handleDelete}><i className="bi bi-trash"></i></Button> : null}
+						<Button onClick={handleLeave} bsPrefix="btn btn-outline-info"><i className="bi bi-x-circle"></i></Button>
+					</Stack>
 				</Modal.Header>
 				<Modal.Body style={{ background: 'black', color: 'white', height: '400px' }}>
 					<Tabs activeKey={activeTab} onSelect={handleTabSelect} fill style={{ color: 'black', height: '3.5rem' }} className="border-0">
@@ -137,7 +144,7 @@ const ChatSettings = (props: Props) => {
 											(muted ? <Button onClick={() => handleUnMute(user)} bsPrefix="btn btn-outline-info"><i className="bi bi-volume-down"></i></Button>
 												: <Button onClick={() => handleMute(user)} bsPrefix="btn btn-outline-info"><i className="bi bi-volume-mute"></i></Button>)
 											: null}{/*mute user */}
-										{user.users.Login !== props.user ? <Button onClick={()=>handleInvite(user.users.Login)} bsPrefix="btn btn-outline-info" ><i className="bi bi-joystick"></i></Button> : null }
+										{user.users.Login !== props.user ? <Button onClick={() => handleInvite(user.users.Login)} bsPrefix="btn btn-outline-info" ><i className="bi bi-joystick"></i></Button> : null}
 									</Stack>
 								</div>
 							))}
@@ -152,7 +159,7 @@ const ChatSettings = (props: Props) => {
 
 									<Form.Group controlId="Password">
 										<Form.Label>Password</Form.Label>
-										<Form.Control key='CreatePass' type="password" name="Password" placeholder="Password"  onChange={handlePasswordChange}/>
+										<Form.Control key='CreatePass' type="password" name="Password" placeholder="Password" onChange={handlePasswordChange} />
 									</Form.Group>
 									<Form.Group controlId="IsPublic">
 										<Form.Check

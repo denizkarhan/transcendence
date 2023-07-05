@@ -10,12 +10,15 @@ const App: React.FC = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
 
-  const onFinish = (values: any) => {
-    const response = api.post("/auth/register", values)
-      .then(() => {navigate("/login") })
-      .catch((error: any) =>
-        showError(error.response?.data.message)
-      );
+  const onFinish = async (values: any) => {
+    await api.post("/auth/register", values)
+	.then((response:any)=>{
+		console.log(response);
+		showSuccess('Success'); navigate("/login")
+	})
+	.catch((error:any) => {
+		showError(error.response?.data.message)
+	})
   };
 
 	const handleClick = () => {

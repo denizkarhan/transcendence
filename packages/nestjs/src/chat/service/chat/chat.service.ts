@@ -204,4 +204,23 @@ export class ChatService {
 		await this.groupChatMessagesRepository.delete({ GroupChat: room, User: chatUser });
 		await this.groupChatUsersRepository.delete({GroupChat:room, users:user});
 	}
+
+	async leave(userName:string, roomName:string){
+		const user = await this.userService.getUserByLogin(userName);
+		const room = await this.groupChatRepository.findOneBy({ RoomName: roomName });
+		const chatUser = await this.groupChatUsersRepository.findOneBy({ users: user, GroupChat:room });
+		await this.groupChatMessagesRepository.delete({ GroupChat: room, User: chatUser });
+		await this.groupChatUsersRepository.delete({GroupChat:room, users:user});
+
+		const chatUserCount = (await this.groupChatUsersRepository.findAndCount({where:{GroupChat:room}}))[1];
+		console.log(chatUserCount);
+		if (chatUserCount === 0)
+			await this.groupChatRepository.delete({RoomName:room.RoomName});
+	 	if (chatUser.isAdmin && chatUserCount)
+		{
+			const newAdmin = (await this.groupChatUsersRepository.find({where:{GroupChat:room}})).at(0);
+			await this.groupChatUsersRepository.save({...newAdmin, isAdmin:true});
+		}
+	}
+
 }

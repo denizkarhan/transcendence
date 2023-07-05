@@ -14,7 +14,11 @@ export class FtAuthService {
 	async validateUser(details: CreateUserDto, imagePath: string){
 		var user = await this.userService.getUserByEmail(details.Email);
 		if (user) return user;
-		user = await this.userService.createUser(details);
+		const isUser = await this.userService.createUser(details);
+		if (isUser)
+			user = isUser
+		else
+			return null;
 		const ava = new Avatar;
 		ava.name = '42';
 		ava.path = imagePath;

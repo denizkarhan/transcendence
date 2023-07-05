@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req, Request, Res, UseFilters, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Post, Req, Request, Res, UseFilters, UseGuards } from '@nestjs/common';
 import { AppService } from './app.service';
 import { LocalAuthGuard } from './auth/local-auth/local-auth.guard';
 import { ExceptionHandleFilter } from './exception-handle/exception-handle.filter';
@@ -36,9 +36,12 @@ export class AppController {
 	@Public()
 	@Post('auth/register')
 	async createUser(@Body() createUserDto: CreateUserDto) {
-		const result = await this.authService.register(createUserDto);
-		if (result)
-			return { msg: 'OK', status: 200 };
+		const response =  await this.authService.register(createUserDto);
+		if (!response)
+			throw new HttpException('Some Thing Is Wrong', HttpStatus.FORBIDDEN)
+			// return {message:'Some Thing Is Wrong', status:HttpStatus.NO_CONTENT};
+		return {message:'OK', status:HttpStatus.OK};
+		
 	}
 
 	@Get('auth/logout')

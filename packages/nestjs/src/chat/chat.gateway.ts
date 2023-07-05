@@ -2,7 +2,7 @@ import { ConnectedSocket, MessageBody, OnGatewayConnection, OnGatewayDisconnect,
 import { ChatService } from './service/chat/chat.service';
 import { Server, Socket } from 'socket.io';
 
-let sockets = new Map<string, {socket:Socket}>();
+let sockets = new Map<string, { socket: Socket }>();
 
 @WebSocketGateway({
 	cors: {
@@ -29,7 +29,7 @@ export class ChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 		// sockets.delete(this.nick);
 	}
 
- 
+
 	async handleConnection(socket: Socket): Promise<boolean> {
 		this.nick = socket.handshake.auth.nick.split("%22")[3];
 		if (!this.nick) {
@@ -37,10 +37,13 @@ export class ChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 			return false;
 		}
 		const userRooms = await this.chatService.getRooms(this.nick);
-		sockets.set(this.nick, {socket});
-		userRooms.forEach(room => {
-			socket.join(room.GroupChat.RoomName);
-		});
+		sockets.set(this.nick, { socket });
+		if (userRooms.length) {
+			userRooms.forEach(room => {
+				socket.join(room.GroupChat.RoomName);
+			});
+		}
+		
 		console.log(this.nick, " connection");
 		return true;
 	}
@@ -79,19 +82,17 @@ export class ChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 		}
 		else
 			socket.volatile.emit('ErrorHandle', { message: 'Some thing is wrong' });
-			
+
 	}
 
 
 	@SubscribeMessage('sendMessage')
 	async sendMessage(@MessageBody() data: any, @ConnectedSocket() socket: Socket) {
 		let response;
-		if (data.RoomName[0] !== '#')
-		{
+		if (data.RoomName[0] !== '#') {
 			console.log(sockets);
 			response = await this.chatService.privateMessage(data.RoomName, data.UserName, data.Message);
-			if (response)
-			{
+			if (response) {
 				if (sockets.has(response?.receiver.Login))
 					sockets.get(response?.receiver.Login).socket.emit('receiveMessage', { Message: response?.send, RoomName: data.RoomName });
 				socket.emit('receiveMessage', { Message: response.send, RoomName: data.RoomName });
@@ -175,7 +176,8 @@ export class ChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 
 		await this.chatService.kickUser(data.UserName, data.RoomName);
 		const room = await this.chatService.getRoom(data.RoomName);
-		sockets[data.UserName].leave(room.RoomName);
+		if (sockets.has(data.UserName))
+			sockets.get(data.UserName).socket.leave(room.RoomName);
 		socket.emit("updateRoom", { OldRoomName: room.RoomName, KickUser: data.UserName, ...room });
 		socket.to(data.RoomName).emit("updateRoom", { OldRoomName: room.RoomName, KickUser: data.UserName, ...room });
 	}
@@ -205,10 +207,26 @@ export class ChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 	@SubscribeMessage('acceptInvite')
 	async acceptInvite(@MessageBody() data: any, @ConnectedSocket() socket: Socket) {
 		if (sockets.has(data.UserName))
-			sockets.get(data.UserName).socket.emit('acceptInvite', {RoomName:data.RoomName});
+			sockets.get(data.UserName).socket.emit('acceptInvite', { RoomName: data.RoomName });
 		else
 			socket.volatile.emit('ErrorHandle', { message: 'Some thing is wrong' });
 		// await this.chatService.mutedUser(data.UserName, data.RoomName);
 		// socket.emit('success', { Message: 'User is UnMuted ' + data.UserName });
+	}
+
+	@SubscribeMessage('leave')
+	async leave(@MessageBody() data: any, @ConnectedSocket() socket: Socket) {
+		const room = await this.chatService.getRoom(data.RoomName);
+		await this.chatService.leave(data.UserName, data.RoomName);
+		socket.leave(data.RoomName);
+		if (room.Users.length === 1) {
+			if (room.IsPublic)
+				socket.broadcast.emit('deleteRoom', room);
+			else
+				socket.to(data.RoomName).emit('deleteRoom', room);
+			socket.emit('deleteRoom', room);
+		}
+		socket.emit("updateRoom", { OldRoomName: room.RoomName, KickUser: data.UserName, ...room });
+		socket.to(data.RoomName).emit("updateRoom", { OldRoomName: room.RoomName, KickUser: data.UserName, ...room });
 	}
 }

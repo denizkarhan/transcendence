@@ -37,6 +37,9 @@ export class UsersService {
 
 
 	async createUser(userDetail: CreateUserParams) {
+		
+		if (await this.userRepository.exist({where:{Login:userDetail.Login}}) || await this.userRepository.exist({where:{Email:userDetail.Email}}))
+			return null;
 		const newUser = this.userRepository.create({
 			...userDetail,
 			CreatedAt: new Date(),
@@ -45,11 +48,7 @@ export class UsersService {
 		});
 		const saltOrRounds = await bcrypt.genSalt();
 		newUser.Password = await bcrypt.hash(newUser.Password, saltOrRounds);
-		try {
-			return await this.userRepository.save(newUser);
-		} catch {
-			throw new HttpException('Tekrar Eden Kayıt', HttpStatus.NO_CONTENT);
-		}
+		return await this.userRepository.save(newUser);
 	}
 
 	async updateUser(userDetail: UpdateUserDto, user: any) {

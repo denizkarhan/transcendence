@@ -25,7 +25,7 @@ export const InviteToast: React.FC<ToastProviderProps> = ({ children }) => {
 	const newSocket = socketRef.current as Socket;
 
 	const invite = (data: any, socket: Socket) => {
-		console.log('Invite:', data);
+		// console.log('Invite:', data);
 		setInviteUser(data);
 		socketRef.current = socket;
 		setToast(true);

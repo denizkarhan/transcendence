@@ -67,7 +67,7 @@ const ChatSettings = (props: Props) => {
 	}
 
 	const handleBlockUser = async (user: ChatUser) => {
-		console.log(user);
+		// console.log(user);
 		const response = await api.get(`/block-user/${user.users.Login}`);
 		if (response.data.status === 200) {
 			showSuccess(' is blocking');

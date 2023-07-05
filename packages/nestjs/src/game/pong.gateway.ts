@@ -155,9 +155,9 @@ export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
                 setupRoom.scoreTwo = scoreTwo;
                 rooms.set(room, setupRoom);
                 
-                let winner = scoreOne === 1 ? setupRoom.user1 : scoreTwo === 1 ? setupRoom.user2 : null;
+                let winner = scoreOne === 3 ? setupRoom.user1 : scoreTwo === 3 ? setupRoom.user2 : null;
 
-                if ((scoreOne === 1 || scoreTwo === 1) && a++ % 2 == 0) {
+                if ((scoreOne === 3 || scoreTwo === 3) && a++ % 2 == 0) {
                     
                     this.matchService.addMatch({
                         EnemyResult: scoreTwo,

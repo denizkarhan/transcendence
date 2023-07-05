@@ -17,7 +17,7 @@ export default function SendMessage(props: Props) {
     };
 
     const sendMessage = () => {
-        console.log("aaaaaaaaaaaaa");
+        // console.log("aaaaaaaaaaaaa");
         props.socket.emit('sendMessage', { RoomName: props.room.RoomName, UserName: props.user, Message: message });
         setMessage('');
     }

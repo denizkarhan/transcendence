@@ -26,9 +26,9 @@ export async function getPP(username: string | undefined) {
 			return imgURL;
 		}
 	}
-	const path = window.location.pathname.split('/');
-	const endPoint = repeatString('../', path.length - 2);
-	return endPoint + "pps/default.png";
+	// const path = window.location.pathname.split('/');
+	// const endPoint = repeatString('../', path.length - 2);
+	return  "http://k2m13s05.42kocaeli.com.tr:3000/pps/default.png";
 }
 
 export async function isBlock(username: any, friendName: any) {

@@ -10,7 +10,7 @@ interface Props {
 }
 
 const UserChat = (props: Props) => {
-	console.log(props.chat);
+	// console.log(props.chat);
 	const [chatName, setChatName] = useState<string | undefined>('');
 
 	useEffect(() => {

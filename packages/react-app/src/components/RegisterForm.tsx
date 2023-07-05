@@ -13,7 +13,7 @@ const App: React.FC = () => {
   const onFinish = async (values: any) => {
     await api.post("/auth/register", values)
 	.then((response:any)=>{
-		console.log(response);
+		// console.log(response);
 		showSuccess('Success'); navigate("/login");
 		return;
 	})

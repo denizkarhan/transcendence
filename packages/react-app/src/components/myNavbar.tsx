@@ -32,7 +32,7 @@ export default function MyNavbar(prop: Props) {
 		const formValues = Object.fromEntries(formData.entries());
 		await api.get('/users/username/' + formValues.query)
 		.then((response:any) => {
-			console.log(response);
+			// console.log(response);
 			if (response.status === 200)
 			{
 				navigate('/profile/' + response.data.Login);

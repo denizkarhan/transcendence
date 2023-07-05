@@ -27,7 +27,7 @@ const ChatBoxHeader = (props: Props) => {
 	}, [props])
 	if (!props.room)
 		return null;
-	console.log(props.room?.Users.filter(user => user.users.Login !== props.user));
+	
 	return (
 		<>
 			<Card.Header style={{ borderBottom: '1px solid', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>

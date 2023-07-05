@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../api";
 import { useToast } from "../../components/Toast";
-// import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 
 interface Props {
 	users: ChatUser[];
@@ -109,8 +109,12 @@ const ChatSettings = (props: Props) => {
 		}
 	};
 
+	const handleSetAdmin = (username: string) => {
+		props.socket.emit('setAdmin', { UserName: username, RoomName: props.RoomName });
+	}
+
 	const handleLeave = () => {
-		props.socket.emit('leave', {RoomName:props.RoomName, UserName:props.user});
+		props.socket.emit('leave', { RoomName: props.RoomName, UserName: props.user });
 	}
 
 	return (
@@ -122,7 +126,11 @@ const ChatSettings = (props: Props) => {
 					</Modal.Title>
 					<Stack direction='horizontal' gap={2}>
 						{admin.includes(props.user) ? <Button bsPrefix="btn btn-outline-info" onClick={handleDelete}><i className="bi bi-trash"></i></Button> : null}
-						<Button onClick={handleLeave} bsPrefix="btn btn-outline-info"><i className="bi bi-x-circle"></i></Button>
+						<OverlayTrigger
+							placement="bottom"
+							overlay={renderTooltip('Leave Room')}>
+							<Button onClick={handleLeave} bsPrefix="btn btn-outline-info"><i className="bi bi-x-circle"></i></Button>
+						</OverlayTrigger>
 					</Stack>
 				</Modal.Header>
 				<Modal.Body style={{ background: 'black', color: 'white', height: '400px' }}>
@@ -151,7 +159,8 @@ const ChatSettings = (props: Props) => {
 												</Button>
 											</OverlayTrigger>
 											: null}{/*block user */}
-										{admin.find(username => username === props.user) !== undefined && user.users.Login !== props.user ?
+
+										{admin.find(username => username === user.users.Login) === undefined && admin.find(username => username === props.user) !== undefined && user.users.Login !== props.user ?
 											<OverlayTrigger
 												placement="bottom"
 												overlay={renderTooltip('Click to Kick User')}>
@@ -160,7 +169,7 @@ const ChatSettings = (props: Props) => {
 												</Button>
 											</OverlayTrigger>
 											: null}{/*kick user */}
-										{admin.find(username => username === props.user) !== undefined && user.users.Login !== props.user ?
+										{admin.find(username => username === user.users.Login) === undefined && admin.find(username => username === props.user) !== undefined && user.users.Login !== props.user ?
 											(muted ?
 												<OverlayTrigger
 													placement="bottom"
@@ -186,6 +195,13 @@ const ChatSettings = (props: Props) => {
 												<Button onClick={() => handleInvite(user.users.Login)} bsPrefix="btn btn-outline-info" >
 													<i className="bi bi-joystick" />
 												</Button>
+											</OverlayTrigger>
+											: null}
+										{admin.find(username => username === user.users.Login) === undefined && admin.find(username => username === props.user) !== undefined && user.users.Login !== props.user ?
+											<OverlayTrigger
+												placement="bottom"
+												overlay={renderTooltip('Set Admin')}>
+												<Button onClick={() => handleSetAdmin(user.users.Login)} bsPrefix="btn btn-outline-info"><i className="bi bi-person-gear"></i></Button>
 											</OverlayTrigger>
 											: null}
 									</Stack>

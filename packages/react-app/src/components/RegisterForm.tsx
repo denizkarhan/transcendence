@@ -14,7 +14,8 @@ const App: React.FC = () => {
     await api.post("/auth/register", values)
 	.then((response:any)=>{
 		console.log(response);
-		showSuccess('Success'); navigate("/login")
+		showSuccess('Success'); navigate("/login");
+		return;
 	})
 	.catch((error:any) => {
 		showError(error.response?.data.message)

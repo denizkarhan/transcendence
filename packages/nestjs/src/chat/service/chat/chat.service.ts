@@ -135,34 +135,33 @@ export class ChatService {
 	}
 
 	async getPrivateRoom(sender: string, receiver: string) {
+		console.log(sender, receiver);
 		const me = await this.userService.getUserByLogin(sender);
 		const rec = await this.userService.getUserByLogin(receiver);
 
 		if (!rec)
 			return null;
 		let groupUser = await this.groupChatUsersRepository.findOneBy({ users: me });
-		const myRoom = await this.groupChatRepository.find({ where: { Users: groupUser }, relations: ['Messages.User.users', 'Messages', 'Users.users'], order: { Id: 'DESC' } });
+		let groupUserRec = await this.groupChatUsersRepository.findOneBy({ users: rec });
+		const myRoom = await this.groupChatRepository.findOne({where:{RoomName: sender+receiver}, relations: ['Messages.User.users', 'Messages', 'Users.users']});
+		const other = await this.groupChatRepository.findOne({where:{RoomName: receiver+sender}, relations: ['Messages.User.users', 'Messages', 'Users.users']});
 
-		let targetRoom = null;
-		for (const room of myRoom) {
-			if (room.RoomName === (sender + receiver) || room.RoomName === (receiver + sender)) {
-				targetRoom = room;
-				break;
-			}
-		}
-		if (targetRoom) {
+		const targetRoom = myRoom !== null ? myRoom : other;
+		if (targetRoom)
 			return targetRoom;
-		} else {
+		else{
 			const room = await this.createRoom({
 				RoomName: sender + receiver,
 				Admin: sender,
 				IsPublic: false,
 				Password: null
 			});
+			await this.joinRoom(room.RoomName, receiver, null);
 			if (!groupUser)
 				groupUser = await this.groupChatUsersRepository.findOneBy({ users: me });
 			return room;
 		}
+		
 	}
 
 	async getRoom(roomName: string) {
@@ -221,6 +220,17 @@ export class ChatService {
 			const newAdmin = (await this.groupChatUsersRepository.find({where:{GroupChat:room}})).at(0);
 			await this.groupChatUsersRepository.save({...newAdmin, isAdmin:true});
 		}
+	}
+
+	async setAdmin(username:string, roomname:string)
+	{
+		const user = await  this.userService.getUserByLogin(username);
+		const room = await this.groupChatRepository.findOneBy({RoomName:roomname});
+		const chatUser = await this.groupChatUsersRepository.findOneBy({GroupChat:room, users:user});
+		await this.groupChatUsersRepository.save({
+			...chatUser,
+			isAdmin:true
+		});
 	}
 
 }

@@ -56,6 +56,7 @@ const App: React.FC<Props> = (props: Props) => {
 				})
 			} catch (error: any) {
 				navigate('/404');
+				return;
 			}
 			const resMatch = await api.get(`/match-histories/${username}`);
 			const matches: Match[] = resMatch.data;

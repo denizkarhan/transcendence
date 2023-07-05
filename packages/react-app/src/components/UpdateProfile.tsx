@@ -1,6 +1,6 @@
 import { Container, Form, Modal, Button, ToggleButton } from 'react-bootstrap';
 import api from '../api';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuthUser, useSignIn, useSignOut } from 'react-auth-kit';
 import jwtDecode from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
@@ -26,15 +26,14 @@ interface Props {
 export default function UpdateProfile(props: Props) {
 	const auth = useAuthUser();
 	const [checked, setChecked] = useState(false);
-
 	const [showQR, setShowQR] = useState(false);
-
 	const [isHovered, setIsHovered] = useState(false);
 	const [show, setShow] = useState(false);
 	const signin = useSignIn();
 	const signout = useSignOut();
 	const navigate = useNavigate();
 	const user = auth()?.username ?? "User";
+
 	const onSubmit = async (event: any) => {
 		event.preventDefault();
 
@@ -58,6 +57,7 @@ export default function UpdateProfile(props: Props) {
 					});
 					handleClose();
 					navigate(`/profile/${user.Login}`);
+					return;
 				}
 			})
 			.catch((error) => console.log(error));
@@ -67,6 +67,7 @@ export default function UpdateProfile(props: Props) {
 		else {
 			handleClose();
 		}
+		// console.log(show);
 	}
 	const handleMouseEnter = () => {
 		setIsHovered(true);
@@ -76,18 +77,19 @@ export default function UpdateProfile(props: Props) {
 		setIsHovered(false);
 	};
 
-	const handleClose = () => setShow(false);
+	const handleClose = async () => { setShow(!show); setShowQR(false) };
 
 	const handleShow = () => setShow(true);
-
+	// console.log(show);
 	return (
 		<Container
 			style={{ position: 'relative' }}
 			onMouseEnter={handleMouseEnter}
 			onMouseLeave={handleMouseLeave}
-			onClick={handleShow}
 		>
-			<i className="bi bi-gear fs-4" style={{ color: isHovered ? '#E4A11B' : '#332D2D' }} ></i>
+			<div onClick={handleShow} style={{width:'100%'}}>
+				<i className="bi bi-gear fs-4" style={{ color: isHovered ? '#E4A11B' : '#332D2D', width: '100%' }} ></i>
+			</div>
 			<Modal
 				show={show}
 				onHide={handleClose}
@@ -128,7 +130,7 @@ export default function UpdateProfile(props: Props) {
 					</Modal.Body>
 					<Modal.Footer>
 						<Button variant="primary" type="submit">
-							Update
+							Updates
 						</Button>
 						<Button variant="secondary" onClick={handleClose}>
 							Close

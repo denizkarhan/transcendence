@@ -52,7 +52,7 @@ function ChatService() {
 		socket.emit('getData', { userName: user });
 
 		socket.on('getData', (data: Room[]) => {
-			console.log(data);
+			// console.log(data);
 			setRooms(data);
 		});
 
@@ -72,6 +72,7 @@ function ChatService() {
 		})
 
 		socket.on('createRoom', (data: Room) => {
+			// console.log(data);
 			setRooms(prevData => {
 				setPublic(prevPublic => {
 					const isDataExists = prevData.find(room => room.RoomName === data.RoomName) !== undefined ? true : false;
@@ -208,7 +209,7 @@ function ChatService() {
 		newSocket.emit('join', { ...room, UserName: user });
 	}
 
-	console.log(rooms);
+	// console.log(rooms);
 	const renderTooltip = (message: string) => (
 		<Tooltip id="hover-tooltip">
 			{message}

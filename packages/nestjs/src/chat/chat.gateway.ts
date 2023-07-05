@@ -43,7 +43,7 @@ export class ChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 				socket.join(room.GroupChat.RoomName);
 			});
 		}
-		
+
 		console.log(this.nick, " connection");
 		return true;
 	}
@@ -111,6 +111,7 @@ export class ChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@SubscribeMessage('createPrivMessage')
 	async sendPrivMessage(@MessageBody() data: any, @ConnectedSocket() socket: Socket) {
+		console.log(data);
 		const room = await this.chatService.getPrivateRoom(data.Sender, data.Receiver);
 		if (!room) {
 			socket.volatile.emit('ErrorHandle', { message: 'User Not Found' });
@@ -120,6 +121,7 @@ export class ChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 			await this.chatService.joinRoom(room.RoomName, data.Receiver, null);
 		socket.join(room.RoomName);
 		const newRoomData = await this.chatService.getRoom(room.RoomName);
+		console.log("newRoom------------>",newRoomData);
 		socket.emit('createRoom', newRoomData);
 	}
 
@@ -228,5 +230,16 @@ export class ChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 		}
 		socket.emit("updateRoom", { OldRoomName: room.RoomName, KickUser: data.UserName, ...room });
 		socket.to(data.RoomName).emit("updateRoom", { OldRoomName: room.RoomName, KickUser: data.UserName, ...room });
+	}
+
+	@SubscribeMessage('setAdmin')
+	async setAdmin(@MessageBody() data: any, @ConnectedSocket() socket: Socket) {
+		await this.chatService.setAdmin(data.UserName, data.RoomName);
+		const updateRoom = await this.chatService.getRoom(data.RoomName);
+		if (updateRoom.IsPublic)
+			socket.broadcast.emit("updateRoom", { OldRoomName: updateRoom.RoomName, ...updateRoom });
+		else
+			socket.to(data.RoomName).emit("updateRoom", { OldRoomName: updateRoom.RoomName, ...updateRoom });			
+		socket.emit("updateRoom", { OldRoomName: updateRoom.RoomName, ...updateRoom });
 	}
 }

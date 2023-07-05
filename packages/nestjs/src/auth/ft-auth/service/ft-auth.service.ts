@@ -31,3 +31,5 @@ export class FtAuthService {
 		return await this.localAuth.login({username:user.Login});
 	}
 }
+
+

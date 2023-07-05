@@ -3,7 +3,7 @@ import { Button, Form, Modal, Row } from 'react-bootstrap';
 import api, { deleteCookie, getCookie } from '../api';
 import jwtDecode from 'jwt-decode';
 import { useSignIn } from 'react-auth-kit';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useToast } from './Toast';
 
 interface decodedToken {
@@ -18,11 +18,14 @@ interface ModalComponentProps {
 }
 export default function ({ show, onHide }: ModalComponentProps) {
 	const showError = useToast().showError;
-	const user = getCookie("user");
+	const location = useLocation();
+	const searchParams = new URLSearchParams(location.search);
+	const user = searchParams.get('user')
 	const signin = useSignIn();
 	const navigate = useNavigate();
 	const [code, setCode] = useState('');
 	const handleSubmit = async (event: any) => {
+		// console.log(user);
 		event.preventDefault();
 		await api.get(`/authanticator/verify/${code}/${user}`).then((response: any) => {
 			const user = jwtDecode<decodedToken>(response.data.access_token);
@@ -34,6 +37,7 @@ export default function ({ show, onHide }: ModalComponentProps) {
 			});
 			deleteCookie('user');
 			navigate('/');
+			return;
 		}).catch((error: any) => showError(error.response?.data.message));
 	};
 	return (

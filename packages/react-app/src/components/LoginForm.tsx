@@ -30,7 +30,6 @@ const App: React.FC = () => {
 	}
 	const location = useLocation();
 
-
 	useEffect(() => {
 		const searchParams = new URLSearchParams(location.search);
 		setToken(searchParams.get('token'));
@@ -45,7 +44,8 @@ const App: React.FC = () => {
 			});
 			deleteCookie("token");
 			showSuccess("Successful");
-			navigate("/")
+			navigate("/");
+			return;
 		}
 		else if (user) {
 			setShowModal(true);
@@ -68,6 +68,7 @@ const App: React.FC = () => {
 				});
 				showSuccess("Successful");
 				navigate("/");
+				return;
 			})
 			.catch((error: any) => {
 				showError(error.response?.data.message)

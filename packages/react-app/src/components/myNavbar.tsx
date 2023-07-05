@@ -34,7 +34,10 @@ export default function MyNavbar(prop: Props) {
 		.then((response:any) => {
 			console.log(response);
 			if (response.status === 200)
+			{
 				navigate('/profile/' + response.data.Login);
+				return;
+			}
 			else
 				showError('Could not find a user with that name');
 		})

@@ -57,7 +57,7 @@ export default function ProfileImage(props: Props) {
 					onMouseEnter={handleMouseEnter}
 					onMouseLeave={handleMouseLeave}
 				>
-					<Image src={pp} className="image-style" style={{ filter: isHovered ? 'blur(3px)' : 'none' }} />
+					<Image src={pp} className="image-style" style={{ filter: isHovered ? 'blur(3px)' : 'none' , maxWidth:'400px', maxHeight:'400px'}} />
 					{handleUpdatePhoto()}
 				</div>
 			) : (

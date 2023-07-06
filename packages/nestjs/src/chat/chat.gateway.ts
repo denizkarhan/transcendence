@@ -51,7 +51,7 @@ export class ChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 	@SubscribeMessage('createRoom')
 	async createRoom(@MessageBody() room: any, @ConnectedSocket() socket: Socket) {
 		if (await this.chatService.isExistRoom(room.RoomName)) {
-			socket.volatile.emit('ErrorHandle', { message: 'Is Exist Room' });
+			socket.emit('ErrorHandle', { message: 'Is Exist Room' });
 			return;
 		}
 		await this.chatService.createRoom({
@@ -70,7 +70,7 @@ export class ChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 	@SubscribeMessage('updateRoom')
 	async changePassword(@MessageBody() room: any, @ConnectedSocket() socket: Socket) {
 		if (room?.RoomName && await this.chatService.isExistRoom(room.RoomName)) {
-			socket.volatile.emit('ErrorHandle', { message: 'Is Exist Room' });
+			socket.emit('ErrorHandle', { message: 'Is Exist Room' });
 			return;
 		}
 		const response = await this.chatService.updateRoom({ RoomName: room?.RoomName, Password: room?.Password, IsPublic: room?.IsPublic }, room.Admin, room.OldRoomName);
@@ -81,32 +81,32 @@ export class ChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 			socket.to(newRoomData.RoomName).emit("updateRoom", { OldRoomName: room.OldRoomName, ...newRoomData });
 		}
 		else
-			socket.volatile.emit('ErrorHandle', { message: 'Some thing is wrong' });
+			socket.emit('ErrorHandle', { message: 'Some thing is wrong' });
 
 	}
 
 
 	@SubscribeMessage('sendMessage')
 	async sendMessage(@MessageBody() data: any, @ConnectedSocket() socket: Socket) {
-		let response;
+		
 		if (data.RoomName[0] !== '#') {
-			console.log(sockets);
-			response = await this.chatService.privateMessage(data.RoomName, data.UserName, data.Message);
-			if (response) {
+			const response = await this.chatService.privateMessage(data.RoomName, data.UserName, data.Message);
+			if (response.send !== null) {
 				if (sockets.has(response?.receiver.Login))
 					sockets.get(response?.receiver.Login).socket.emit('receiveMessage', { Message: response?.send, RoomName: data.RoomName });
 				socket.emit('receiveMessage', { Message: response.send, RoomName: data.RoomName });
 				return;
 			}
 		}
-		else
-			response = await this.chatService.sendMessage(data.RoomName, data.UserName, data.Message);
-		if (response) {
-			socket.emit('receiveMessage', { Message: response, RoomName: data.RoomName });
-			socket.to(data.RoomName).emit('receiveMessage', { Message: response, RoomName: data.RoomName });
+		else {
+			const response = await this.chatService.sendMessage(data.RoomName, data.UserName, data.Message);
+			if (response) {
+				socket.emit('receiveMessage', { Message: response, RoomName: data.RoomName });
+				socket.to(data.RoomName).emit('receiveMessage', { Message: response, RoomName: data.RoomName });
+				return;
+			}
 		}
-		else
-			socket.volatile.emit('ErrorHandle', { message: 'you cant send messages' });
+		socket.emit('ErrorHandle', { message: 'you cant send messages' });
 	}
 
 	@SubscribeMessage('createPrivMessage')
@@ -114,14 +114,14 @@ export class ChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 		console.log(data);
 		const room = await this.chatService.getPrivateRoom(data.Sender, data.Receiver);
 		if (!room) {
-			socket.volatile.emit('ErrorHandle', { message: 'User Not Found' });
+			socket.emit('ErrorHandle', { message: 'User Not Found' });
 			return;
 		}
 		if (!(await this.chatService.isJoin(room.RoomName, data.Receiver)))
 			await this.chatService.joinRoom(room.RoomName, data.Receiver, null);
 		socket.join(room.RoomName);
 		const newRoomData = await this.chatService.getRoom(room.RoomName);
-		console.log("newRoom------------>",newRoomData);
+		console.log("newRoom------------>", newRoomData);
 		socket.emit('createRoom', newRoomData);
 	}
 
@@ -141,7 +141,7 @@ export class ChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 			if (isJoin === false) {
 				const response = await this.chatService.joinRoom(data.RoomName, data.UserName, data.Password);
 				if (response.status === 403) {
-					socket.volatile.emit('ErrorHandle', { message: response.message });
+					socket.emit('ErrorHandle', { message: response.message });
 					return;
 				}
 				socket.join(data.RoomName);
@@ -150,7 +150,7 @@ export class ChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 				socket.to(data.RoomName).emit('updateRoom', { OldRoomName: roomData.RoomName, ...roomData });
 			}
 		} else {
-			socket.volatile.emit('ErrorHandle', { message: 'Channel Is Not Found' });
+			socket.emit('ErrorHandle', { message: 'Channel Is Not Found' });
 		}
 
 	}
@@ -188,13 +188,17 @@ export class ChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 	async mute(@MessageBody() data: any, @ConnectedSocket() socket: Socket) {
 		await this.chatService.mutedUser(data.UserName, data.RoomName);
 		socket.emit('success', { Message: 'User is Muted ' + data.UserName });
+		const room = await this.chatService.getRoom(data.RoomName);
+		socket.emit("updateRoom", { OldRoomName: room.RoomName, ...room });
 	}
 
 
 	@SubscribeMessage('unmute')
 	async unMute(@MessageBody() data: any, @ConnectedSocket() socket: Socket) {
-		await this.chatService.mutedUser(data.UserName, data.RoomName);
+		await this.chatService.unMutedUser(data.UserName, data.RoomName);
 		socket.emit('success', { Message: 'User is UnMuted ' + data.UserName });
+		const room = await this.chatService.getRoom(data.RoomName);
+		socket.emit("updateRoom", { OldRoomName: room.RoomName, ...room });
 	}
 
 	@SubscribeMessage('inviteGame')
@@ -203,7 +207,7 @@ export class ChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 		if (sockets.has(data.Invited))
 			sockets.get(data.Invited).socket.emit('invite', data);
 		else
-			socket.volatile.emit('ErrorHandle', { message: 'Some thing is wrong' });
+			socket.emit('ErrorHandle', { message: 'Some thing is wrong' });
 	}
 
 	@SubscribeMessage('acceptInvite')
@@ -211,7 +215,7 @@ export class ChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 		if (sockets.has(data.UserName))
 			sockets.get(data.UserName).socket.emit('acceptInvite', { RoomName: data.RoomName });
 		else
-			socket.volatile.emit('ErrorHandle', { message: 'Some thing is wrong' });
+			socket.emit('ErrorHandle', { message: 'Some thing is wrong' });
 		// await this.chatService.mutedUser(data.UserName, data.RoomName);
 		// socket.emit('success', { Message: 'User is UnMuted ' + data.UserName });
 	}
@@ -239,7 +243,7 @@ export class ChatGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 		if (updateRoom.IsPublic)
 			socket.broadcast.emit("updateRoom", { OldRoomName: updateRoom.RoomName, ...updateRoom });
 		else
-			socket.to(data.RoomName).emit("updateRoom", { OldRoomName: updateRoom.RoomName, ...updateRoom });			
+			socket.to(data.RoomName).emit("updateRoom", { OldRoomName: updateRoom.RoomName, ...updateRoom });
 		socket.emit("updateRoom", { OldRoomName: updateRoom.RoomName, ...updateRoom });
 	}
 }

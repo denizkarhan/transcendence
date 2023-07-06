@@ -85,8 +85,9 @@ export class ChatService {
 		const room = await this.groupChatRepository.findOneBy({ RoomName: roomName });
 		const user = await this.userService.getUserByLogin(userName);
 		const isExist = await this.groupChatUsersRepository.findOneBy({ users: user, GroupChat: room });
+		console.log("is mute------------>",isExist.isMuted);
 		if (!isExist || isExist.isMuted)
-			return null
+			return null;
 		await this.groupChatMessagesRepository.save({ GroupChat: room, Message: message, SendAt: new Date(), User: isExist });
 		const response = await this.groupChatMessagesRepository.find({ where: { GroupChat: room, User: isExist }, relations: ['User.users'], order: { Id: 'DESC' } });
 		return response.at(0);

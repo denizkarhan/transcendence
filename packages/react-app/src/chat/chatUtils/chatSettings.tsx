@@ -86,14 +86,14 @@ const ChatSettings = (props: Props) => {
 	const handleMute = (user: ChatUser) => {
 		if (admin.find(username => username === props.user) !== undefined) {
 			props.socket.emit('mute', { UserName: user.users.Login, RoomName: props.RoomName });
-			setMuted(true);
+			user.isMuted = true;
 		}
 	}
 
 	const handleUnMute = (user: ChatUser) => {
 		if (admin.find(username => username === props.user) !== undefined) {
 			props.socket.emit('unmute', { UserName: user.users.Login, RoomName: props.RoomName });
-			setMuted(false);
+			user.isMuted = true;
 		}
 	}
 
@@ -159,8 +159,7 @@ const ChatSettings = (props: Props) => {
 												</Button>
 											</OverlayTrigger>
 											: null}{/*block user */}
-
-										{admin.find(username => username === user.users.Login) === undefined && admin.find(username => username === props.user) !== undefined && user.users.Login !== props.user ?
+										{props.RoomName[0] === '#' && admin.find(username => username === user.users.Login) === undefined && admin.find(username => username === props.user) !== undefined && user.users.Login !== props.user ?
 											<OverlayTrigger
 												placement="bottom"
 												overlay={renderTooltip('Click to Kick User')}>
@@ -170,7 +169,7 @@ const ChatSettings = (props: Props) => {
 											</OverlayTrigger>
 											: null}{/*kick user */}
 										{admin.find(username => username === user.users.Login) === undefined && admin.find(username => username === props.user) !== undefined && user.users.Login !== props.user ?
-											(muted ?
+											(user.isMuted ?
 												<OverlayTrigger
 													placement="bottom"
 													overlay={renderTooltip('Click to Unmute the User')}>

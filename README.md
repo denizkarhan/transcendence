@@ -125,6 +125,17 @@
 5. **[Express](https://expressjs.com/)**: Express, Node.js için popüler bir web framework'üdür. TypeScript ile birlikte kullanılabilir ve büyük ölçekli projelerde de başarılı bir şekilde kullanılmaktadır. (Frontend değil)
   </details>
   </details>
+
+  <details> <summary><h3>🟢 2) React 101 </h3></summary>
+
+React, basit, verimli ve güçlü bir JavaScript kütüphanesidir. Bileşen tabanlı bir yaklaşım sunar ve kullanıcı arayüzünü parçalara ayırır. Her bileşen kendi mantığı ve görüntüsüyle çalışır. Bu yapı sayesinde kodunuz daha okunabilir ve yeniden kullanılabilir hale gelir.
+
+React, Virtual DOM (sanal DOM) kullanarak performansı artırır. Sadece değişen bileşenleri güncelleyerek kaynakları minimumda kullanır. Ayrıca, bileşen ömür döngüsü yönetimiyle, bileşenlerin oluşturulması, güncellenmesi ve yok edilmesi aşamalarında istediğiniz işlemleri gerçekleştirebilirsiniz.
+
+React, geniş bir ekosisteme ve aktif bir topluluğa sahiptir. Üçüncü taraf kütüphaneler, araçlar ve eklentilerle desteklenir. Ayrıca, zengin bir kaynak ve dokümantasyon arşivi vardır.
+
+React, modern web uygulamalarını hızlı, etkili ve kaliteli bir şekilde geliştirmek için ideal bir seçimdir. Basitliği, verimliliği ve geniş topluluk desteğiyle öne çıkar.
+  </details>
 </details>
 
 
@@ -192,7 +203,7 @@ imports: [TypeOrmModule.forRoot({
   <img width="749" alt="Screen Shot 2023-05-08 at 4 50 37 PM" src="https://github.com/denizkarhan/transcendence/assets/81527587/ce0847ec-e767-4734-888e-89f68b6f005b">
 </details>
 
-<details> <summary><h3>🔴Authentication </h3></summary>
+<details> <summary><h3>🔴 6.2) Hashleme metodu </h3></summary>
 
 ```
 import * as crypto from 'crypto';
@@ -212,17 +223,52 @@ console.log(hash);
 🟢 [Google Authentication](https://www.passportjs.org/packages/passport-google-oauth20/)
 🟢 [Ecole 42 Authentication](https://www.passportjs.org/packages/passport-42/)
 
+</details>
+</details>
 
+<details> <summary><h2> Registration and Login </h2></summary>
+
+![Sign in](https://github.com/denizkarhan/transcendence/assets/81527587/3e3bfa67-f8ec-409d-881f-e259f23e8999)
+![Register2](https://github.com/denizkarhan/transcendence/assets/81527587/b2f9c9c5-61fe-48bb-952e-3c334ea693c0)
+</details>
+
+<details> <summary><h2> 2 factor authentication </h2></summary>
+
+![ProfileUpdated](https://github.com/denizkarhan/transcendence/assets/81527587/3a063fc0-8271-4fe2-9a31-d035a89f7aef)
+![QRCode](https://github.com/denizkarhan/transcendence/assets/81527587/53c3bd5e-d0bf-41dd-84be-cf79649c269c)
+![2faAuth](https://github.com/denizkarhan/transcendence/assets/81527587/7d554451-6666-415f-8e03-1a57976e43e3)
+</details>
+
+<details> <summary><h2> Profile and Follower </h2></summary>
+
+![Profile](https://github.com/denizkarhan/transcendence/assets/81527587/2137176f-cb9a-4178-bc17-9a91c4139fd3)
+![Follower](https://github.com/denizkarhan/transcendence/assets/81527587/e11b2389-83b1-4b6c-9567-55c3fa6098f6)
+</details>
+
+<details> <summary><h2> Game </h2></summary>
+
+![Game](https://github.com/denizkarhan/transcendence/assets/81527587/3e96c205-014c-4cd8-b652-ae020b1b4b4a)
+![Pong](https://github.com/denizkarhan/transcendence/assets/81527587/64435769-80ca-4a86-ba59-76654ee87838)
+![MatchHistory](https://github.com/denizkarhan/transcendence/assets/81527587/a457f5c6-59db-4efe-8dc4-c7988c0826d2)
+![Achievements](https://github.com/denizkarhan/transcendence/assets/81527587/07cfd322-3a53-4e6a-82ff-40f24cb3bec8)
+</details>
+
+<details> <summary><h2> Chat </h2></summary>
+
+![Chat](https://github.com/denizkarhan/transcendence/assets/81527587/4aca6ab9-c681-47e9-b388-460eb4eeeeed)
 </details>
 
 
 
-</details>
+
+<h2> Developers </h2>
+
+ 🗝️ [Abdullah Çetin](https://github.com/abcetin)
+ 🧩 [Deniz Karhan](https://github.com/denizkarhan) 
+ 🛡️ [Metehan Erkol](https://github.com/merkol42) 
+ 🔭 [Taha Haksal](https://github.com/TahaHaksal) 
+ 🗡️ [Furkan Tuncer](https://github.com/furkantunc3r)
 
 
 
 
-
-``` 🛡️ NestJS ```
-``` 🗡️ React ```
-``` 💾 PostgreSQL ```

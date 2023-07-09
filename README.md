@@ -47,12 +47,13 @@
   </details>
 
   <details> <summary>🔴 2.4) Linux Alternatif </summary>
+	  
+	curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash source ~/.bashr
+      
+<img width="842" alt="Ekran Resmi 2023-05-08 ÖS 5 00 54" src="https://github.com/denizkarhan/transcendence/assets/81527587/3ee3d38c-2c73-47d9-9886-0e3629035dee">
 
-      curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash source ~/.bashrc
-  <img width="842" alt="Ekran Resmi 2023-05-08 ÖS 5 00 54" src="https://github.com/denizkarhan/transcendence/assets/81527587/78955116-c4a3-4db0-a1e5-e54742dd0822">
   </details>
-  </details>
-
+</details>
 
   <details> <summary><h3>🟢 3) NestJS Kurulum </h3></summary>
     💠 NestJS'in çekirdek modüllerini ve Express platformunu kur daha sonra NestJS CLI aracını yükle 💠 
@@ -85,7 +86,8 @@
 
   <details> <summary>🔴 5.1) Çekirdek dosyalara genel bakış </summary>
 
-  ![Ekran görüntüsü 2023-07-08 145523](https://github.com/denizkarhan/transcendence/assets/81527587/678e7dd2-f2fb-4422-8f3d-54f024cdf078)
+![Ekran görüntüsü 2023-07-08 145523](https://github.com/denizkarhan/transcendence/assets/81527587/25557c48-14f4-4c3c-9931-0fbc08200c3e)
+
   </details>
   </details>
 
@@ -191,8 +193,12 @@ imports: [TypeOrmModule.forRoot({
 
 <details> <summary><h3>🟢 5) Transcendence Sample Tables </h3></summary>
 
-  <img width="1168" alt="SqlTable" src="https://github.com/denizkarhan/transcendence/assets/81527587/899296b5-89d0-4338-b820-602a6b7009af">
-  <img width="1077" alt="182686678-54c00bf9-be17-4c1c-bb00-2b039d11c389" src="https://github.com/denizkarhan/transcendence/assets/81527587/e8fe9c69-93ee-49f3-89d2-a58d89262e69">
+![database_example](https://github.com/denizkarhan/transcendence/assets/81527587/5b2b491b-8bbb-43ef-9b5b-65c8e694802a)
+
+<img width="1077" alt="182686678-54c00bf9-be17-4c1c-bb00-2b039d11c389" src="https://github.com/denizkarhan/transcendence/assets/81527587/1c8ebc60-52df-4e3f-ae5e-ed6c49384f5d">
+
+<img width="1168" alt="SqlTable" src="https://github.com/denizkarhan/transcendence/assets/81527587/8469eb36-9b07-40d9-9955-7bdeac9370a4">
+
 
 </details>
 
@@ -200,7 +206,7 @@ imports: [TypeOrmModule.forRoot({
 
 <details> <summary><h3>🔴 6.1)  psql -U postgres auth hatası çözümü </h3></summary>
 
-  <img width="749" alt="Screen Shot 2023-05-08 at 4 50 37 PM" src="https://github.com/denizkarhan/transcendence/assets/81527587/ce0847ec-e767-4734-888e-89f68b6f005b">
+<img width="749" alt="Screen Shot 2023-05-08 at 4 50 37 PM" src="https://github.com/denizkarhan/transcendence/assets/81527587/579bc3d0-d8f0-4827-9fda-5c340f70c9d8">
 </details>
 
 <details> <summary><h3>🔴 6.2) Hashleme metodu </h3></summary>

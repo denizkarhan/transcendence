@@ -3,12 +3,12 @@
 
 <details>
  <summary> <h3>🖇️ Project Description <h2> </summary>
-
-  ![1](https://github.com/denizkarhan/transcendence/assets/81527587/2d20e4b5-5920-435f-9fd3-eaeb8dd07910)
-  ![2](https://github.com/denizkarhan/transcendence/assets/81527587/d9cd285d-4608-4963-b335-593085055edf)
-  ![3](https://github.com/denizkarhan/transcendence/assets/81527587/39a9066e-72c2-4176-a609-ff030b642b42)
-  ![4](https://github.com/denizkarhan/transcendence/assets/81527587/b383b662-b917-4a33-b61c-e841d11efd50)
-  ![5](https://github.com/denizkarhan/transcendence/assets/81527587/6988746c-7594-4327-9a23-f1981b6e424f)
+	 
+![1](https://github.com/denizkarhan/transcendence/assets/81527587/718c11c6-e3a5-4b06-a58f-dffc6abc8bae)
+![2](https://github.com/denizkarhan/transcendence/assets/81527587/7783d95a-beb2-4f20-9593-5df06feb297b)
+![3](https://github.com/denizkarhan/transcendence/assets/81527587/c8b534f1-7d58-4c19-a83f-8cea7068ad9a)
+![4](https://github.com/denizkarhan/transcendence/assets/81527587/aa146b6e-162d-4c95-99d7-5dfb951525d7)
+![5](https://github.com/denizkarhan/transcendence/assets/81527587/d0b72ef7-309e-48a0-9edd-a2c7ae9962e9)
 </details>
 
 
@@ -227,35 +227,35 @@ console.log(hash);
 </details>
 
 <details> <summary><h2> Registration and Login </h2></summary>
-
-![Sign in](https://github.com/denizkarhan/transcendence/assets/81527587/3e3bfa67-f8ec-409d-881f-e259f23e8999)
-![Register2](https://github.com/denizkarhan/transcendence/assets/81527587/b2f9c9c5-61fe-48bb-952e-3c334ea693c0)
+	
+![Sign in](https://github.com/denizkarhan/transcendence/assets/81527587/8417ff3e-8b56-46d1-b17b-a5eaafa1014f)
+![Register2](https://github.com/denizkarhan/transcendence/assets/81527587/83692102-9775-4b2d-bc27-a0839b692611)
 </details>
 
 <details> <summary><h2> 2 factor authentication </h2></summary>
 
-![ProfileUpdated](https://github.com/denizkarhan/transcendence/assets/81527587/3a063fc0-8271-4fe2-9a31-d035a89f7aef)
-![QRCode](https://github.com/denizkarhan/transcendence/assets/81527587/53c3bd5e-d0bf-41dd-84be-cf79649c269c)
-![2faAuth](https://github.com/denizkarhan/transcendence/assets/81527587/7d554451-6666-415f-8e03-1a57976e43e3)
+![ProfileUpdated](https://github.com/denizkarhan/transcendence/assets/81527587/39fe338b-4098-480a-801e-a680764b2461)
+![QRCode](https://github.com/denizkarhan/transcendence/assets/81527587/7b2dea72-714f-499d-a132-456921945e51)
+![2faAuth](https://github.com/denizkarhan/transcendence/assets/81527587/04db45c4-75d3-478a-b6ba-75aa717ba5c9)
 </details>
 
 <details> <summary><h2> Profile and Follower </h2></summary>
 
-![Profile](https://github.com/denizkarhan/transcendence/assets/81527587/2137176f-cb9a-4178-bc17-9a91c4139fd3)
-![Follower](https://github.com/denizkarhan/transcendence/assets/81527587/e11b2389-83b1-4b6c-9567-55c3fa6098f6)
+![Profile](https://github.com/denizkarhan/transcendence/assets/81527587/b860925a-11b8-40d5-970c-b9fba69c7399)
+![Follower](https://github.com/denizkarhan/transcendence/assets/81527587/10559a84-9605-44a0-8afc-480bd627700a)
 </details>
 
 <details> <summary><h2> Game </h2></summary>
 
-![Game](https://github.com/denizkarhan/transcendence/assets/81527587/3e96c205-014c-4cd8-b652-ae020b1b4b4a)
-![Pong](https://github.com/denizkarhan/transcendence/assets/81527587/64435769-80ca-4a86-ba59-76654ee87838)
-![MatchHistory](https://github.com/denizkarhan/transcendence/assets/81527587/a457f5c6-59db-4efe-8dc4-c7988c0826d2)
-![Achievements](https://github.com/denizkarhan/transcendence/assets/81527587/07cfd322-3a53-4e6a-82ff-40f24cb3bec8)
+![Game](https://github.com/denizkarhan/transcendence/assets/81527587/eea4951f-3763-40c9-9d63-8ad915133d1d)
+![Pong](https://github.com/denizkarhan/transcendence/assets/81527587/7f988be5-de8c-4f2f-b613-c02a03e8cf2d)
+![MatchHistory](https://github.com/denizkarhan/transcendence/assets/81527587/e5c2ccd0-ac3d-40eb-8da1-5ffb49847364)
+![Achievements](https://github.com/denizkarhan/transcendence/assets/81527587/d1d75fab-73af-47fc-8279-6e1b4495d191)
 </details>
 
 <details> <summary><h2> Chat </h2></summary>
-
-![Chat](https://github.com/denizkarhan/transcendence/assets/81527587/4aca6ab9-c681-47e9-b388-460eb4eeeeed)
+	
+![Chat](https://github.com/denizkarhan/transcendence/assets/81527587/9052751e-c970-4053-800c-a3c5d5538e3c)
 </details>
 
 
